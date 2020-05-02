@@ -1,4 +1,4 @@
-baseURL = "https://www.rkpblog.tech/new"
+baseURL = ""
 languageCode = "en-us"
 title = "Rohith's Blog"
 theme = "ezhil"
