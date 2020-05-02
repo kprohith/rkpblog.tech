@@ -4,13 +4,13 @@ html.dark body {
 }
 
 html.dark ::-moz-selection {
-  background: #9375fd;
+  background: #2d90dd;
   color: #fff;
   text-shadow: none
 }
 
 html.dark ::selection {
-  background: #9375fd;
+  background: #2d90dd;
   color: #fff;
   text-shadow: none
 }
@@ -33,7 +33,7 @@ html.dark h6 {
 }
 
 html.dark a,a:hover {
-  color: #9375fd;
+  color: #2d90dd;
   text-decoration: none;
 }
 
