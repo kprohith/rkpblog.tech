@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rohith&#39;s Blog</title>
+    <link>https://www.rkpblog.tech/new/</link>
+    <description>Recent content on Rohith&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://www.rkpblog.tech/new/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Configuring Pi-Hole with DNS over HTTPS</title>
+      <link>https://www.rkpblog.tech/new/2020/04/configuring-pi-hole-with-dns-over-https/</link>
+      <pubDate>Thu, 30 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2020/04/configuring-pi-hole-with-dns-over-https/</guid>
+      <description>Pi-Hole DNS over HTTPS I just set up DNS over HTTPS using this guide on my pi-hole DNS sink.
+Basically,
+  Get the cloudflared daemon compiled for ARM (Raspberry Pi)
+  Configure it as a service that runs on startup under a user named cloudflared
+  Use systemd to start the service (or reboot, I guess?)
+  Ultimately this still goes to Cloudflare’s 1.1.1.1 DNS, except routed over HTTPS:</description>
+    </item>
+    
+    <item>
+      <title>Porsche Classifier</title>
+      <link>https://www.rkpblog.tech/new/2020/04/porsche-classifier/</link>
+      <pubDate>Sat, 04 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2020/04/porsche-classifier/</guid>
+      <description>Porsche Classifier Porsche Classifier Identify Porsche models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95% accuracy. Trained using fastai-v3, pytorch and Gradient. Uses resnet50 and trained on a Nvidia Quadro P5000. Built on docker and is hosted on render. Trained on a dataset of publicly sourced images containing 30000 Porsche car models of varying degree of quality. Porsche cars, specially the latest generations of the Panamera/Taycan,Macan/Cayenne &amp;amp; 911/718 can be pretty tricky to tell apart for a layman who isn&amp;rsquo;t paying very close attention, which is why I wanted to test out what kind of features this deep learning model would pick up.</description>
+    </item>
+    
+    <item>
+      <title>An Example Markdown Post</title>
+      <link>https://www.rkpblog.tech/new/2020/01/an-example-markdown-post/</link>
+      <pubDate>Tue, 14 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2020/01/an-example-markdown-post/</guid>
+      <description>Example Markdown Post Basic setup Jekyll requires blog post files to be named according to the following format:
+YEAR-MONTH-DAY-filename.md
+Where YEAR is a four-digit number, MONTH and DAY are both two-digit numbers, and filename is whatever file name you choose, to remind yourself what this post is about. .md is the file extension for markdown files.
+The first line of the file should start with a single hash character, then a space, then your title.</description>
+    </item>
+    
+    <item>
+      <title>Text-Classifier-ML</title>
+      <link>https://www.rkpblog.tech/new/2019/06/text-classifier-ml/</link>
+      <pubDate>Sun, 16 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/06/text-classifier-ml/</guid>
+      <description>Text-Classifier-ML Basic text classifier that uses tensor-flow and keras api inorder to classify text as: 1.) Positive 2.) Negative Trained on the IMDB Movie Review dataset from __future__ import absolute_import, division, print_function import tensorflow as tf from tensorflow import keras import numpy as np import os import random print(tf.__version__) imdb = keras.datasets.imdb # save np.load np_load_old = np.load # modify the default parameters of np.load np.load = lambda *a,**k: np_load_old(*a, allow_pickle=True, **k) # call load_data with allow_pickle implicitly set to true (train_data, train_labels), (test_data, test_labels) = imdb.</description>
+    </item>
+    
+    <item>
+      <title>Clothing Classifier</title>
+      <link>https://www.rkpblog.tech/new/2019/06/clothing-classifier/</link>
+      <pubDate>Sat, 15 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/06/clothing-classifier/</guid>
+      <description>Clothing Classifier Basic classifier that is trained to classify images of clothing into 10 categories Trained using FashionMNIST data set consisting of 60,000 labelled images, each of 25px x 25px size Tested on 10,000 labelled images, which werent part of the training set. This classifier has close to ~80% accuracy on grayscale images of 25px x 25px size. Uses tensorflow, keras api, numpy, matplotlib and the Fashion MNIST datsset. Deployed tf.</description>
+    </item>
+    
+    <item>
+      <title>Smart Presence Sensing System - IoT enabled Smart Building</title>
+      <link>https://www.rkpblog.tech/new/2019/05/smart-presence-sensing-system-iot-enabled-smart-building/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/05/smart-presence-sensing-system-iot-enabled-smart-building/</guid>
+      <description>Smart Presence Sensing System - IoT enabled Smart Building Automated Smart Building using IoT
+This repository contains the Arudino sketch for the automated smart building project.
+The sketch is written in C++.
+Replace your ssid and pass where asked.
+Enter your ThingSpeak channel&amp;rsquo;s API WRITE KEY in the updateTS function in place of &amp;ldquo;xxx&amp;rdquo;
+#include&amp;lt;SoftwareSerial.h&amp;gt; //include libraryint data; int data1; boolean lock = true; int counter = 0; int Light_status = 10; SoftwareSerial esp8266(3,4); //set the software serial pins RX=3, TX=4 //definition of variables #define SSID &amp;#34;xxx&amp;#34; //replace with ssid of wifi #define PASS &amp;#34;xxx&amp;#34; //replace with password of wifi  String sendAT(String command, const int timeout) { String response=&amp;#34;&amp;#34;; esp8266.</description>
+    </item>
+    
+    <item>
+      <title>Automated Street Lighting using Arduino - An IoT implementation</title>
+      <link>https://www.rkpblog.tech/new/2019/05/automated-street-lighting-using-arduino-an-iot-implementation/</link>
+      <pubDate>Sat, 25 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/05/automated-street-lighting-using-arduino-an-iot-implementation/</guid>
+      <description>Automated Street Lighting using Arduino - An IoT implementation Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights. Built using
+ an Arduino Uno and a Raspberry Pi 3B+.  The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.
+This repository contains the Arudino sketch for the automated street lighting project.</description>
+    </item>
+    
+    <item>
+      <title>Automated Weather Monitor using Arduino - an IoT Implementation</title>
+      <link>https://www.rkpblog.tech/new/2019/05/automated-weather-monitor-using-arduino-an-iot-implementation/</link>
+      <pubDate>Sat, 25 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/05/automated-weather-monitor-using-arduino-an-iot-implementation/</guid>
+      <description>Automated Weather Monitor using Arduino - an IoT Implementation Automated Smart Weather Monitor using IoT
+This repository contains the Arudino sketch for the automated smart weather monitor project.
+The sketch is written in C++.
+Replace your ssid and pass where asked.
+Enter your ThingSpeak channel&amp;rsquo;s API WRITE KEY in the updateTS function in place of &amp;ldquo;xxx&amp;rdquo;
+#include &amp;lt;dht.h&amp;gt;#include &amp;lt;SoftwareSerial.h&amp;gt;dht DHT; String temp; String humid; SoftwareSerial esp8266(3,4); #define SSID &amp;#34;xxx&amp;#34; #define PASS &amp;#34;xxx&amp;#34;  String sendAT(String command, const int timeout) { String response = &amp;#34;&amp;#34;; esp8266.</description>
+    </item>
+    
+    <item>
+      <title>Smart Water Meter using an Arduino - An IoT Implementation</title>
+      <link>https://www.rkpblog.tech/new/2019/05/smart-water-meter-using-an-arduino-an-iot-implementation/</link>
+      <pubDate>Thu, 23 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/05/smart-water-meter-using-an-arduino-an-iot-implementation/</guid>
+      <description>Smart Water Meter using an Arduino - An IoT Implementation Smart Water Meter using IoT
+The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.
+This repository contains the Arudino sketch for the automated smart water meter project.
+The sketch is written in C++.
+Replace your ssid and pass where asked.
+Enter your ThingSpeak channel&amp;rsquo;s API WRITE KEY in the updateTS function in place of &amp;ldquo;xxx&amp;rdquo;</description>
+    </item>
+    
+    <item>
+      <title>Weather Station on NodeMCU</title>
+      <link>https://www.rkpblog.tech/new/2019/04/weather-station-on-nodemcu/</link>
+      <pubDate>Mon, 22 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/04/weather-station-on-nodemcu/</guid>
+      <description>Weather Station on NodeMCU Smart Weather Monitor Using nodemcu
+This repository contains the sketch for the weather monitor using nodemcu project
+The sketch is written in C++.
+Replace your ssid and pass where asked.
+Enter your ThingSpeak channel&amp;rsquo;s API WRITE KEY in the updateTS function in place of &amp;ldquo;xxx&amp;rdquo;
+#include &amp;lt;ESP8266WiFi.h&amp;gt; #include &amp;lt;DHT.h&amp;gt; // Including library for dht String apiKey = &amp;#34;xxx&amp;#34;; // Enter your Write API key from ThingSpeak  const char *ssid = &amp;#34;xxx&amp;#34;; // replace with your wifi ssid and wpa2 key const char *pass = &amp;#34;xxx&amp;#34;; const char* server = &amp;#34;api.</description>
+    </item>
+    
+    <item>
+      <title>Smart Irrigation System using IoT</title>
+      <link>https://www.rkpblog.tech/new/2019/04/smart-irrigation-system-using-iot/</link>
+      <pubDate>Sun, 21 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/04/smart-irrigation-system-using-iot/</guid>
+      <description>Smart Irrigation System using IoT Automated Smart Irrigation system using IoT
+This repository contains the Arudino sketch for the automated smart irrigation project using iot.
+The sketch is written in C++.
+Replace your ssid and pass where asked.
+Enter your ThingSpeak channel&amp;rsquo;s API WRITE KEY in the updateTS function in place of &amp;ldquo;xxx&amp;rdquo;
+#include &amp;lt;SoftwareSerial.h&amp;gt; int srdata; // variable to store raw sensor data int prdata; // variable to store mapped sensor data int pump_status; SoftwareSerial esp8266(3,4); #define SSID &amp;#34;xxx&amp;#34; #define PASS &amp;#34;xxx&amp;#34;  String sendAT(String command, const int timeout) { String response = &amp;#34;&amp;#34;; esp8266.</description>
+    </item>
+    
+    <item>
+      <title>NSE Stock Analysis using ML</title>
+      <link>https://www.rkpblog.tech/new/2019/02/nse-stock-analysis-using-ml/</link>
+      <pubDate>Sat, 02 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2019/02/nse-stock-analysis-using-ml/</guid>
+      <description>NSE Stock Analysis using ML NSE-Stock OHLC, Adjusted Close &amp;amp; Trading Volume Scraping and Algorithmic Analysis Configured for the Nifty 500 stocks. Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API Written entirely in python. import bs4 as bs import pickle import requests import os import pandas_datareader.data as web import datetime as dt import matplotlib.pyplot as plt from matplotlib import style import datetime as dt import numpy as np import csv import urllib.</description>
+    </item>
+    
+    <item>
+      <title>Python for finance</title>
+      <link>https://www.rkpblog.tech/new/2018/10/python-for-finance/</link>
+      <pubDate>Tue, 02 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2018/10/python-for-finance/</guid>
+      <description>Python for finance Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API Written entirely in python. import bs4 as bs import pickle import requests import os import pandas_datareader.data as web import datetime as dt import matplotlib.pyplot as plt import datetime as dt import numpy as np import csv import urllib.request, json import pandas as pd &amp;#39;&amp;#39;&amp;#39;def save_sensex_tickers(): resp = requests.get(&amp;#39;https://en.wikipedia.org/wiki/BSE_SENSEX&amp;#39;) soup = bs.BeautifulSoup(resp.text, &amp;#39;lxml&amp;#39;) table = soup.find(&amp;#39;table&amp;#39;, {&amp;#39;class&amp;#39;: &amp;#39;wikitable sortable&amp;#39;}) tickers = [] for row in table.</description>
+    </item>
+    
+    <item>
+      <title>MADLIB - Story generator in JavaScript</title>
+      <link>https://www.rkpblog.tech/new/2018/09/madlib-story-generator-in-javascript/</link>
+      <pubDate>Tue, 25 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2018/09/madlib-story-generator-in-javascript/</guid>
+      <description>MADLIB - Story generator in JavaScript main.js
+var customName = document.getElementById(&amp;#39;customname&amp;#39;); var randomize = document.querySelector(&amp;#39;.randomize&amp;#39;); var story = document.querySelector(&amp;#39;.story&amp;#39;); function randomValueFromArray(array){ return array[Math.floor(Math.random()*array.length)]; } var storyText = &amp;#34;It was 94 fahrenheit outside, so :insertx: went for a walk. When they got to :inserty:, they stared in horror for a few moments, then :insertz:. Bob saw the whole thing, but was not surprised — :insertx: weighs 300 pounds, and it was a hot day.</description>
+    </item>
+    
+    <item>
+      <title>TicTacToe in python - Commandline</title>
+      <link>https://www.rkpblog.tech/new/2018/07/tictactoe-in-python-commandline/</link>
+      <pubDate>Thu, 05 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/2018/07/tictactoe-in-python-commandline/</guid>
+      <description>TicTacToe in Python - Commandline A text-based version of the popular two player game. Size of the game is dynamically set depending on the user&amp;rsquo;s choice. This game is entirely written in python. This script uses colorama for adding color to the commandline output. Install colorama to see colored output. # @author = RKP # python version = 3.7 import itertools from colorama import Fore, Back, Style, init init() def win(current_game): def all_same(l): if l.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://www.rkpblog.tech/new/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.rkpblog.tech/new/about/</guid>
+      <description>Rohith Palakirti</description>
+    </item>
+    
+  </channel>
+</rss>

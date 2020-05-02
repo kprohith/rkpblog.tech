@@ -1,4 +1,71 @@
-baseURL = "http://example.org/"
+baseURL = "https://www.rkpblog.tech/new"
 languageCode = "en-us"
-title = "My New Hugo Site"
-theme = "hugo-ink"
+title = "Rohith's Blog"
+theme = "ezhil"
+enableEmoji = true
+footnoteReturnLinkContents = "↩"
+enableGitInfo = true
+
+pygmentsstyle = "solarized-dark"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+disqusShortname = "rohithpalakirti"
+
+[params]
+  AuthorName = "Rohith Palakirti"
+  GitHubUser = "kprohith"
+  ListOfFoo = ["foo1", "foo2"]
+  SidebarRecentLimit = 5
+  Subtitle = "I write about tech."
+  mode = "dark"
+  featherIconsCDN = true
+[permalinks]
+  posts = "/:year/:month/:title/"
+
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "All posts"
+url = "/posts"
+weight = 2
+
+[[menu.main]]
+name = "About"
+url = "/about"
+weight = 3
+
+[[menu.main]]
+name = "Tags"
+url = "/tags"
+weight = 4
+
+[[params.social]]
+name = "Github"
+icon = "github"
+url = "https://github.com/kprohith"
+
+[[params.social]]
+icon = "linkedin"
+icon_pack = "linkedin"
+url = "https://linkedin.com/in/rohith-kp"
+
+[[params.social]]
+icon = "twitter"
+icon_pack = "fa"
+url = "https://twitter.com/fortytwochars"
+
+[[params.social]]
+name = "RSS"
+icon = "rss"
+url = "/index.xml"
+
+[taxonomies]
+   tag = "tags"
+
+
+[frontmatter]
+date = ":filename"

@@ -1,0 +1,3903 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>NSE Stock Analysis using ML - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="NSE Stock Analysis using ML" />
+<meta property="og:description" content="Python workflow for analysing stocks using mahcine learning" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2019/02/nse-stock-analysis-using-ml/" />
+<meta property="article:published_time" content="2019-02-02T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="NSE Stock Analysis using ML"/>
+<meta name="twitter:description" content="Python workflow for analysing stocks using mahcine learning"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">NSE Stock Analysis using ML</h1>
+			<div class="meta">Posted at &mdash; Feb 2, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="nse-stock-analysis-using-ml">NSE Stock Analysis using ML</h1>
+<h2 id="nse-stock-ohlc-adjusted-close--trading-volume-scraping-and-algorithmic-analysis">NSE-Stock OHLC, Adjusted Close &amp; Trading Volume Scraping and Algorithmic Analysis</h2>
+<h3 id="configured-for-the-nifty-500-stocks">Configured for the Nifty 500 stocks.</h3>
+<h3 id="uses-pandas-matplotlib-mpl_finance-scikit-learn-and-the-alphavantage-stock-market-api">Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API</h3>
+<h4 id="written-entirely-in-python">Written entirely in python.</h4>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#719e07">import</span> bs4 <span style="color:#719e07">as</span> bs
+<span style="color:#719e07">import</span> pickle
+<span style="color:#719e07">import</span> requests
+<span style="color:#719e07">import</span> os
+<span style="color:#719e07">import</span> pandas_datareader.data <span style="color:#719e07">as</span> web
+<span style="color:#719e07">import</span> datetime <span style="color:#719e07">as</span> dt
+<span style="color:#719e07">import</span> matplotlib.pyplot <span style="color:#719e07">as</span> plt
+<span style="color:#719e07">from</span> matplotlib <span style="color:#719e07">import</span> style
+<span style="color:#719e07">import</span> datetime <span style="color:#719e07">as</span> dt
+<span style="color:#719e07">import</span> numpy <span style="color:#719e07">as</span> np
+<span style="color:#719e07">import</span> csv
+<span style="color:#719e07">import</span> urllib.request<span style="color:#719e07">,</span> json
+<span style="color:#719e07">from</span> collections <span style="color:#719e07">import</span> Counter
+<span style="color:#719e07">import</span> pandas <span style="color:#719e07">as</span> pd
+<span style="color:#719e07">from</span> sklearn <span style="color:#719e07">import</span> model_selection <span style="color:#719e07">as</span> cross_validation
+<span style="color:#719e07">from</span> sklearn <span style="color:#719e07">import</span> svm, neighbors
+<span style="color:#719e07">from</span> sklearn.model_selection <span style="color:#719e07">import</span> cross_validate
+<span style="color:#719e07">from</span> sklearn.ensemble <span style="color:#719e07">import</span> VotingClassifier, RandomForestClassifier
+<span style="color:#719e07">from</span> statistics <span style="color:#719e07">import</span> mean
+<span style="color:#719e07">from</span> sklearn.model_selection <span style="color:#719e07">import</span> train_test_split
+
+style<span style="color:#719e07">.</span>use(<span style="color:#2aa198">&#39;ggplot&#39;</span>)
+
+<span style="color:#2aa198">&#39;&#39;&#39;def save_sensex_tickers():
+</span><span style="color:#2aa198">    resp = requests.get(&#39;https://en.wikipedia.org/wiki/BSE_SENSEX&#39;)
+</span><span style="color:#2aa198">    soup = bs.BeautifulSoup(resp.text, &#39;lxml&#39;)
+</span><span style="color:#2aa198">    table = soup.find(&#39;table&#39;, {&#39;class&#39;: &#39;wikitable sortable&#39;})
+</span><span style="color:#2aa198">    tickers = []
+</span><span style="color:#2aa198">    for row in table.findAll(&#39;tr&#39;)[1:]:
+</span><span style="color:#2aa198">        ticker = row.findAll(&#39;td&#39;)[1].text.replace(&#39;.&#39;,&#39;-&#39;)
+</span><span style="color:#2aa198">        tickers.append(ticker)
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">    with open(&#34;sensextickers.pickle&#34;,&#34;wb&#34;) as f:
+</span><span style="color:#2aa198">        pickle.dump(tickers,f)
+</span><span style="color:#2aa198">    print(tickers)
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">    return tickers
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">save_sensex_tickers()   
+</span><span style="color:#2aa198">&#39;&#39;&#39;</span>
+<span style="color:#586e75"># save sensex_tickers()</span>
+<span style="color:#719e07">def</span> <span style="color:#268bd2">convert_to_list</span>():
+    <span style="color:#719e07">with</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#39;ind_nifty500list.csv&#39;</span>, <span style="color:#2aa198">&#39;r&#39;</span>) <span style="color:#719e07">as</span> f:
+        reader <span style="color:#719e07">=</span> csv<span style="color:#719e07">.</span>reader(f)
+        scrips <span style="color:#719e07">=</span> <span style="color:#b58900">list</span>(reader)
+    tickers <span style="color:#719e07">=</span> []
+    <span style="color:#719e07">for</span> i <span style="color:#719e07">in</span> <span style="color:#b58900">range</span>(<span style="color:#b58900">len</span>(scrips)):
+
+        tickers<span style="color:#719e07">.</span>append(scrips[i][<span style="color:#2aa198">1</span>])
+
+    <span style="color:#719e07">del</span> tickers[<span style="color:#2aa198">0</span>]
+    <span style="color:#719e07">for</span> ticker <span style="color:#719e07">in</span> tickers:
+        ticker <span style="color:#719e07">=</span> ticker<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;.&#39;</span>,<span style="color:#2aa198">&#39;-&#39;</span>)<span style="color:#719e07">.</span>strip()
+    tickers <span style="color:#719e07">=</span> [<span style="color:#2aa198">&#39;NSE:&#39;</span><span style="color:#719e07">+</span> x <span style="color:#719e07">for</span> x <span style="color:#719e07">in</span> tickers]
+
+    outfile <span style="color:#719e07">=</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#34;nse_500_tickers.pickle&#34;</span>,<span style="color:#2aa198">&#34;wb&#34;</span>)
+    pickle<span style="color:#719e07">.</span>dump(tickers,outfile)
+    outfile<span style="color:#719e07">.</span>close()
+    <span style="color:#719e07">return</span> tickers
+
+<span style="color:#586e75">#convert_to_list()</span>
+<span style="color:#719e07">def</span> <span style="color:#268bd2">get_data_from_av</span>(reload_sensex<span style="color:#719e07">=</span><span style="color:#268bd2">False</span>):
+    <span style="color:#719e07">if</span> reload_sensex:
+        tickers <span style="color:#719e07">=</span> convert_to_list()
+    <span style="color:#719e07">else</span>:
+        <span style="color:#719e07">with</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#34;nse_500_tickers.pickle&#34;</span>, <span style="color:#2aa198">&#34;rb&#34;</span>) <span style="color:#719e07">as</span> f:
+            tickers <span style="color:#719e07">=</span> pickle<span style="color:#719e07">.</span>load(f)
+
+    <span style="color:#719e07">if</span> <span style="color:#719e07">not</span> os<span style="color:#719e07">.</span>path<span style="color:#719e07">.</span>exists(<span style="color:#2aa198">&#39;stocks_dfs&#39;</span>):
+        os<span style="color:#719e07">.</span>makedirs(<span style="color:#2aa198">&#39;stocks_dfs&#39;</span>)
+
+    start <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime(<span style="color:#2aa198">2019</span>, <span style="color:#2aa198">6</span>, <span style="color:#2aa198">12</span>)
+    end <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime<span style="color:#719e07">.</span>now()
+    api_key <span style="color:#719e07">=</span> <span style="color:#2aa198">&#39;xxx&#39;</span>
+    tick_names <span style="color:#719e07">=</span> [s<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;:&#39;</span>, <span style="color:#2aa198">&#39;-&#39;</span>) <span style="color:#719e07">for</span> s <span style="color:#719e07">in</span> tickers]
+    
+    <span style="color:#719e07">for</span> ticker <span style="color:#719e07">in</span> tickers:
+        <span style="color:#719e07">try</span>:
+            url_string <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&amp;symbol=</span><span style="color:#2aa198">%s</span><span style="color:#2aa198">&amp;outputsize=full&amp;apikey=</span><span style="color:#2aa198">%s</span><span style="color:#2aa198">&#34;</span><span style="color:#719e07">%</span>(ticker,api_key)
+            file_to_save <span style="color:#719e07">=</span> <span style="color:#2aa198">&#39;stock_dfs/</span><span style="color:#2aa198">%s</span><span style="color:#2aa198">.csv&#39;</span><span style="color:#719e07">%</span>ticker<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;:&#39;</span>,<span style="color:#2aa198">&#39;-&#39;</span>)
+            <span style="color:#719e07">print</span>(ticker)
+
+            <span style="color:#719e07">if</span> <span style="color:#719e07">not</span> os<span style="color:#719e07">.</span>path<span style="color:#719e07">.</span>exists(file_to_save):
+                <span style="color:#719e07">with</span> urllib<span style="color:#719e07">.</span>request<span style="color:#719e07">.</span>urlopen(url_string) <span style="color:#719e07">as</span> url:
+                    data <span style="color:#719e07">=</span> json<span style="color:#719e07">.</span>loads(url<span style="color:#719e07">.</span>read()<span style="color:#719e07">.</span>decode())
+                <span style="color:#586e75"># extract stock market data</span>
+                data <span style="color:#719e07">=</span> data[<span style="color:#2aa198">&#39;Time Series (Daily)&#39;</span>]
+                df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>DataFrame(columns<span style="color:#719e07">=</span>[<span style="color:#2aa198">&#39;Date&#39;</span>,<span style="color:#2aa198">&#39;Low&#39;</span>,<span style="color:#2aa198">&#39;High&#39;</span>,<span style="color:#2aa198">&#39;Close&#39;</span>,<span style="color:#2aa198">&#39;Open&#39;</span>])
+                <span style="color:#719e07">for</span> k,v <span style="color:#719e07">in</span> data<span style="color:#719e07">.</span>items():
+                    date <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime<span style="color:#719e07">.</span>strptime(k, <span style="color:#2aa198">&#39;%Y-%m-</span><span style="color:#2aa198">%d</span><span style="color:#2aa198">&#39;</span>)
+                    data_row <span style="color:#719e07">=</span> [date<span style="color:#719e07">.</span>date(),<span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;3. low&#39;</span>]),<span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;2. high&#39;</span>]),
+                                <span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;4. close&#39;</span>]),<span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;1. open&#39;</span>])]
+                    df<span style="color:#719e07">.</span>loc[<span style="color:#719e07">-</span><span style="color:#2aa198">1</span>,:] <span style="color:#719e07">=</span> data_row
+                    df<span style="color:#719e07">.</span>index <span style="color:#719e07">=</span> df<span style="color:#719e07">.</span>index <span style="color:#719e07">+</span> <span style="color:#2aa198">1</span>
+                <span style="color:#719e07">print</span>(<span style="color:#2aa198">&#39;Data saved to : </span><span style="color:#2aa198">%s</span><span style="color:#2aa198">&#39;</span><span style="color:#719e07">%</span>file_to_save)        
+                df<span style="color:#719e07">.</span>to_csv(file_to_save)
+
+        <span style="color:#719e07">except</span>:
+            <span style="color:#719e07">pass</span>    
+
+<span style="color:#586e75">#get_data_from_av(True)</span>
+
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">compile_data</span>():
+    <span style="color:#719e07">with</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#39;nse_500_tickers.pickle&#39;</span>, <span style="color:#2aa198">&#39;rb&#39;</span>) <span style="color:#719e07">as</span> f:
+        tickers <span style="color:#719e07">=</span> pickle<span style="color:#719e07">.</span>load(f)
+
+    tickers <span style="color:#719e07">=</span> [s<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;:&#39;</span>,<span style="color:#2aa198">&#39;-&#39;</span>) <span style="color:#719e07">for</span> s <span style="color:#719e07">in</span> tickers]
+   <span style="color:#586e75"># print(tickers[:10])</span>
+
+    main_df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>DataFrame()
+
+    <span style="color:#719e07">for</span> count,ticker <span style="color:#719e07">in</span> <span style="color:#b58900">enumerate</span>(tickers):
+
+        df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>read_csv(<span style="color:#2aa198">&#39;stock_dfs/{}.csv&#39;</span><span style="color:#719e07">.</span>format(ticker))
+        df<span style="color:#719e07">.</span>set_index(<span style="color:#2aa198">&#39;Date&#39;</span>,inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+
+        <span style="color:#586e75">#df[&#39;{}_HL_pct_diff&#39;.format(ticker)] = (df[&#39;High&#39;] - df[&#39;Low&#39;]) / df[&#39;Low&#39;]</span>
+        <span style="color:#586e75">#df[&#39;{}_daily_pct_chng&#39;.format(ticker)] = (df[&#39;Close&#39;] - df[&#39;Open&#39;]) / df[&#39;Open&#39;]</span>
+        
+        df<span style="color:#719e07">.</span>rename(columns<span style="color:#719e07">=</span>{<span style="color:#2aa198">&#39;Adj Close&#39;</span>:ticker}, inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+        df<span style="color:#719e07">.</span>drop([<span style="color:#2aa198">&#39;Open&#39;</span>,<span style="color:#2aa198">&#39;High&#39;</span>,<span style="color:#2aa198">&#39;Low&#39;</span>,<span style="color:#2aa198">&#39;Volume&#39;</span>, <span style="color:#2aa198">&#39;Close&#39;</span>,<span style="color:#2aa198">&#39;Unnamed: 0&#39;</span>],<span style="color:#2aa198">1</span>,inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+
+        <span style="color:#719e07">if</span> main_df<span style="color:#719e07">.</span>empty:
+            main_df <span style="color:#719e07">=</span> df
+        <span style="color:#719e07">else</span>:
+            main_df <span style="color:#719e07">=</span> main_df<span style="color:#719e07">.</span>join(df, how<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;outer&#39;</span>)
+
+        <span style="color:#719e07">if</span> count <span style="color:#719e07">%</span> <span style="color:#2aa198">10</span> <span style="color:#719e07">==</span> <span style="color:#2aa198">0</span>:
+            <span style="color:#719e07">print</span>(count)
+    <span style="color:#719e07">print</span>(main_df<span style="color:#719e07">.</span>head())
+    main_df<span style="color:#719e07">.</span>to_csv(<span style="color:#2aa198">&#39;nse_500_tickers_joined_closes.csv&#39;</span>)
+
+<span style="color:#586e75">#compile_data()</span>
+
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">visualize_data</span>():
+    df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>read_csv(<span style="color:#2aa198">&#39;nse_500_tickers_joined_closes.csv&#39;</span>)
+
+    df[<span style="color:#2aa198">&#39;NSE-TCS&#39;</span>]<span style="color:#719e07">.</span>plot()
+    plt<span style="color:#719e07">.</span>show
+
+    df_corr <span style="color:#719e07">=</span> df<span style="color:#719e07">.</span>corr()
+    <span style="color:#719e07">print</span>(df_corr<span style="color:#719e07">.</span>head())
+
+    df_corr<span style="color:#719e07">.</span>to_csv(<span style="color:#2aa198">&#39;nsecorr.csv&#39;</span>)
+
+
+    data1 <span style="color:#719e07">=</span> df_corr<span style="color:#719e07">.</span>values
+    fig1 <span style="color:#719e07">=</span> plt<span style="color:#719e07">.</span>figure()
+    ax1 <span style="color:#719e07">=</span> fig1<span style="color:#719e07">.</span>add_subplot(<span style="color:#2aa198">111</span>)
+
+    heatmap1 <span style="color:#719e07">=</span> ax1<span style="color:#719e07">.</span>pcolor(data1, cmap<span style="color:#719e07">=</span>plt<span style="color:#719e07">.</span>cm<span style="color:#719e07">.</span>RdYlGn)
+
+    fig1<span style="color:#719e07">.</span>colorbar(heatmap1)
+
+    ax1<span style="color:#719e07">.</span>set_xticks(np<span style="color:#719e07">.</span>arange(data1<span style="color:#719e07">.</span>shape[<span style="color:#2aa198">1</span>]) <span style="color:#719e07">+</span> <span style="color:#2aa198">0.5</span>, minor<span style="color:#719e07">=</span><span style="color:#268bd2">False</span>)
+    ax1<span style="color:#719e07">.</span>set_yticks(np<span style="color:#719e07">.</span>arange(data1<span style="color:#719e07">.</span>shape[<span style="color:#2aa198">0</span>]) <span style="color:#719e07">+</span> <span style="color:#2aa198">0.5</span>, minor<span style="color:#719e07">=</span><span style="color:#268bd2">False</span>)
+        
+    ax1<span style="color:#719e07">.</span>invert_yaxis()
+    ax1<span style="color:#719e07">.</span>xaxis<span style="color:#719e07">.</span>tick_top()
+
+    column_labels <span style="color:#719e07">=</span> df_corr<span style="color:#719e07">.</span>columns
+    row_labels <span style="color:#719e07">=</span> df_corr<span style="color:#719e07">.</span>index
+    ax1<span style="color:#719e07">.</span>set_xticklabels(column_labels)
+    ax1<span style="color:#719e07">.</span>set_yticklabels(row_labels)
+
+    plt<span style="color:#719e07">.</span>xticks(rotation<span style="color:#719e07">=</span><span style="color:#2aa198">90</span>)
+    heatmap1<span style="color:#719e07">.</span>set_clim(<span style="color:#719e07">-</span><span style="color:#2aa198">1</span>,<span style="color:#2aa198">1</span>)
+    plt<span style="color:#719e07">.</span>tight_layout()
+    <span style="color:#586e75">#plt.savefig(&#39;correlantions.png&#39;, dpi=(300))</span>
+    plt<span style="color:#719e07">.</span>show()
+
+<span style="color:#586e75">#visualize_data()</span>
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">process_data_for_labels</span>(ticker):
+    hm_days <span style="color:#719e07">=</span> <span style="color:#2aa198">7</span>
+    df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>read_csv(<span style="color:#2aa198">&#39;nse_500_tickers_joined_closes.csv&#39;</span>, index_col<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>)
+    tickers <span style="color:#719e07">=</span> df<span style="color:#719e07">.</span>columns<span style="color:#719e07">.</span>values<span style="color:#719e07">.</span>tolist()
+    df<span style="color:#719e07">.</span>fillna(<span style="color:#2aa198">0</span>, inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+
+    <span style="color:#719e07">for</span> i <span style="color:#719e07">in</span> <span style="color:#b58900">range</span>(<span style="color:#2aa198">1</span>,hm_days<span style="color:#719e07">+</span><span style="color:#2aa198">1</span>):
+        df[<span style="color:#2aa198">&#39;{}_{}d&#39;</span><span style="color:#719e07">.</span>format(ticker,i)] <span style="color:#719e07">=</span> (df[ticker]<span style="color:#719e07">.</span>shift(<span style="color:#719e07">-</span>i) <span style="color:#719e07">-</span> df[ticker]) <span style="color:#719e07">/</span> df[ticker]
+       
+    df<span style="color:#719e07">.</span>fillna(<span style="color:#2aa198">0</span>, inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+    <span style="color:#719e07">return</span> tickers, df
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">buy_sell_hold</span>(<span style="color:#719e07">*</span>args):
+    cols <span style="color:#719e07">=</span> [c <span style="color:#719e07">for</span> c <span style="color:#719e07">in</span> args]
+    requirement <span style="color:#719e07">=</span> <span style="color:#2aa198">0.02</span>
+    <span style="color:#719e07">for</span> col <span style="color:#719e07">in</span> cols:
+        <span style="color:#719e07">if</span> col <span style="color:#719e07">&gt;</span> requirement:
+            <span style="color:#719e07">return</span> <span style="color:#2aa198">1</span>
+        <span style="color:#719e07">if</span> col <span style="color:#719e07">&lt;</span> <span style="color:#719e07">-</span>requirement:
+            <span style="color:#719e07">return</span> <span style="color:#719e07">-</span><span style="color:#2aa198">1</span>
+    <span style="color:#719e07">return</span> <span style="color:#2aa198">0</span>
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">extract_featuresets</span>(ticker):
+    tickers, df <span style="color:#719e07">=</span> process_data_for_labels(ticker)
+
+    df[<span style="color:#2aa198">&#39;{}_target&#39;</span><span style="color:#719e07">.</span>format(ticker)] <span style="color:#719e07">=</span> <span style="color:#b58900">list</span>(<span style="color:#b58900">map</span>(buy_sell_hold,
+                                              df[<span style="color:#2aa198">&#39;{}_1d&#39;</span><span style="color:#719e07">.</span>format(ticker)],
+                                              df[<span style="color:#2aa198">&#39;{}_2d&#39;</span><span style="color:#719e07">.</span>format(ticker)],
+                                              df[<span style="color:#2aa198">&#39;{}_3d&#39;</span><span style="color:#719e07">.</span>format(ticker)],
+                                              df[<span style="color:#2aa198">&#39;{}_4d&#39;</span><span style="color:#719e07">.</span>format(ticker)],
+                                              df[<span style="color:#2aa198">&#39;{}_5d&#39;</span><span style="color:#719e07">.</span>format(ticker)],
+                                              df[<span style="color:#2aa198">&#39;{}_6d&#39;</span><span style="color:#719e07">.</span>format(ticker)],
+                                              df[<span style="color:#2aa198">&#39;{}_7d&#39;</span><span style="color:#719e07">.</span>format(ticker)] ))
+
+    vals <span style="color:#719e07">=</span> df[<span style="color:#2aa198">&#39;{}_target&#39;</span><span style="color:#719e07">.</span>format(ticker)]<span style="color:#719e07">.</span>values<span style="color:#719e07">.</span>tolist()
+    str_vals <span style="color:#719e07">=</span> [<span style="color:#b58900">str</span>(i) <span style="color:#719e07">for</span> i <span style="color:#719e07">in</span> vals]
+    <span style="color:#719e07">print</span>(<span style="color:#2aa198">&#39;Data spread:&#39;</span>,Counter(str_vals))
+
+    df<span style="color:#719e07">.</span>fillna(<span style="color:#2aa198">0</span>, inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+    df <span style="color:#719e07">=</span> df<span style="color:#719e07">.</span>replace([np<span style="color:#719e07">.</span>inf, <span style="color:#719e07">-</span>np<span style="color:#719e07">.</span>inf], np<span style="color:#719e07">.</span>nan)
+    df<span style="color:#719e07">.</span>dropna(inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+
+    df_vals <span style="color:#719e07">=</span> df[[ticker <span style="color:#719e07">for</span> ticker <span style="color:#719e07">in</span> tickers]]<span style="color:#719e07">.</span>pct_change()
+    df_vals <span style="color:#719e07">=</span> df_vals<span style="color:#719e07">.</span>replace([np<span style="color:#719e07">.</span>inf, <span style="color:#719e07">-</span>np<span style="color:#719e07">.</span>inf], <span style="color:#2aa198">0</span>)
+    df_vals<span style="color:#719e07">.</span>fillna(<span style="color:#2aa198">0</span>, inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+
+
+    X <span style="color:#719e07">=</span> df_vals<span style="color:#719e07">.</span>values
+    y <span style="color:#719e07">=</span> df[<span style="color:#2aa198">&#39;{}_target&#39;</span><span style="color:#719e07">.</span>format(ticker)]<span style="color:#719e07">.</span>values
+
+    
+    <span style="color:#719e07">return</span> X, y, df
+
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">do_ml</span>(ticker):
+    X, y, df <span style="color:#719e07">=</span> extract_featuresets(ticker)
+
+    X_train, X_test, y_train, y_test <span style="color:#719e07">=</span> train_test_split(X,y,test_size<span style="color:#719e07">=</span><span style="color:#2aa198">0.25</span>)
+  
+  <span style="color:#586e75">#K Nearest Neighbors</span>
+
+    <span style="color:#586e75">#clf = neighbors.KNeighborsClassifier()</span>
+
+
+    <span style="color:#586e75"># VotingClassifier</span>
+    clf <span style="color:#719e07">=</span> VotingClassifier([(<span style="color:#2aa198">&#39;lsvc&#39;</span>, svm<span style="color:#719e07">.</span>LinearSVC(max_iter<span style="color:#719e07">=</span><span style="color:#2aa198">2000</span>)),
+                            (<span style="color:#2aa198">&#39;knn&#39;</span>, neighbors<span style="color:#719e07">.</span>KNeighborsClassifier()),
+                            (<span style="color:#2aa198">&#39;rfor&#39;</span>, RandomForestClassifier())])
+
+
+    clf<span style="color:#719e07">.</span>fit(X_train, y_train)
+
+    confidence <span style="color:#719e07">=</span> clf<span style="color:#719e07">.</span>score(X_test, y_test)
+
+    <span style="color:#719e07">print</span>(<span style="color:#2aa198">&#39;accuracy:&#39;</span>,confidence)
+    predictions <span style="color:#719e07">=</span> clf<span style="color:#719e07">.</span>predict(X_test)
+    <span style="color:#719e07">print</span>(<span style="color:#2aa198">&#39;predicted class counts: &#39;</span>, Counter(predictions))
+    <span style="color:#719e07">print</span>()
+    <span style="color:#719e07">print</span>()
+   <span style="color:#586e75"># return confidence</span>
+
+
+
+<span style="color:#586e75"># testcases running:</span>
+do_ml(<span style="color:#2aa198">&#39;NSE-TCS&#39;</span>)
+do_ml(<span style="color:#2aa198">&#39;NSE-M&amp;M&#39;</span>)
+do_ml(<span style="color:#2aa198">&#39;NSE-ABB&#39;</span>)
+
+<span style="color:#2aa198">&#39;&#39;&#39;
+</span><span style="color:#2aa198">with open(&#34;nse_500_tickers.pickle&#34;, &#34;rb&#34;) as f:
+</span><span style="color:#2aa198">    tickers = pickle.load(f)
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">accuracies =[]
+</span><span style="color:#2aa198">for count,ticker in enumerate(tickers):
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">    if count%10==0:
+</span><span style="color:#2aa198">        print(count)
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">
+</span><span style="color:#2aa198">    accuracy = do_ml(ticker)
+</span><span style="color:#2aa198">    accuracies.append(accuracy)
+</span><span style="color:#2aa198">    print(&#39;{} accuracy: {}. Average accuracy:{}&#39;.format(ticker,accuracy,mean(accuracies)))
+</span><span style="color:#2aa198">&#39;&#39;&#39;</span>
+</code></pre></div><p>Nifty500 list</p>
+<table>
+<thead>
+<tr>
+<th>Company Name</th>
+<th>Industry</th>
+<th>Symbol</th>
+<th>Series</th>
+<th>ISIN Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3M India Ltd.</td>
+<td>SERVICES</td>
+<td>3MINDIA</td>
+<td>EQ</td>
+<td>INE470A01017</td>
+</tr>
+<tr>
+<td>ABB India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>ABB</td>
+<td>EQ</td>
+<td>INE117A01022</td>
+</tr>
+<tr>
+<td>ACC Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>ACC</td>
+<td>EQ</td>
+<td>INE012A01025</td>
+</tr>
+<tr>
+<td>AIA Engineering Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>AIAENG</td>
+<td>EQ</td>
+<td>INE212H01026</td>
+</tr>
+<tr>
+<td>APL Apollo Tubes Ltd.</td>
+<td>METALS</td>
+<td>APLAPOLLO</td>
+<td>EQ</td>
+<td>INE702C01019</td>
+</tr>
+<tr>
+<td>AU Small Finance Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>AUBANK</td>
+<td>EQ</td>
+<td>INE949L01017</td>
+</tr>
+<tr>
+<td>Aavas Financiers Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>AAVAS</td>
+<td>EQ</td>
+<td>INE216P01012</td>
+</tr>
+<tr>
+<td>Adani Green Energy Ltd.</td>
+<td>ENERGY</td>
+<td>ADANIGREEN</td>
+<td>EQ</td>
+<td>INE364U01010</td>
+</tr>
+<tr>
+<td>Adani Ports and Special Economic Zone Ltd.</td>
+<td>SERVICES</td>
+<td>ADANIPORTS</td>
+<td>EQ</td>
+<td>INE742F01042</td>
+</tr>
+<tr>
+<td>Adani Power Ltd.</td>
+<td>ENERGY</td>
+<td>ADANIPOWER</td>
+<td>EQ</td>
+<td>INE814H01011</td>
+</tr>
+<tr>
+<td>Adani Transmission Ltd.</td>
+<td>ENERGY</td>
+<td>ADANITRANS</td>
+<td>EQ</td>
+<td>INE931S01010</td>
+</tr>
+<tr>
+<td>Aditya Birla Capital Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>ABCAPITAL</td>
+<td>EQ</td>
+<td>INE674K01013</td>
+</tr>
+<tr>
+<td>Aditya Birla Fashion and Retail Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>ABFRL</td>
+<td>EQ</td>
+<td>INE647O01011</td>
+</tr>
+<tr>
+<td>Advanced Enzyme Tech Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>ADVENZYMES</td>
+<td>EQ</td>
+<td>INE837H01020</td>
+</tr>
+<tr>
+<td>Aegis Logistics Ltd.</td>
+<td>ENERGY</td>
+<td>AEGISCHEM</td>
+<td>EQ</td>
+<td>INE208C01025</td>
+</tr>
+<tr>
+<td>Ajanta Pharmaceuticals Ltd.</td>
+<td>PHARMA</td>
+<td>AJANTPHARM</td>
+<td>EQ</td>
+<td>INE031B01049</td>
+</tr>
+<tr>
+<td>Akzo Nobel India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>AKZOINDIA</td>
+<td>EQ</td>
+<td>INE133A01011</td>
+</tr>
+<tr>
+<td>Alembic Pharmaceuticals Ltd.</td>
+<td>PHARMA</td>
+<td>APLLTD</td>
+<td>EQ</td>
+<td>INE901L01018</td>
+</tr>
+<tr>
+<td>Alkem Laboratories Ltd.</td>
+<td>PHARMA</td>
+<td>ALKEM</td>
+<td>EQ</td>
+<td>INE540L01014</td>
+</tr>
+<tr>
+<td>Allahabad Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>ALBK</td>
+<td>EQ</td>
+<td>INE428A01015</td>
+</tr>
+<tr>
+<td>Allcargo Logistics Ltd.</td>
+<td>SERVICES</td>
+<td>ALLCARGO</td>
+<td>EQ</td>
+<td>INE418H01029</td>
+</tr>
+<tr>
+<td>Amara Raja Batteries Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>AMARAJABAT</td>
+<td>EQ</td>
+<td>INE885A01032</td>
+</tr>
+<tr>
+<td>Ambuja Cements Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>AMBUJACEM</td>
+<td>EQ</td>
+<td>INE079A01024</td>
+</tr>
+<tr>
+<td>Andhra Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>ANDHRABANK</td>
+<td>EQ</td>
+<td>INE434A01013</td>
+</tr>
+<tr>
+<td>Apollo Hospitals Enterprise Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>APOLLOHOSP</td>
+<td>EQ</td>
+<td>INE437A01024</td>
+</tr>
+<tr>
+<td>Apollo Tyres Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>APOLLOTYRE</td>
+<td>EQ</td>
+<td>INE438A01022</td>
+</tr>
+<tr>
+<td>Ashok Leyland Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>ASHOKLEY</td>
+<td>EQ</td>
+<td>INE208A01029</td>
+</tr>
+<tr>
+<td>Ashoka Buildcon Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>ASHOKA</td>
+<td>EQ</td>
+<td>INE442H01029</td>
+</tr>
+<tr>
+<td>Asian Paints Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>ASIANPAINT</td>
+<td>EQ</td>
+<td>INE021A01026</td>
+</tr>
+<tr>
+<td>Aster DM Healthcare Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>ASTERDM</td>
+<td>EQ</td>
+<td>INE914M01019</td>
+</tr>
+<tr>
+<td>AstraZenca Pharma India Ltd.</td>
+<td>PHARMA</td>
+<td>ASTRAZEN</td>
+<td>EQ</td>
+<td>INE203A01020</td>
+</tr>
+<tr>
+<td>Astral Poly Technik Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>ASTRAL</td>
+<td>EQ</td>
+<td>INE006I01046</td>
+</tr>
+<tr>
+<td>Atul Ltd.</td>
+<td>CHEMICALS</td>
+<td>ATUL</td>
+<td>EQ</td>
+<td>INE100A01010</td>
+</tr>
+<tr>
+<td>Aurobindo Pharma Ltd.</td>
+<td>PHARMA</td>
+<td>AUROPHARMA</td>
+<td>EQ</td>
+<td>INE406A01037</td>
+</tr>
+<tr>
+<td>Avanti Feeds Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>AVANTIFEED</td>
+<td>EQ</td>
+<td>INE871C01038</td>
+</tr>
+<tr>
+<td>Avenue Supermarts Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>DMART</td>
+<td>EQ</td>
+<td>INE192R01011</td>
+</tr>
+<tr>
+<td>Axis Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>AXISBANK</td>
+<td>EQ</td>
+<td>INE238A01034</td>
+</tr>
+<tr>
+<td>BASF India Ltd.</td>
+<td>CHEMICALS</td>
+<td>BASF</td>
+<td>EQ</td>
+<td>INE373A01013</td>
+</tr>
+<tr>
+<td>BEML Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>BEML</td>
+<td>EQ</td>
+<td>INE258A01016</td>
+</tr>
+<tr>
+<td>BSE Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>BSE</td>
+<td>EQ</td>
+<td>INE118H01025</td>
+</tr>
+<tr>
+<td>Bajaj Auto Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>BAJAJ-AUTO</td>
+<td>EQ</td>
+<td>INE917I01010</td>
+</tr>
+<tr>
+<td>Bajaj Consumer Care Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BAJAJCON</td>
+<td>EQ</td>
+<td>INE933K01021</td>
+</tr>
+<tr>
+<td>Bajaj Electricals Ltd</td>
+<td>CONSUMER GOODS</td>
+<td>BAJAJELEC</td>
+<td>EQ</td>
+<td>INE193E01025</td>
+</tr>
+<tr>
+<td>Bajaj Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>BAJFINANCE</td>
+<td>EQ</td>
+<td>INE296A01024</td>
+</tr>
+<tr>
+<td>Bajaj Finserv Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>BAJAJFINSV</td>
+<td>EQ</td>
+<td>INE918I01018</td>
+</tr>
+<tr>
+<td>Bajaj Holdings &amp; Investment Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>BAJAJHLDNG</td>
+<td>EQ</td>
+<td>INE118A01012</td>
+</tr>
+<tr>
+<td>Balkrishna Industries Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>BALKRISIND</td>
+<td>EQ</td>
+<td>INE787D01026</td>
+</tr>
+<tr>
+<td>Balmer Lawrie &amp; Co. Ltd.</td>
+<td>SERVICES</td>
+<td>BALMLAWRIE</td>
+<td>EQ</td>
+<td>INE164A01016</td>
+</tr>
+<tr>
+<td>Balrampur Chini Mills Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BALRAMCHIN</td>
+<td>EQ</td>
+<td>INE119A01028</td>
+</tr>
+<tr>
+<td>Bandhan Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>BANDHANBNK</td>
+<td>EQ</td>
+<td>INE545U01014</td>
+</tr>
+<tr>
+<td>Bank of Baroda</td>
+<td>FINANCIAL SERVICES</td>
+<td>BANKBARODA</td>
+<td>EQ</td>
+<td>INE028A01039</td>
+</tr>
+<tr>
+<td>Bank of India</td>
+<td>FINANCIAL SERVICES</td>
+<td>BANKINDIA</td>
+<td>EQ</td>
+<td>INE084A01016</td>
+</tr>
+<tr>
+<td>Bank of Maharashtra.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MAHABANK</td>
+<td>EQ</td>
+<td>INE457A01014</td>
+</tr>
+<tr>
+<td>Bata India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BATAINDIA</td>
+<td>EQ</td>
+<td>INE176A01028</td>
+</tr>
+<tr>
+<td>Berger Paints India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BERGEPAINT</td>
+<td>EQ</td>
+<td>INE463A01038</td>
+</tr>
+<tr>
+<td>Bharat Dynamics Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>BDL</td>
+<td>EQ</td>
+<td>INE171Z01018</td>
+</tr>
+<tr>
+<td>Bharat Electronics Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>BEL</td>
+<td>EQ</td>
+<td>INE263A01024</td>
+</tr>
+<tr>
+<td>Bharat Forge Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>BHARATFORG</td>
+<td>EQ</td>
+<td>INE465A01025</td>
+</tr>
+<tr>
+<td>Bharat Heavy Electricals Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>BHEL</td>
+<td>EQ</td>
+<td>INE257A01026</td>
+</tr>
+<tr>
+<td>Bharat Petroleum Corporation Ltd.</td>
+<td>ENERGY</td>
+<td>BPCL</td>
+<td>EQ</td>
+<td>INE029A01011</td>
+</tr>
+<tr>
+<td>Bharti Airtel Ltd.</td>
+<td>TELECOM</td>
+<td>BHARTIARTL</td>
+<td>EQ</td>
+<td>INE397D01024</td>
+</tr>
+<tr>
+<td>Bharti Infratel Ltd.</td>
+<td>TELECOM</td>
+<td>INFRATEL</td>
+<td>EQ</td>
+<td>INE121J01017</td>
+</tr>
+<tr>
+<td>Biocon Ltd.</td>
+<td>PHARMA</td>
+<td>BIOCON</td>
+<td>EQ</td>
+<td>INE376G01013</td>
+</tr>
+<tr>
+<td>Birla Corporation Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>BIRLACORPN</td>
+<td>EQ</td>
+<td>INE340A01012</td>
+</tr>
+<tr>
+<td>Bliss GVS Pharma Ltd.</td>
+<td>PHARMA</td>
+<td>BLISSGVS</td>
+<td>EQ</td>
+<td>INE416D01022</td>
+</tr>
+<tr>
+<td>Blue Dart Express Ltd.</td>
+<td>SERVICES</td>
+<td>BLUEDART</td>
+<td>EQ</td>
+<td>INE233B01017</td>
+</tr>
+<tr>
+<td>Blue Star Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BLUESTARCO</td>
+<td>EQ</td>
+<td>INE472A01039</td>
+</tr>
+<tr>
+<td>Bombay Burmah Trading Corporation Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BBTC</td>
+<td>EQ</td>
+<td>INE050A01025</td>
+</tr>
+<tr>
+<td>Bombay Dyeing &amp; Manufacturing Co. Ltd.</td>
+<td>TEXTILES</td>
+<td>BOMDYEING</td>
+<td>EQ</td>
+<td>INE032A01023</td>
+</tr>
+<tr>
+<td>Bosch Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>BOSCHLTD</td>
+<td>EQ</td>
+<td>INE323A01026</td>
+</tr>
+<tr>
+<td>Brigade Enterprises Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>BRIGADE</td>
+<td>EQ</td>
+<td>INE791I01019</td>
+</tr>
+<tr>
+<td>Britannia Industries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>BRITANNIA</td>
+<td>EQ</td>
+<td>INE216A01030</td>
+</tr>
+<tr>
+<td>CARE Ratings Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CARERATING</td>
+<td>EQ</td>
+<td>INE752H01013</td>
+</tr>
+<tr>
+<td>CCL Products (I) Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>CCL</td>
+<td>EQ</td>
+<td>INE421D01022</td>
+</tr>
+<tr>
+<td>CESC Ltd.</td>
+<td>ENERGY</td>
+<td>CESC</td>
+<td>EQ</td>
+<td>INE486A01013</td>
+</tr>
+<tr>
+<td>CG Power and Industrial Solutions Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>CGPOWER</td>
+<td>EQ</td>
+<td>INE067A01029</td>
+</tr>
+<tr>
+<td>CRISIL Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CRISIL</td>
+<td>EQ</td>
+<td>INE007A01025</td>
+</tr>
+<tr>
+<td>Cadila Healthcare Ltd.</td>
+<td>PHARMA</td>
+<td>CADILAHC</td>
+<td>EQ</td>
+<td>INE010B01027</td>
+</tr>
+<tr>
+<td>Can Fin Homes Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CANFINHOME</td>
+<td>EQ</td>
+<td>INE477A01020</td>
+</tr>
+<tr>
+<td>Canara Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>CANBK</td>
+<td>EQ</td>
+<td>INE476A01014</td>
+</tr>
+<tr>
+<td>Caplin Point Laboratories Ltd.</td>
+<td>PHARMA</td>
+<td>CAPLIPOINT</td>
+<td>EQ</td>
+<td>INE475E01026</td>
+</tr>
+<tr>
+<td>Carborundum Universal Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>CARBORUNIV</td>
+<td>EQ</td>
+<td>INE120A01034</td>
+</tr>
+<tr>
+<td>Castrol India Ltd.</td>
+<td>ENERGY</td>
+<td>CASTROLIND</td>
+<td>EQ</td>
+<td>INE172A01027</td>
+</tr>
+<tr>
+<td>Ceat Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>CEATLTD</td>
+<td>EQ</td>
+<td>INE482A01020</td>
+</tr>
+<tr>
+<td>Central Bank of India</td>
+<td>FINANCIAL SERVICES</td>
+<td>CENTRALBK</td>
+<td>EQ</td>
+<td>INE483A01010</td>
+</tr>
+<tr>
+<td>Central Depository Services (India) Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CDSL</td>
+<td>EQ</td>
+<td>INE736A01011</td>
+</tr>
+<tr>
+<td>Century Plyboards (India) Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>CENTURYPLY</td>
+<td>EQ</td>
+<td>INE348B01021</td>
+</tr>
+<tr>
+<td>Cera Sanitaryware Ltd</td>
+<td>CONSTRUCTION</td>
+<td>CERA</td>
+<td>EQ</td>
+<td>INE739E01017</td>
+</tr>
+<tr>
+<td>Chambal Fertilizers &amp; Chemicals Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>CHAMBLFERT</td>
+<td>EQ</td>
+<td>INE085A01013</td>
+</tr>
+<tr>
+<td>Chennai Petroleum Corporation Ltd.</td>
+<td>ENERGY</td>
+<td>CHENNPETRO</td>
+<td>EQ</td>
+<td>INE178A01016</td>
+</tr>
+<tr>
+<td>Cholamandalam Financial Holdings Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CHOLAHLDNG</td>
+<td>EQ</td>
+<td>INE149A01033</td>
+</tr>
+<tr>
+<td>Cholamandalam Investment and Finance Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CHOLAFIN</td>
+<td>EQ</td>
+<td>INE121A01016</td>
+</tr>
+<tr>
+<td>Cipla Ltd.</td>
+<td>PHARMA</td>
+<td>CIPLA</td>
+<td>EQ</td>
+<td>INE059A01026</td>
+</tr>
+<tr>
+<td>City Union Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CUB</td>
+<td>EQ</td>
+<td>INE491A01021</td>
+</tr>
+<tr>
+<td>Coal India Ltd.</td>
+<td>METALS</td>
+<td>COALINDIA</td>
+<td>EQ</td>
+<td>INE522F01014</td>
+</tr>
+<tr>
+<td>Cochin Shipyard Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>COCHINSHIP</td>
+<td>EQ</td>
+<td>INE704P01017</td>
+</tr>
+<tr>
+<td>Coffee Day Enterprises Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>COFFEEDAY</td>
+<td>EQ</td>
+<td>INE335K01011</td>
+</tr>
+<tr>
+<td>Colgate Palmolive (India) Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>COLPAL</td>
+<td>EQ</td>
+<td>INE259A01022</td>
+</tr>
+<tr>
+<td>Container Corporation of India Ltd.</td>
+<td>SERVICES</td>
+<td>CONCOR</td>
+<td>EQ</td>
+<td>INE111A01025</td>
+</tr>
+<tr>
+<td>Coromandel International Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>COROMANDEL</td>
+<td>EQ</td>
+<td>INE169A01031</td>
+</tr>
+<tr>
+<td>Corporation Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>CORPBANK</td>
+<td>EQ</td>
+<td>INE112A01023</td>
+</tr>
+<tr>
+<td>Cox &amp; Kings Ltd.</td>
+<td>SERVICES</td>
+<td>COX&amp;KINGS</td>
+<td>EQ</td>
+<td>INE008I01026</td>
+</tr>
+<tr>
+<td>CreditAccess Grameen Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>CREDITACC</td>
+<td>EQ</td>
+<td>INE741K01010</td>
+</tr>
+<tr>
+<td>Crompton Greaves Consumer Electricals Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>CROMPTON</td>
+<td>EQ</td>
+<td>INE299U01018</td>
+</tr>
+<tr>
+<td>Cummins India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>CUMMINSIND</td>
+<td>EQ</td>
+<td>INE298A01020</td>
+</tr>
+<tr>
+<td>Cyient Ltd.</td>
+<td>IT</td>
+<td>CYIENT</td>
+<td>EQ</td>
+<td>INE136B01020</td>
+</tr>
+<tr>
+<td>D.B.Corp Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>DBCORP</td>
+<td>EQ</td>
+<td>INE950I01011</td>
+</tr>
+<tr>
+<td>DCB Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>DCBBANK</td>
+<td>EQ</td>
+<td>INE503A01015</td>
+</tr>
+<tr>
+<td>DCM Shriram Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>DCMSHRIRAM</td>
+<td>EQ</td>
+<td>INE499A01024</td>
+</tr>
+<tr>
+<td>DLF Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>DLF</td>
+<td>EQ</td>
+<td>INE271C01023</td>
+</tr>
+<tr>
+<td>Dabur India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>DABUR</td>
+<td>EQ</td>
+<td>INE016A01026</td>
+</tr>
+<tr>
+<td>Deepak Fertilisers &amp; Petrochemicals Corp. Ltd.</td>
+<td>CHEMICALS</td>
+<td>DEEPAKFERT</td>
+<td>EQ</td>
+<td>INE501A01019</td>
+</tr>
+<tr>
+<td>Deepak Nitrite Ltd.</td>
+<td>CHEMICALS</td>
+<td>DEEPAKNTR</td>
+<td>EQ</td>
+<td>INE288B01029</td>
+</tr>
+<tr>
+<td>Delta Corp Ltd.</td>
+<td>SERVICES</td>
+<td>DELTACORP</td>
+<td>EQ</td>
+<td>INE124G01033</td>
+</tr>
+<tr>
+<td>Dewan Housing Finance Corporation Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>DHFL</td>
+<td>EQ</td>
+<td>INE202B01012</td>
+</tr>
+<tr>
+<td>Dilip Buildcon Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>DBL</td>
+<td>EQ</td>
+<td>INE917M01012</td>
+</tr>
+<tr>
+<td>Dish TV India Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>DISHTV</td>
+<td>EQ</td>
+<td>INE836F01026</td>
+</tr>
+<tr>
+<td>Dishman Carbogen Amcis Ltd.</td>
+<td>PHARMA</td>
+<td>DCAL</td>
+<td>EQ</td>
+<td>INE385W01011</td>
+</tr>
+<tr>
+<td>Divi&rsquo;s Laboratories Ltd.</td>
+<td>PHARMA</td>
+<td>DIVISLAB</td>
+<td>EQ</td>
+<td>INE361B01024</td>
+</tr>
+<tr>
+<td>Dixon Technologies (India) Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>DIXON</td>
+<td>EQ</td>
+<td>INE935N01012</td>
+</tr>
+<tr>
+<td>Dr. Lal Path Labs Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>LALPATHLAB</td>
+<td>EQ</td>
+<td>INE600L01024</td>
+</tr>
+<tr>
+<td>Dr. Reddy&rsquo;s Laboratories Ltd.</td>
+<td>PHARMA</td>
+<td>DRREDDY</td>
+<td>EQ</td>
+<td>INE089A01023</td>
+</tr>
+<tr>
+<td>E.I.D. Parry (India) Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>EIDPARRY</td>
+<td>EQ</td>
+<td>INE126A01031</td>
+</tr>
+<tr>
+<td>EIH Ltd.</td>
+<td>SERVICES</td>
+<td>EIHOTEL</td>
+<td>EQ</td>
+<td>INE230A01023</td>
+</tr>
+<tr>
+<td>Edelweiss Financial Services Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>EDELWEISS</td>
+<td>EQ</td>
+<td>INE532F01054</td>
+</tr>
+<tr>
+<td>Eicher Motors Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>EICHERMOT</td>
+<td>EQ</td>
+<td>INE066A01013</td>
+</tr>
+<tr>
+<td>Elgi Equipments Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>ELGIEQUIP</td>
+<td>EQ</td>
+<td>INE285A01027</td>
+</tr>
+<tr>
+<td>Emami Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>EMAMILTD</td>
+<td>EQ</td>
+<td>INE548C01032</td>
+</tr>
+<tr>
+<td>Endurance Technologies Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>ENDURANCE</td>
+<td>EQ</td>
+<td>INE913H01037</td>
+</tr>
+<tr>
+<td>Engineers India Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>ENGINERSIN</td>
+<td>EQ</td>
+<td>INE510A01028</td>
+</tr>
+<tr>
+<td>Equitas Holdings Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>EQUITAS</td>
+<td>EQ</td>
+<td>INE988K01017</td>
+</tr>
+<tr>
+<td>Eris Lifesciences Ltd.</td>
+<td>PHARMA</td>
+<td>ERIS</td>
+<td>EQ</td>
+<td>INE406M01024</td>
+</tr>
+<tr>
+<td>Escorts Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>ESCORTS</td>
+<td>EQ</td>
+<td>INE042A01014</td>
+</tr>
+<tr>
+<td>Essel Propack Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>ESSELPACK</td>
+<td>EQ</td>
+<td>INE255A01020</td>
+</tr>
+<tr>
+<td>Exide Industries Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>EXIDEIND</td>
+<td>EQ</td>
+<td>INE302A01020</td>
+</tr>
+<tr>
+<td>FDC Ltd.</td>
+<td>PHARMA</td>
+<td>FDC</td>
+<td>EQ</td>
+<td>INE258B01022</td>
+</tr>
+<tr>
+<td>Federal Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>FEDERALBNK</td>
+<td>EQ</td>
+<td>INE171A01029</td>
+</tr>
+<tr>
+<td>Fine Organic Industries Ltd.</td>
+<td>CHEMICALS</td>
+<td>FINEORG</td>
+<td>EQ</td>
+<td>INE686Y01026</td>
+</tr>
+<tr>
+<td>Finolex Cables Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>FINCABLES</td>
+<td>EQ</td>
+<td>INE235A01022</td>
+</tr>
+<tr>
+<td>Finolex Industries Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>FINPIPE</td>
+<td>EQ</td>
+<td>INE183A01016</td>
+</tr>
+<tr>
+<td>Firstsource Solutions Ltd.</td>
+<td>IT</td>
+<td>FSL</td>
+<td>EQ</td>
+<td>INE684F01012</td>
+</tr>
+<tr>
+<td>Fortis Healthcare Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>FORTIS</td>
+<td>EQ</td>
+<td>INE061F01013</td>
+</tr>
+<tr>
+<td>Future Consumer Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>FCONSUMER</td>
+<td>EQ</td>
+<td>INE220J01025</td>
+</tr>
+<tr>
+<td>Future Lifestyle Fashions Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>FLFL</td>
+<td>EQ</td>
+<td>INE452O01016</td>
+</tr>
+<tr>
+<td>Future Retail Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>FRETAIL</td>
+<td>EQ</td>
+<td>INE752P01024</td>
+</tr>
+<tr>
+<td>GAIL (India) Ltd.</td>
+<td>ENERGY</td>
+<td>GAIL</td>
+<td>EQ</td>
+<td>INE129A01019</td>
+</tr>
+<tr>
+<td>GE Power India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>GEPIL</td>
+<td>EQ</td>
+<td>INE878A01011</td>
+</tr>
+<tr>
+<td>GE T&amp;D India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>GET&amp;D</td>
+<td>EQ</td>
+<td>INE200A01026</td>
+</tr>
+<tr>
+<td>GHCL Ltd.</td>
+<td>CHEMICALS</td>
+<td>GHCL</td>
+<td>EQ</td>
+<td>INE539A01019</td>
+</tr>
+<tr>
+<td>GMR Infrastructure Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>GMRINFRA</td>
+<td>EQ</td>
+<td>INE776C01039</td>
+</tr>
+<tr>
+<td>Galaxy Surfactants Ltd.</td>
+<td>CHEMICALS</td>
+<td>GALAXYSURF</td>
+<td>EQ</td>
+<td>INE600K01018</td>
+</tr>
+<tr>
+<td>Gateway Distriparks Ltd.</td>
+<td>SERVICES</td>
+<td>GDL</td>
+<td>EQ</td>
+<td>INE852F01015</td>
+</tr>
+<tr>
+<td>Gayatri Projects Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>GAYAPROJ</td>
+<td>EQ</td>
+<td>INE336H01023</td>
+</tr>
+<tr>
+<td>General Insurance Corporation of India</td>
+<td>FINANCIAL SERVICES</td>
+<td>GICRE</td>
+<td>EQ</td>
+<td>INE481Y01014</td>
+</tr>
+<tr>
+<td>Gillette India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>GILLETTE</td>
+<td>EQ</td>
+<td>INE322A01010</td>
+</tr>
+<tr>
+<td>GlaxoSmithkline Consumer Healthcare Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>GSKCONS</td>
+<td>EQ</td>
+<td>INE264A01014</td>
+</tr>
+<tr>
+<td>Glaxosmithkline Pharmaceuticals Ltd.</td>
+<td>PHARMA</td>
+<td>GLAXO</td>
+<td>EQ</td>
+<td>INE159A01016</td>
+</tr>
+<tr>
+<td>Glenmark Pharmaceuticals Ltd.</td>
+<td>PHARMA</td>
+<td>GLENMARK</td>
+<td>EQ</td>
+<td>INE935A01035</td>
+</tr>
+<tr>
+<td>Godfrey Phillips India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>GODFRYPHLP</td>
+<td>EQ</td>
+<td>INE260B01028</td>
+</tr>
+<tr>
+<td>Godrej Agrovet Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>GODREJAGRO</td>
+<td>EQ</td>
+<td>INE850D01014</td>
+</tr>
+<tr>
+<td>Godrej Consumer Products Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>GODREJCP</td>
+<td>EQ</td>
+<td>INE102D01028</td>
+</tr>
+<tr>
+<td>Godrej Industries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>GODREJIND</td>
+<td>EQ</td>
+<td>INE233A01035</td>
+</tr>
+<tr>
+<td>Godrej Properties Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>GODREJPROP</td>
+<td>EQ</td>
+<td>INE484J01027</td>
+</tr>
+<tr>
+<td>Granules India Ltd.</td>
+<td>PHARMA</td>
+<td>GRANULES</td>
+<td>EQ</td>
+<td>INE101D01020</td>
+</tr>
+<tr>
+<td>Graphite India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>GRAPHITE</td>
+<td>EQ</td>
+<td>INE371A01025</td>
+</tr>
+<tr>
+<td>Grasim Industries Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>GRASIM</td>
+<td>EQ</td>
+<td>INE047A01021</td>
+</tr>
+<tr>
+<td>Great Eastern Shipping Co. Ltd.</td>
+<td>SERVICES</td>
+<td>GESHIP</td>
+<td>EQ</td>
+<td>INE017A01032</td>
+</tr>
+<tr>
+<td>Greaves Cotton Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>GREAVESCOT</td>
+<td>EQ</td>
+<td>INE224A01026</td>
+</tr>
+<tr>
+<td>Grindwell Norton Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>GRINDWELL</td>
+<td>EQ</td>
+<td>INE536A01023</td>
+</tr>
+<tr>
+<td>Gruh Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>GRUH</td>
+<td>EQ</td>
+<td>INE580B01029</td>
+</tr>
+<tr>
+<td>Gujarat Alkalies &amp; Chemicals Ltd.</td>
+<td>CHEMICALS</td>
+<td>GUJALKALI</td>
+<td>EQ</td>
+<td>INE186A01019</td>
+</tr>
+<tr>
+<td>Gujarat Fluorochemicals Ltd.</td>
+<td>CHEMICALS</td>
+<td>GUJFLUORO</td>
+<td>EQ</td>
+<td>INE538A01037</td>
+</tr>
+<tr>
+<td>Gujarat Gas Ltd.</td>
+<td>ENERGY</td>
+<td>GUJGASLTD</td>
+<td>EQ</td>
+<td>INE844O01030</td>
+</tr>
+<tr>
+<td>Gujarat Mineral Development Corporation Ltd.</td>
+<td>METALS</td>
+<td>GMDCLTD</td>
+<td>EQ</td>
+<td>INE131A01031</td>
+</tr>
+<tr>
+<td>Gujarat Narmada Valley Fertilizers and Chemicals Ltd.</td>
+<td>CHEMICALS</td>
+<td>GNFC</td>
+<td>EQ</td>
+<td>INE113A01013</td>
+</tr>
+<tr>
+<td>Gujarat Pipavav Port Ltd.</td>
+<td>SERVICES</td>
+<td>GPPL</td>
+<td>EQ</td>
+<td>INE517F01014</td>
+</tr>
+<tr>
+<td>Gujarat State Fertilizers &amp; Chemicals Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>GSFC</td>
+<td>EQ</td>
+<td>INE026A01025</td>
+</tr>
+<tr>
+<td>Gujarat State Petronet Ltd.</td>
+<td>ENERGY</td>
+<td>GSPL</td>
+<td>EQ</td>
+<td>INE246F01010</td>
+</tr>
+<tr>
+<td>Gulf Oil Lubricants India Ltd.</td>
+<td>ENERGY</td>
+<td>GULFOILLUB</td>
+<td>EQ</td>
+<td>INE635Q01029</td>
+</tr>
+<tr>
+<td>H.E.G. Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>HEG</td>
+<td>EQ</td>
+<td>INE545A01016</td>
+</tr>
+<tr>
+<td>HCL Technologies Ltd.</td>
+<td>IT</td>
+<td>HCLTECH</td>
+<td>EQ</td>
+<td>INE860A01027</td>
+</tr>
+<tr>
+<td>HDFC Asset Management Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>HDFCAMC</td>
+<td>EQ</td>
+<td>INE127D01025</td>
+</tr>
+<tr>
+<td>HDFC Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>HDFCBANK</td>
+<td>EQ</td>
+<td>INE040A01026</td>
+</tr>
+<tr>
+<td>HDFC Life Insurance Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>HDFCLIFE</td>
+<td>EQ</td>
+<td>INE795G01014</td>
+</tr>
+<tr>
+<td>Hathway Cable &amp; Datacom Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>HATHWAY</td>
+<td>EQ</td>
+<td>INE982F01036</td>
+</tr>
+<tr>
+<td>Hatsun Agro Product Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>HATSUN</td>
+<td>EQ</td>
+<td>INE473B01035</td>
+</tr>
+<tr>
+<td>Havells India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>HAVELLS</td>
+<td>EQ</td>
+<td>INE176B01034</td>
+</tr>
+<tr>
+<td>HeidelbergCement India Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>HEIDELBERG</td>
+<td>EQ</td>
+<td>INE578A01017</td>
+</tr>
+<tr>
+<td>Heritage Foods Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>HERITGFOOD</td>
+<td>EQ</td>
+<td>INE978A01027</td>
+</tr>
+<tr>
+<td>Hero MotoCorp Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>HEROMOTOCO</td>
+<td>EQ</td>
+<td>INE158A01026</td>
+</tr>
+<tr>
+<td>Hexaware Technologies Ltd.</td>
+<td>IT</td>
+<td>HEXAWARE</td>
+<td>EQ</td>
+<td>INE093A01033</td>
+</tr>
+<tr>
+<td>Himachal Fut Com Ltd.</td>
+<td>TELECOM</td>
+<td>HFCL</td>
+<td>EQ</td>
+<td>INE548A01028</td>
+</tr>
+<tr>
+<td>Himadri Speciality Chemical Ltd.</td>
+<td>CHEMICALS</td>
+<td>HSCL</td>
+<td>EQ</td>
+<td>INE019C01026</td>
+</tr>
+<tr>
+<td>Himatsingka Seide Ltd.</td>
+<td>TEXTILES</td>
+<td>HIMATSEIDE</td>
+<td>EQ</td>
+<td>INE049A01027</td>
+</tr>
+<tr>
+<td>Hindalco Industries Ltd.</td>
+<td>METALS</td>
+<td>HINDALCO</td>
+<td>EQ</td>
+<td>INE038A01020</td>
+</tr>
+<tr>
+<td>Hindustan Aeronautics Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>HAL</td>
+<td>EQ</td>
+<td>INE066F01012</td>
+</tr>
+<tr>
+<td>Hindustan Copper Ltd.</td>
+<td>METALS</td>
+<td>HINDCOPPER</td>
+<td>EQ</td>
+<td>INE531E01026</td>
+</tr>
+<tr>
+<td>Hindustan Petroleum Corporation Ltd.</td>
+<td>ENERGY</td>
+<td>HINDPETRO</td>
+<td>EQ</td>
+<td>INE094A01015</td>
+</tr>
+<tr>
+<td>Hindustan Unilever Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>HINDUNILVR</td>
+<td>EQ</td>
+<td>INE030A01027</td>
+</tr>
+<tr>
+<td>Hindustan Zinc Ltd.</td>
+<td>METALS</td>
+<td>HINDZINC</td>
+<td>EQ</td>
+<td>INE267A01025</td>
+</tr>
+<tr>
+<td>Honeywell Automation India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>HONAUT</td>
+<td>EQ</td>
+<td>INE671A01010</td>
+</tr>
+<tr>
+<td>Housing &amp; Urban Development Corporation Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>HUDCO</td>
+<td>EQ</td>
+<td>INE031A01017</td>
+</tr>
+<tr>
+<td>Housing Development Finance Corporation Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>HDFC</td>
+<td>EQ</td>
+<td>INE001A01036</td>
+</tr>
+<tr>
+<td>ICICI Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>ICICIBANK</td>
+<td>EQ</td>
+<td>INE090A01021</td>
+</tr>
+<tr>
+<td>ICICI Lombard General Insurance Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>ICICIGI</td>
+<td>EQ</td>
+<td>INE765G01017</td>
+</tr>
+<tr>
+<td>ICICI Prudential Life Insurance Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>ICICIPRULI</td>
+<td>EQ</td>
+<td>INE726G01019</td>
+</tr>
+<tr>
+<td>ICICI Securities Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>ISEC</td>
+<td>EQ</td>
+<td>INE763G01038</td>
+</tr>
+<tr>
+<td>ICRA Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>ICRA</td>
+<td>EQ</td>
+<td>INE725G01011</td>
+</tr>
+<tr>
+<td>IDBI Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IDBI</td>
+<td>EQ</td>
+<td>INE008A01015</td>
+</tr>
+<tr>
+<td>IDFC First Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IDFCFIRSTB</td>
+<td>EQ</td>
+<td>INE092T01019</td>
+</tr>
+<tr>
+<td>IDFC Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IDFC</td>
+<td>EQ</td>
+<td>INE043D01016</td>
+</tr>
+<tr>
+<td>IFB Industries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>IFBIND</td>
+<td>EQ</td>
+<td>INE559A01017</td>
+</tr>
+<tr>
+<td>IFCI Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IFCI</td>
+<td>EQ</td>
+<td>INE039A01010</td>
+</tr>
+<tr>
+<td>IRB Infrastructure Developers Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>IRB</td>
+<td>EQ</td>
+<td>INE821I01014</td>
+</tr>
+<tr>
+<td>IRCON International Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>IRCON</td>
+<td>EQ</td>
+<td>INE962Y01013</td>
+</tr>
+<tr>
+<td>ITC Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>ITC</td>
+<td>EQ</td>
+<td>INE154A01025</td>
+</tr>
+<tr>
+<td>ITD Cementation India Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>ITDCEM</td>
+<td>EQ</td>
+<td>INE686A01026</td>
+</tr>
+<tr>
+<td>ITI Ltd.</td>
+<td>TELECOM</td>
+<td>ITI</td>
+<td>EQ</td>
+<td>INE248A01017</td>
+</tr>
+<tr>
+<td>India Cements Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>INDIACEM</td>
+<td>EQ</td>
+<td>INE383A01012</td>
+</tr>
+<tr>
+<td>India Tourism Development Corporation Ltd.</td>
+<td>SERVICES</td>
+<td>ITDC</td>
+<td>EQ</td>
+<td>INE353K01014</td>
+</tr>
+<tr>
+<td>Indiabulls Housing Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IBULHSGFIN</td>
+<td>EQ</td>
+<td>INE148I01020</td>
+</tr>
+<tr>
+<td>Indiabulls Integrated Services Ltd.</td>
+<td>IT</td>
+<td>IBULISL</td>
+<td>EQ</td>
+<td>INE126M01010</td>
+</tr>
+<tr>
+<td>Indiabulls Real Estate Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>IBREALEST</td>
+<td>EQ</td>
+<td>INE069I01010</td>
+</tr>
+<tr>
+<td>Indiabulls Ventures Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IBVENTURES</td>
+<td>EQ</td>
+<td>INE274G01010</td>
+</tr>
+<tr>
+<td>Indian Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>INDIANB</td>
+<td>EQ</td>
+<td>INE562A01011</td>
+</tr>
+<tr>
+<td>Indian Energy Exchange Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>IEX</td>
+<td>EQ</td>
+<td>INE022Q01020</td>
+</tr>
+<tr>
+<td>Indian Hotels Co. Ltd.</td>
+<td>SERVICES</td>
+<td>INDHOTEL</td>
+<td>EQ</td>
+<td>INE053A01029</td>
+</tr>
+<tr>
+<td>Indian Oil Corporation Ltd.</td>
+<td>ENERGY</td>
+<td>IOC</td>
+<td>EQ</td>
+<td>INE242A01010</td>
+</tr>
+<tr>
+<td>Indian Overseas Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>IOB</td>
+<td>EQ</td>
+<td>INE565A01014</td>
+</tr>
+<tr>
+<td>IndoStar Capital Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>INDOSTAR</td>
+<td>EQ</td>
+<td>INE896L01010</td>
+</tr>
+<tr>
+<td>Indoco Remedies Ltd.</td>
+<td>PHARMA</td>
+<td>INDOCO</td>
+<td>EQ</td>
+<td>INE873D01024</td>
+</tr>
+<tr>
+<td>Indraprastha Gas Ltd.</td>
+<td>ENERGY</td>
+<td>IGL</td>
+<td>EQ</td>
+<td>INE203G01027</td>
+</tr>
+<tr>
+<td>IndusInd Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>INDUSINDBK</td>
+<td>EQ</td>
+<td>INE095A01012</td>
+</tr>
+<tr>
+<td>Infibeam Avenues Ltd.</td>
+<td>IT</td>
+<td>INFIBEAM</td>
+<td>EQ</td>
+<td>INE483S01020</td>
+</tr>
+<tr>
+<td>Info Edge (India) Ltd.</td>
+<td>IT</td>
+<td>NAUKRI</td>
+<td>EQ</td>
+<td>INE663F01024</td>
+</tr>
+<tr>
+<td>Infosys Ltd.</td>
+<td>IT</td>
+<td>INFY</td>
+<td>EQ</td>
+<td>INE009A01021</td>
+</tr>
+<tr>
+<td>Inox Leisure Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>INOXLEISUR</td>
+<td>EQ</td>
+<td>INE312H01016</td>
+</tr>
+<tr>
+<td>Inox Wind Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>INOXWIND</td>
+<td>EQ</td>
+<td>INE066P01011</td>
+</tr>
+<tr>
+<td>Intellect Design Arena Ltd.</td>
+<td>IT</td>
+<td>INTELLECT</td>
+<td>EQ</td>
+<td>INE306R01017</td>
+</tr>
+<tr>
+<td>InterGlobe Aviation Ltd.</td>
+<td>SERVICES</td>
+<td>INDIGO</td>
+<td>EQ</td>
+<td>INE646L01027</td>
+</tr>
+<tr>
+<td>Ipca Laboratories Ltd.</td>
+<td>PHARMA</td>
+<td>IPCALAB</td>
+<td>EQ</td>
+<td>INE571A01020</td>
+</tr>
+<tr>
+<td>J.B. Chemicals &amp; Pharmaceuticals Ltd.</td>
+<td>PHARMA</td>
+<td>JBCHEPHARM</td>
+<td>EQ</td>
+<td>INE572A01028</td>
+</tr>
+<tr>
+<td>J.K. Cement Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>JKCEMENT</td>
+<td>EQ</td>
+<td>INE823G01014</td>
+</tr>
+<tr>
+<td>JK Lakshmi Cement Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>JKLAKSHMI</td>
+<td>EQ</td>
+<td>INE786A01032</td>
+</tr>
+<tr>
+<td>JK Paper Ltd.</td>
+<td>PAPER</td>
+<td>JKPAPER</td>
+<td>EQ</td>
+<td>INE789E01012</td>
+</tr>
+<tr>
+<td>JK Tyre &amp; Industries Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>JKTYRE</td>
+<td>EQ</td>
+<td>INE573A01042</td>
+</tr>
+<tr>
+<td>JM Financial Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>JMFINANCIL</td>
+<td>EQ</td>
+<td>INE780C01023</td>
+</tr>
+<tr>
+<td>JSW Energy Ltd.</td>
+<td>ENERGY</td>
+<td>JSWENERGY</td>
+<td>EQ</td>
+<td>INE121E01018</td>
+</tr>
+<tr>
+<td>JSW Steel Ltd.</td>
+<td>METALS</td>
+<td>JSWSTEEL</td>
+<td>EQ</td>
+<td>INE019A01038</td>
+</tr>
+<tr>
+<td>Jagran Prakashan Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>JAGRAN</td>
+<td>EQ</td>
+<td>INE199G01027</td>
+</tr>
+<tr>
+<td>Jai Corp Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>JAICORPLTD</td>
+<td>EQ</td>
+<td>INE070D01027</td>
+</tr>
+<tr>
+<td>Jain Irrigation Systems Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>JISLJALEQS</td>
+<td>EQ</td>
+<td>INE175A01038</td>
+</tr>
+<tr>
+<td>Jaiprakash Associates Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>JPASSOCIAT</td>
+<td>EQ</td>
+<td>INE455F01025</td>
+</tr>
+<tr>
+<td>Jammu &amp; Kashmir Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>J&amp;KBANK</td>
+<td>EQ</td>
+<td>INE168A01041</td>
+</tr>
+<tr>
+<td>Jamna Auto Industries Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>JAMNAAUTO</td>
+<td>EQ</td>
+<td>INE039C01032</td>
+</tr>
+<tr>
+<td>Jet Airways (India) Ltd.</td>
+<td>SERVICES</td>
+<td>JETAIRWAYS</td>
+<td>EQ</td>
+<td>INE802G01018</td>
+</tr>
+<tr>
+<td>Jindal Saw Ltd.</td>
+<td>METALS</td>
+<td>JINDALSAW</td>
+<td>EQ</td>
+<td>INE324A01024</td>
+</tr>
+<tr>
+<td>Jindal Stainless (Hisar) Ltd.</td>
+<td>METALS</td>
+<td>JSLHISAR</td>
+<td>EQ</td>
+<td>INE455T01018</td>
+</tr>
+<tr>
+<td>Jindal Stainless Ltd.</td>
+<td>METALS</td>
+<td>JSL</td>
+<td>EQ</td>
+<td>INE220G01021</td>
+</tr>
+<tr>
+<td>Jindal Steel &amp; Power Ltd.</td>
+<td>METALS</td>
+<td>JINDALSTEL</td>
+<td>EQ</td>
+<td>INE749A01030</td>
+</tr>
+<tr>
+<td>Jubilant Foodworks Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>JUBLFOOD</td>
+<td>EQ</td>
+<td>INE797F01012</td>
+</tr>
+<tr>
+<td>Jubilant Life Sciences Ltd.</td>
+<td>PHARMA</td>
+<td>JUBILANT</td>
+<td>EQ</td>
+<td>INE700A01033</td>
+</tr>
+<tr>
+<td>Justdial Ltd.</td>
+<td>IT</td>
+<td>JUSTDIAL</td>
+<td>EQ</td>
+<td>INE599M01018</td>
+</tr>
+<tr>
+<td>Jyothy Laboratories Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>JYOTHYLAB</td>
+<td>EQ</td>
+<td>INE668F01031</td>
+</tr>
+<tr>
+<td>K.P.R. Mill Ltd.</td>
+<td>TEXTILES</td>
+<td>KPRMILL</td>
+<td>EQ</td>
+<td>INE930H01023</td>
+</tr>
+<tr>
+<td>KEI Industries Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>KEI</td>
+<td>EQ</td>
+<td>INE878B01027</td>
+</tr>
+<tr>
+<td>KIOCL Ltd.</td>
+<td>METALS</td>
+<td>KIOCL</td>
+<td>EQ</td>
+<td>INE880L01014</td>
+</tr>
+<tr>
+<td>KNR Constructions Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>KNRCON</td>
+<td>EQ</td>
+<td>INE634I01029</td>
+</tr>
+<tr>
+<td>KRBL Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>KRBL</td>
+<td>EQ</td>
+<td>INE001B01026</td>
+</tr>
+<tr>
+<td>Kajaria Ceramics Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>KAJARIACER</td>
+<td>EQ</td>
+<td>INE217B01036</td>
+</tr>
+<tr>
+<td>Kalpataru Power Transmission Ltd.</td>
+<td>ENERGY</td>
+<td>KALPATPOWR</td>
+<td>EQ</td>
+<td>INE220B01022</td>
+</tr>
+<tr>
+<td>Kansai Nerolac Paints Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>KANSAINER</td>
+<td>EQ</td>
+<td>INE531A01024</td>
+</tr>
+<tr>
+<td>Karnataka Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>KTKBANK</td>
+<td>EQ</td>
+<td>INE614B01018</td>
+</tr>
+<tr>
+<td>Karur Vysya Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>KARURVYSYA</td>
+<td>EQ</td>
+<td>INE036D01028</td>
+</tr>
+<tr>
+<td>Kaveri Seed Company Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>KSCL</td>
+<td>EQ</td>
+<td>INE455I01029</td>
+</tr>
+<tr>
+<td>Kec International Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>KEC</td>
+<td>EQ</td>
+<td>INE389H01022</td>
+</tr>
+<tr>
+<td>Kirloskar Oil Eng Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>KIRLOSENG</td>
+<td>EQ</td>
+<td>INE146L01010</td>
+</tr>
+<tr>
+<td>Kolte-Patil Developers Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>KOLTEPATIL</td>
+<td>EQ</td>
+<td>INE094I01018</td>
+</tr>
+<tr>
+<td>Kotak Mahindra Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>KOTAKBANK</td>
+<td>EQ</td>
+<td>INE237A01028</td>
+</tr>
+<tr>
+<td>L&amp;T Finance Holdings Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>L&amp;TFH</td>
+<td>EQ</td>
+<td>INE498L01015</td>
+</tr>
+<tr>
+<td>L&amp;T Technology Services Ltd.</td>
+<td>IT</td>
+<td>LTTS</td>
+<td>EQ</td>
+<td>INE010V01017</td>
+</tr>
+<tr>
+<td>LIC Housing Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>LICHSGFIN</td>
+<td>EQ</td>
+<td>INE115A01026</td>
+</tr>
+<tr>
+<td>Lakshmi Machine Works Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>LAXMIMACH</td>
+<td>EQ</td>
+<td>INE269B01029</td>
+</tr>
+<tr>
+<td>Lakshmi Vilas Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>LAKSHVILAS</td>
+<td>EQ</td>
+<td>INE694C01018</td>
+</tr>
+<tr>
+<td>Larsen &amp; Toubro Infotech Ltd.</td>
+<td>IT</td>
+<td>LTI</td>
+<td>EQ</td>
+<td>INE214T01019</td>
+</tr>
+<tr>
+<td>Larsen &amp; Toubro Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>LT</td>
+<td>EQ</td>
+<td>INE018A01030</td>
+</tr>
+<tr>
+<td>Laurus Labs Ltd.</td>
+<td>PHARMA</td>
+<td>LAURUSLABS</td>
+<td>EQ</td>
+<td>INE947Q01010</td>
+</tr>
+<tr>
+<td>Lemon Tree Hotels Ltd.</td>
+<td>SERVICES</td>
+<td>LEMONTREE</td>
+<td>EQ</td>
+<td>INE970X01018</td>
+</tr>
+<tr>
+<td>Linde India Ltd.</td>
+<td>CHEMICALS</td>
+<td>LINDEINDIA</td>
+<td>EQ</td>
+<td>INE473A01011</td>
+</tr>
+<tr>
+<td>Lupin Ltd.</td>
+<td>PHARMA</td>
+<td>LUPIN</td>
+<td>EQ</td>
+<td>INE326A01037</td>
+</tr>
+<tr>
+<td>Lux Industries Ltd.</td>
+<td>TEXTILES</td>
+<td>LUXIND</td>
+<td>EQ</td>
+<td>INE150G01020</td>
+</tr>
+<tr>
+<td>MAS Financial Services Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MASFIN</td>
+<td>EQ</td>
+<td>INE348L01012</td>
+</tr>
+<tr>
+<td>MMTC Ltd.</td>
+<td>SERVICES</td>
+<td>MMTC</td>
+<td>EQ</td>
+<td>INE123F01029</td>
+</tr>
+<tr>
+<td>MOIL Ltd.</td>
+<td>METALS</td>
+<td>MOIL</td>
+<td>EQ</td>
+<td>INE490G01020</td>
+</tr>
+<tr>
+<td>MRF Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>MRF</td>
+<td>EQ</td>
+<td>INE883A01011</td>
+</tr>
+<tr>
+<td>Magma Fincorp Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MAGMA</td>
+<td>EQ</td>
+<td>INE511C01022</td>
+</tr>
+<tr>
+<td>Mahanagar Gas Ltd.</td>
+<td>ENERGY</td>
+<td>MGL</td>
+<td>EQ</td>
+<td>INE002S01010</td>
+</tr>
+<tr>
+<td>Maharashtra Scooters Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>MAHSCOOTER</td>
+<td>EQ</td>
+<td>INE288A01013</td>
+</tr>
+<tr>
+<td>Maharashtra Seamless Ltd.</td>
+<td>METALS</td>
+<td>MAHSEAMLES</td>
+<td>EQ</td>
+<td>INE271B01025</td>
+</tr>
+<tr>
+<td>Mahindra &amp; Mahindra Financial Services Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>M&amp;MFIN</td>
+<td>EQ</td>
+<td>INE774D01024</td>
+</tr>
+<tr>
+<td>Mahindra &amp; Mahindra Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>M&amp;M</td>
+<td>EQ</td>
+<td>INE101A01026</td>
+</tr>
+<tr>
+<td>Mahindra CIE Automotive Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>MAHINDCIE</td>
+<td>EQ</td>
+<td>INE536H01010</td>
+</tr>
+<tr>
+<td>Mahindra Holidays &amp; Resorts India Ltd.</td>
+<td>SERVICES</td>
+<td>MHRIL</td>
+<td>EQ</td>
+<td>INE998I01010</td>
+</tr>
+<tr>
+<td>Mahindra Logistics Ltd.</td>
+<td>SERVICES</td>
+<td>MAHLOG</td>
+<td>EQ</td>
+<td>INE766P01016</td>
+</tr>
+<tr>
+<td>Manappuram Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MANAPPURAM</td>
+<td>EQ</td>
+<td>INE522D01027</td>
+</tr>
+<tr>
+<td>Mangalore Refinery &amp; Petrochemicals Ltd.</td>
+<td>ENERGY</td>
+<td>MRPL</td>
+<td>EQ</td>
+<td>INE103A01014</td>
+</tr>
+<tr>
+<td>Marico Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>MARICO</td>
+<td>EQ</td>
+<td>INE196A01026</td>
+</tr>
+<tr>
+<td>Maruti Suzuki India Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>MARUTI</td>
+<td>EQ</td>
+<td>INE585B01010</td>
+</tr>
+<tr>
+<td>Max Financial Services Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MFSL</td>
+<td>EQ</td>
+<td>INE180A01020</td>
+</tr>
+<tr>
+<td>Max India Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>MAXINDIA</td>
+<td>EQ</td>
+<td>INE153U01017</td>
+</tr>
+<tr>
+<td>MindTree Ltd.</td>
+<td>IT</td>
+<td>MINDTREE</td>
+<td>EQ</td>
+<td>INE018I01017</td>
+</tr>
+<tr>
+<td>Minda Corporation Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>MINDACORP</td>
+<td>EQ</td>
+<td>INE842C01021</td>
+</tr>
+<tr>
+<td>Minda Industries Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>MINDAIND</td>
+<td>EQ</td>
+<td>INE405E01023</td>
+</tr>
+<tr>
+<td>Monsanto India Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>MONSANTO</td>
+<td>EQ</td>
+<td>INE274B01011</td>
+</tr>
+<tr>
+<td>Motherson Sumi Systems Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>MOTHERSUMI</td>
+<td>EQ</td>
+<td>INE775A01035</td>
+</tr>
+<tr>
+<td>Motilal Oswal Financial Services Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MOTILALOFS</td>
+<td>EQ</td>
+<td>INE338I01027</td>
+</tr>
+<tr>
+<td>MphasiS Ltd.</td>
+<td>IT</td>
+<td>MPHASIS</td>
+<td>EQ</td>
+<td>INE356A01018</td>
+</tr>
+<tr>
+<td>Muthoot Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>MUTHOOTFIN</td>
+<td>EQ</td>
+<td>INE414G01012</td>
+</tr>
+<tr>
+<td>NATCO Pharma Ltd.</td>
+<td>PHARMA</td>
+<td>NATCOPHARM</td>
+<td>EQ</td>
+<td>INE987B01026</td>
+</tr>
+<tr>
+<td>NBCC (India) Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>NBCC</td>
+<td>EQ</td>
+<td>INE095N01031</td>
+</tr>
+<tr>
+<td>NCC Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>NCC</td>
+<td>EQ</td>
+<td>INE868B01028</td>
+</tr>
+<tr>
+<td>NESCO Ltd.</td>
+<td>SERVICES</td>
+<td>NESCO</td>
+<td>EQ</td>
+<td>INE317F01035</td>
+</tr>
+<tr>
+<td>NHPC Ltd.</td>
+<td>ENERGY</td>
+<td>NHPC</td>
+<td>EQ</td>
+<td>INE848E01016</td>
+</tr>
+<tr>
+<td>NIIT Technologies Ltd.</td>
+<td>IT</td>
+<td>NIITTECH</td>
+<td>EQ</td>
+<td>INE591G01017</td>
+</tr>
+<tr>
+<td>NLC India Ltd.</td>
+<td>ENERGY</td>
+<td>NLCINDIA</td>
+<td>EQ</td>
+<td>INE589A01014</td>
+</tr>
+<tr>
+<td>NMDC Ltd.</td>
+<td>METALS</td>
+<td>NMDC</td>
+<td>EQ</td>
+<td>INE584A01023</td>
+</tr>
+<tr>
+<td>NTPC Ltd.</td>
+<td>ENERGY</td>
+<td>NTPC</td>
+<td>EQ</td>
+<td>INE733E01010</td>
+</tr>
+<tr>
+<td>Narayana Hrudayalaya Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>NH</td>
+<td>EQ</td>
+<td>INE410P01011</td>
+</tr>
+<tr>
+<td>National Aluminium Co. Ltd.</td>
+<td>METALS</td>
+<td>NATIONALUM</td>
+<td>EQ</td>
+<td>INE139A01034</td>
+</tr>
+<tr>
+<td>National Fertilizers Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>NFL</td>
+<td>EQ</td>
+<td>INE870D01012</td>
+</tr>
+<tr>
+<td>Nava Bharat Ventures Ltd.</td>
+<td>ENERGY</td>
+<td>NBVENTURES</td>
+<td>EQ</td>
+<td>INE725A01022</td>
+</tr>
+<tr>
+<td>Navin Fluorine International Ltd.</td>
+<td>CHEMICALS</td>
+<td>NAVINFLUOR</td>
+<td>EQ</td>
+<td>INE048G01026</td>
+</tr>
+<tr>
+<td>Network18 Media &amp; Investments Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>NETWORK18</td>
+<td>EQ</td>
+<td>INE870H01013</td>
+</tr>
+<tr>
+<td>Nilkamal Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>NILKAMAL</td>
+<td>EQ</td>
+<td>INE310A01015</td>
+</tr>
+<tr>
+<td>Oberoi Realty Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>OBEROIRLTY</td>
+<td>EQ</td>
+<td>INE093I01010</td>
+</tr>
+<tr>
+<td>Oil &amp; Natural Gas Corporation Ltd.</td>
+<td>ENERGY</td>
+<td>ONGC</td>
+<td>EQ</td>
+<td>INE213A01029</td>
+</tr>
+<tr>
+<td>Oil India Ltd.</td>
+<td>ENERGY</td>
+<td>OIL</td>
+<td>EQ</td>
+<td>INE274J01014</td>
+</tr>
+<tr>
+<td>Omaxe Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>OMAXE</td>
+<td>EQ</td>
+<td>INE800H01010</td>
+</tr>
+<tr>
+<td>Oracle Financial Services Software Ltd.</td>
+<td>IT</td>
+<td>OFSS</td>
+<td>EQ</td>
+<td>INE881D01027</td>
+</tr>
+<tr>
+<td>Orient Cement Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>ORIENTCEM</td>
+<td>EQ</td>
+<td>INE876N01018</td>
+</tr>
+<tr>
+<td>Orient Electric Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>ORIENTELEC</td>
+<td>EQ</td>
+<td>INE142Z01019</td>
+</tr>
+<tr>
+<td>Oriental Bank of Commerce</td>
+<td>FINANCIAL SERVICES</td>
+<td>ORIENTBANK</td>
+<td>EQ</td>
+<td>INE141A01014</td>
+</tr>
+<tr>
+<td>PC Jeweller Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>PCJEWELLER</td>
+<td>EQ</td>
+<td>INE785M01013</td>
+</tr>
+<tr>
+<td>PI Industries Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>PIIND</td>
+<td>EQ</td>
+<td>INE603J01030</td>
+</tr>
+<tr>
+<td>PNB Housing Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>PNBHOUSING</td>
+<td>EQ</td>
+<td>INE572E01012</td>
+</tr>
+<tr>
+<td>PNC Infratech Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>PNCINFRA</td>
+<td>EQ</td>
+<td>INE195J01029</td>
+</tr>
+<tr>
+<td>PTC India Ltd.</td>
+<td>ENERGY</td>
+<td>PTC</td>
+<td>EQ</td>
+<td>INE877F01012</td>
+</tr>
+<tr>
+<td>PVR Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>PVR</td>
+<td>EQ</td>
+<td>INE191H01014</td>
+</tr>
+<tr>
+<td>Page Industries Ltd.</td>
+<td>TEXTILES</td>
+<td>PAGEIND</td>
+<td>EQ</td>
+<td>INE761H01022</td>
+</tr>
+<tr>
+<td>Parag Milk Foods Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>PARAGMILK</td>
+<td>EQ</td>
+<td>INE883N01014</td>
+</tr>
+<tr>
+<td>Persistent Systems Ltd.</td>
+<td>IT</td>
+<td>PERSISTENT</td>
+<td>EQ</td>
+<td>INE262H01013</td>
+</tr>
+<tr>
+<td>Petronet LNG Ltd.</td>
+<td>ENERGY</td>
+<td>PETRONET</td>
+<td>EQ</td>
+<td>INE347G01014</td>
+</tr>
+<tr>
+<td>Pfizer Ltd.</td>
+<td>PHARMA</td>
+<td>PFIZER</td>
+<td>EQ</td>
+<td>INE182A01018</td>
+</tr>
+<tr>
+<td>Phillips Carbon Black Ltd.</td>
+<td>CHEMICALS</td>
+<td>PHILIPCARB</td>
+<td>EQ</td>
+<td>INE602A01023</td>
+</tr>
+<tr>
+<td>Phoenix Mills Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>PHOENIXLTD</td>
+<td>EQ</td>
+<td>INE211B01039</td>
+</tr>
+<tr>
+<td>Pidilite Industries Ltd.</td>
+<td>CHEMICALS</td>
+<td>PIDILITIND</td>
+<td>EQ</td>
+<td>INE318A01026</td>
+</tr>
+<tr>
+<td>Piramal Enterprises Ltd.</td>
+<td>PHARMA</td>
+<td>PEL</td>
+<td>EQ</td>
+<td>INE140A01024</td>
+</tr>
+<tr>
+<td>Power Finance Corporation Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>PFC</td>
+<td>EQ</td>
+<td>INE134E01011</td>
+</tr>
+<tr>
+<td>Power Grid Corporation of India Ltd.</td>
+<td>ENERGY</td>
+<td>POWERGRID</td>
+<td>EQ</td>
+<td>INE752E01010</td>
+</tr>
+<tr>
+<td>Praj Industries Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>PRAJIND</td>
+<td>EQ</td>
+<td>INE074A01025</td>
+</tr>
+<tr>
+<td>Prestige Estates Projects Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>PRESTIGE</td>
+<td>EQ</td>
+<td>INE811K01011</td>
+</tr>
+<tr>
+<td>Prism Johnson Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>PRSMJOHNSN</td>
+<td>EQ</td>
+<td>INE010A01011</td>
+</tr>
+<tr>
+<td>Procter &amp; Gamble Health Ltd.</td>
+<td>PHARMA</td>
+<td>PGHL</td>
+<td>EQ</td>
+<td>INE199A01012</td>
+</tr>
+<tr>
+<td>Procter &amp; Gamble Hygiene &amp; Health Care Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>PGHH</td>
+<td>EQ</td>
+<td>INE179A01014</td>
+</tr>
+<tr>
+<td>Punjab National Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>PNB</td>
+<td>EQ</td>
+<td>INE160A01022</td>
+</tr>
+<tr>
+<td>Quess Corp Ltd.</td>
+<td>SERVICES</td>
+<td>QUESS</td>
+<td>EQ</td>
+<td>INE615P01015</td>
+</tr>
+<tr>
+<td>RBL Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>RBLBANK</td>
+<td>EQ</td>
+<td>INE976G01028</td>
+</tr>
+<tr>
+<td>REC Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>RECLTD</td>
+<td>EQ</td>
+<td>INE020B01018</td>
+</tr>
+<tr>
+<td>RITES Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>RITES</td>
+<td>EQ</td>
+<td>INE320J01015</td>
+</tr>
+<tr>
+<td>Radico Khaitan Ltd</td>
+<td>CONSUMER GOODS</td>
+<td>RADICO</td>
+<td>EQ</td>
+<td>INE944F01028</td>
+</tr>
+<tr>
+<td>Rain Industries Ltd</td>
+<td>CHEMICALS</td>
+<td>RAIN</td>
+<td>EQ</td>
+<td>INE855B01025</td>
+</tr>
+<tr>
+<td>Rajesh Exports Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>RAJESHEXPO</td>
+<td>EQ</td>
+<td>INE343B01030</td>
+</tr>
+<tr>
+<td>Rallis India Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>RALLIS</td>
+<td>EQ</td>
+<td>INE613A01020</td>
+</tr>
+<tr>
+<td>Ramkrishna Forgings Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>RKFORGE</td>
+<td>EQ</td>
+<td>INE399G01015</td>
+</tr>
+<tr>
+<td>Rashtriya Chemicals &amp; Fertilizers Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>RCF</td>
+<td>EQ</td>
+<td>INE027A01015</td>
+</tr>
+<tr>
+<td>Raymond Ltd.</td>
+<td>TEXTILES</td>
+<td>RAYMOND</td>
+<td>EQ</td>
+<td>INE301A01014</td>
+</tr>
+<tr>
+<td>Redington (India) Ltd.</td>
+<td>SERVICES</td>
+<td>REDINGTON</td>
+<td>EQ</td>
+<td>INE891D01026</td>
+</tr>
+<tr>
+<td>Relaxo Footwears Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>RELAXO</td>
+<td>EQ</td>
+<td>INE131B01039</td>
+</tr>
+<tr>
+<td>Reliance Capital Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>RELCAPITAL</td>
+<td>EQ</td>
+<td>INE013A01015</td>
+</tr>
+<tr>
+<td>Reliance Communications Ltd.</td>
+<td>TELECOM</td>
+<td>RCOM</td>
+<td>EQ</td>
+<td>INE330H01018</td>
+</tr>
+<tr>
+<td>Reliance Home Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>RHFL</td>
+<td>EQ</td>
+<td>INE217K01011</td>
+</tr>
+<tr>
+<td>Reliance Industries Ltd.</td>
+<td>ENERGY</td>
+<td>RELIANCE</td>
+<td>EQ</td>
+<td>INE002A01018</td>
+</tr>
+<tr>
+<td>Reliance Infrastructure Ltd.</td>
+<td>ENERGY</td>
+<td>RELINFRA</td>
+<td>EQ</td>
+<td>INE036A01016</td>
+</tr>
+<tr>
+<td>Reliance Nippon Life Asset Management Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>RNAM</td>
+<td>EQ</td>
+<td>INE298J01013</td>
+</tr>
+<tr>
+<td>Reliance Power Ltd.</td>
+<td>ENERGY</td>
+<td>RPOWER</td>
+<td>EQ</td>
+<td>INE614G01033</td>
+</tr>
+<tr>
+<td>Repco Home Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>REPCOHOME</td>
+<td>EQ</td>
+<td>INE612J01015</td>
+</tr>
+<tr>
+<td>Rupa &amp; Company Ltd.</td>
+<td>TEXTILES</td>
+<td>RUPA</td>
+<td>EQ</td>
+<td>INE895B01021</td>
+</tr>
+<tr>
+<td>S H Kelkar and Company Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>SHK</td>
+<td>EQ</td>
+<td>INE500L01026</td>
+</tr>
+<tr>
+<td>SBI Life Insurance Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>SBILIFE</td>
+<td>EQ</td>
+<td>INE123W01016</td>
+</tr>
+<tr>
+<td>SJVN Ltd.</td>
+<td>ENERGY</td>
+<td>SJVN</td>
+<td>EQ</td>
+<td>INE002L01015</td>
+</tr>
+<tr>
+<td>SKF India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>SKFINDIA</td>
+<td>EQ</td>
+<td>INE640A01023</td>
+</tr>
+<tr>
+<td>SREI Infrastructure Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>SREINFRA</td>
+<td>EQ</td>
+<td>INE872A01014</td>
+</tr>
+<tr>
+<td>SRF Ltd.</td>
+<td>TEXTILES</td>
+<td>SRF</td>
+<td>EQ</td>
+<td>INE647A01010</td>
+</tr>
+<tr>
+<td>Sadbhav Engineering Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>SADBHAV</td>
+<td>EQ</td>
+<td>INE226H01026</td>
+</tr>
+<tr>
+<td>Sanofi India Ltd.</td>
+<td>PHARMA</td>
+<td>SANOFI</td>
+<td>EQ</td>
+<td>INE058A01010</td>
+</tr>
+<tr>
+<td>Schaeffler India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>SCHAEFFLER</td>
+<td>EQ</td>
+<td>INE513A01014</td>
+</tr>
+<tr>
+<td>Security and Intelligence Services (India) Ltd.</td>
+<td>SERVICES</td>
+<td>SIS</td>
+<td>EQ</td>
+<td>INE285J01010</td>
+</tr>
+<tr>
+<td>Shankara Building Products Ltd.</td>
+<td>METALS</td>
+<td>SHANKARA</td>
+<td>EQ</td>
+<td>INE274V01019</td>
+</tr>
+<tr>
+<td>Sharda Cropchem Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>SHARDACROP</td>
+<td>EQ</td>
+<td>INE221J01015</td>
+</tr>
+<tr>
+<td>Sheela Foam Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>SFL</td>
+<td>EQ</td>
+<td>INE916U01025</td>
+</tr>
+<tr>
+<td>Shilpa Medicare Ltd.</td>
+<td>PHARMA</td>
+<td>SHILPAMED</td>
+<td>EQ</td>
+<td>INE790G01031</td>
+</tr>
+<tr>
+<td>Shipping Corporation of India Ltd.</td>
+<td>SERVICES</td>
+<td>SCI</td>
+<td>EQ</td>
+<td>INE109A01011</td>
+</tr>
+<tr>
+<td>Shoppers Stop Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>SHOPERSTOP</td>
+<td>EQ</td>
+<td>INE498B01024</td>
+</tr>
+<tr>
+<td>Shree Cement Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>SHREECEM</td>
+<td>EQ</td>
+<td>INE070A01015</td>
+</tr>
+<tr>
+<td>Shree Renuka Sugars Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>RENUKA</td>
+<td>EQ</td>
+<td>INE087H01022</td>
+</tr>
+<tr>
+<td>Shriram City Union Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>SHRIRAMCIT</td>
+<td>EQ</td>
+<td>INE722A01011</td>
+</tr>
+<tr>
+<td>Shriram Transport Finance Co. Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>SRTRANSFIN</td>
+<td>EQ</td>
+<td>INE721A01013</td>
+</tr>
+<tr>
+<td>Siemens Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>SIEMENS</td>
+<td>EQ</td>
+<td>INE003A01024</td>
+</tr>
+<tr>
+<td>Sintex Plastics Technology Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>SPTL</td>
+<td>EQ</td>
+<td>INE501W01021</td>
+</tr>
+<tr>
+<td>Sobha Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>SOBHA</td>
+<td>EQ</td>
+<td>INE671H01015</td>
+</tr>
+<tr>
+<td>Solar Industries India Ltd.</td>
+<td>CHEMICALS</td>
+<td>SOLARINDS</td>
+<td>EQ</td>
+<td>INE343H01029</td>
+</tr>
+<tr>
+<td>Sonata Software Ltd.</td>
+<td>IT</td>
+<td>SONATSOFTW</td>
+<td>EQ</td>
+<td>INE269A01021</td>
+</tr>
+<tr>
+<td>South Indian Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>SOUTHBANK</td>
+<td>EQ</td>
+<td>INE683A01023</td>
+</tr>
+<tr>
+<td>Star Cement Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>STARCEMENT</td>
+<td>EQ</td>
+<td>INE460H01021</td>
+</tr>
+<tr>
+<td>State Bank of India</td>
+<td>FINANCIAL SERVICES</td>
+<td>SBIN</td>
+<td>EQ</td>
+<td>INE062A01020</td>
+</tr>
+<tr>
+<td>Steel Authority of India Ltd.</td>
+<td>METALS</td>
+<td>SAIL</td>
+<td>EQ</td>
+<td>INE114A01011</td>
+</tr>
+<tr>
+<td>Sterlite Technologies Ltd.</td>
+<td>TELECOM</td>
+<td>STRTECH</td>
+<td>EQ</td>
+<td>INE089C01029</td>
+</tr>
+<tr>
+<td>Strides Pharma Science Ltd.</td>
+<td>PHARMA</td>
+<td>STAR</td>
+<td>EQ</td>
+<td>INE939A01011</td>
+</tr>
+<tr>
+<td>Sudarshan Chemical Industries Ltd.</td>
+<td>CHEMICALS</td>
+<td>SUDARSCHEM</td>
+<td>EQ</td>
+<td>INE659A01023</td>
+</tr>
+<tr>
+<td>Sun Pharma Advanced Research Company Ltd.</td>
+<td>PHARMA</td>
+<td>SPARC</td>
+<td>EQ</td>
+<td>INE232I01014</td>
+</tr>
+<tr>
+<td>Sun Pharmaceutical Industries Ltd.</td>
+<td>PHARMA</td>
+<td>SUNPHARMA</td>
+<td>EQ</td>
+<td>INE044A01036</td>
+</tr>
+<tr>
+<td>Sun TV Network Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>SUNTV</td>
+<td>EQ</td>
+<td>INE424H01027</td>
+</tr>
+<tr>
+<td>Sundaram Clayton Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>SUNCLAYLTD</td>
+<td>EQ</td>
+<td>INE105A01035</td>
+</tr>
+<tr>
+<td>Sundaram Finance Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>SUNDARMFIN</td>
+<td>EQ</td>
+<td>INE660A01013</td>
+</tr>
+<tr>
+<td>Sundram Fasteners Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>SUNDRMFAST</td>
+<td>EQ</td>
+<td>INE387A01021</td>
+</tr>
+<tr>
+<td>Sunteck Realty Ltd.</td>
+<td>CONSTRUCTION</td>
+<td>SUNTECK</td>
+<td>EQ</td>
+<td>INE805D01034</td>
+</tr>
+<tr>
+<td>Suprajit Engineering Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>SUPRAJIT</td>
+<td>EQ</td>
+<td>INE399C01030</td>
+</tr>
+<tr>
+<td>Supreme Industries Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>SUPREMEIND</td>
+<td>EQ</td>
+<td>INE195A01028</td>
+</tr>
+<tr>
+<td>Suven Life Sciences Ltd.</td>
+<td>PHARMA</td>
+<td>SUVEN</td>
+<td>EQ</td>
+<td>INE495B01038</td>
+</tr>
+<tr>
+<td>Suzlon Energy Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>SUZLON</td>
+<td>EQ</td>
+<td>INE040H01021</td>
+</tr>
+<tr>
+<td>Swan Energy Ltd.</td>
+<td>TEXTILES</td>
+<td>SWANENERGY</td>
+<td>EQ</td>
+<td>INE665A01038</td>
+</tr>
+<tr>
+<td>Symphony Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>SYMPHONY</td>
+<td>EQ</td>
+<td>INE225D01027</td>
+</tr>
+<tr>
+<td>Syndicate Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>SYNDIBANK</td>
+<td>EQ</td>
+<td>INE667A01018</td>
+</tr>
+<tr>
+<td>Syngene International Ltd.</td>
+<td>PHARMA</td>
+<td>SYNGENE</td>
+<td>EQ</td>
+<td>INE398R01022</td>
+</tr>
+<tr>
+<td>TCNS Clothing Co. Ltd.</td>
+<td>TEXTILES</td>
+<td>TCNSBRANDS</td>
+<td>EQ</td>
+<td>INE778U01029</td>
+</tr>
+<tr>
+<td>TTK Prestige Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>TTKPRESTIG</td>
+<td>EQ</td>
+<td>INE690A01010</td>
+</tr>
+<tr>
+<td>TV Today Network Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>TVTODAY</td>
+<td>EQ</td>
+<td>INE038F01029</td>
+</tr>
+<tr>
+<td>TV18 Broadcast Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>TV18BRDCST</td>
+<td>EQ</td>
+<td>INE886H01027</td>
+</tr>
+<tr>
+<td>TVS Motor Company Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>TVSMOTOR</td>
+<td>EQ</td>
+<td>INE494B01023</td>
+</tr>
+<tr>
+<td>Take Solutions Ltd.</td>
+<td>IT</td>
+<td>TAKE</td>
+<td>EQ</td>
+<td>INE142I01023</td>
+</tr>
+<tr>
+<td>Tamil Nadu Newsprint &amp; Papers Ltd.</td>
+<td>PAPER</td>
+<td>TNPL</td>
+<td>EQ</td>
+<td>INE107A01015</td>
+</tr>
+<tr>
+<td>Tata Chemicals Ltd.</td>
+<td>CHEMICALS</td>
+<td>TATACHEM</td>
+<td>EQ</td>
+<td>INE092A01019</td>
+</tr>
+<tr>
+<td>Tata Coffee Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>TATACOFFEE</td>
+<td>EQ</td>
+<td>INE493A01027</td>
+</tr>
+<tr>
+<td>Tata Consultancy Services Ltd.</td>
+<td>IT</td>
+<td>TCS</td>
+<td>EQ</td>
+<td>INE467B01029</td>
+</tr>
+<tr>
+<td>Tata Elxsi Ltd.</td>
+<td>IT</td>
+<td>TATAELXSI</td>
+<td>EQ</td>
+<td>INE670A01012</td>
+</tr>
+<tr>
+<td>Tata Global Beverages Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>TATAGLOBAL</td>
+<td>EQ</td>
+<td>INE192A01025</td>
+</tr>
+<tr>
+<td>Tata Investment Corporation Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>TATAINVEST</td>
+<td>EQ</td>
+<td>INE672A01018</td>
+</tr>
+<tr>
+<td>Tata Motors Ltd DVR</td>
+<td>AUTOMOBILE</td>
+<td>TATAMTRDVR</td>
+<td>EQ</td>
+<td>IN9155A01020</td>
+</tr>
+<tr>
+<td>Tata Motors Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>TATAMOTORS</td>
+<td>EQ</td>
+<td>INE155A01022</td>
+</tr>
+<tr>
+<td>Tata Power Co. Ltd.</td>
+<td>ENERGY</td>
+<td>TATAPOWER</td>
+<td>EQ</td>
+<td>INE245A01021</td>
+</tr>
+<tr>
+<td>Tata Steel Ltd.</td>
+<td>METALS</td>
+<td>TATASTEEL</td>
+<td>EQ</td>
+<td>INE081A01012</td>
+</tr>
+<tr>
+<td>Teamlease Services Ltd.</td>
+<td>SERVICES</td>
+<td>TEAMLEASE</td>
+<td>EQ</td>
+<td>INE985S01024</td>
+</tr>
+<tr>
+<td>Tech Mahindra Ltd.</td>
+<td>IT</td>
+<td>TECHM</td>
+<td>EQ</td>
+<td>INE669C01036</td>
+</tr>
+<tr>
+<td>The New India Assurance Company Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>NIACL</td>
+<td>EQ</td>
+<td>INE470Y01017</td>
+</tr>
+<tr>
+<td>The Ramco Cements Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>RAMCOCEM</td>
+<td>EQ</td>
+<td>INE331A01037</td>
+</tr>
+<tr>
+<td>Thermax Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>THERMAX</td>
+<td>EQ</td>
+<td>INE152A01029</td>
+</tr>
+<tr>
+<td>Thomas Cook (India) Ltd.</td>
+<td>SERVICES</td>
+<td>THOMASCOOK</td>
+<td>EQ</td>
+<td>INE332A01027</td>
+</tr>
+<tr>
+<td>Thyrocare Technologies Ltd.</td>
+<td>HEALTHCARE SERVICES</td>
+<td>THYROCARE</td>
+<td>EQ</td>
+<td>INE594H01019</td>
+</tr>
+<tr>
+<td>Time Technoplast Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>TIMETECHNO</td>
+<td>EQ</td>
+<td>INE508G01029</td>
+</tr>
+<tr>
+<td>Timken India Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>TIMKEN</td>
+<td>EQ</td>
+<td>INE325A01013</td>
+</tr>
+<tr>
+<td>Titan Company Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>TITAN</td>
+<td>EQ</td>
+<td>INE280A01028</td>
+</tr>
+<tr>
+<td>Torrent Pharmaceuticals Ltd.</td>
+<td>PHARMA</td>
+<td>TORNTPHARM</td>
+<td>EQ</td>
+<td>INE685A01028</td>
+</tr>
+<tr>
+<td>Torrent Power Ltd.</td>
+<td>ENERGY</td>
+<td>TORNTPOWER</td>
+<td>EQ</td>
+<td>INE813H01021</td>
+</tr>
+<tr>
+<td>Trent Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>TRENT</td>
+<td>EQ</td>
+<td>INE849A01020</td>
+</tr>
+<tr>
+<td>Trident Ltd.</td>
+<td>TEXTILES</td>
+<td>TRIDENT</td>
+<td>EQ</td>
+<td>INE064C01014</td>
+</tr>
+<tr>
+<td>Triveni Turbine Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>TRITURBINE</td>
+<td>EQ</td>
+<td>INE152M01016</td>
+</tr>
+<tr>
+<td>Tube Investments of India Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>TIINDIA</td>
+<td>EQ</td>
+<td>INE974X01010</td>
+</tr>
+<tr>
+<td>UCO Bank</td>
+<td>FINANCIAL SERVICES</td>
+<td>UCOBANK</td>
+<td>EQ</td>
+<td>INE691A01018</td>
+</tr>
+<tr>
+<td>UFLEX Ltd.</td>
+<td>INDUSTRIAL MANUFACTURING</td>
+<td>UFLEX</td>
+<td>EQ</td>
+<td>INE516A01017</td>
+</tr>
+<tr>
+<td>UPL Ltd.</td>
+<td>FERTILISERS &amp; PESTICIDES</td>
+<td>UPL</td>
+<td>EQ</td>
+<td>INE628A01036</td>
+</tr>
+<tr>
+<td>Ujjivan Financial Services Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>UJJIVAN</td>
+<td>EQ</td>
+<td>INE334L01012</td>
+</tr>
+<tr>
+<td>UltraTech Cement Ltd.</td>
+<td>CEMENT &amp; CEMENT PRODUCTS</td>
+<td>ULTRACEMCO</td>
+<td>EQ</td>
+<td>INE481G01011</td>
+</tr>
+<tr>
+<td>Union Bank of India</td>
+<td>FINANCIAL SERVICES</td>
+<td>UNIONBANK</td>
+<td>EQ</td>
+<td>INE692A01016</td>
+</tr>
+<tr>
+<td>United Breweries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>UBL</td>
+<td>EQ</td>
+<td>INE686F01025</td>
+</tr>
+<tr>
+<td>United Spirits Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>MCDOWELL-N</td>
+<td>EQ</td>
+<td>INE854D01024</td>
+</tr>
+<tr>
+<td>V-Guard Industries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VGUARD</td>
+<td>EQ</td>
+<td>INE951I01027</td>
+</tr>
+<tr>
+<td>V-Mart Retail Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VMART</td>
+<td>EQ</td>
+<td>INE665J01013</td>
+</tr>
+<tr>
+<td>V.I.P. Industries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VIPIND</td>
+<td>EQ</td>
+<td>INE054A01027</td>
+</tr>
+<tr>
+<td>VRL Logistics Ltd.</td>
+<td>SERVICES</td>
+<td>VRLLOG</td>
+<td>EQ</td>
+<td>INE366I01010</td>
+</tr>
+<tr>
+<td>VST Industries Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VSTIND</td>
+<td>EQ</td>
+<td>INE710A01016</td>
+</tr>
+<tr>
+<td>Va Tech Wabag Ltd.</td>
+<td>SERVICES</td>
+<td>WABAG</td>
+<td>EQ</td>
+<td>INE956G01038</td>
+</tr>
+<tr>
+<td>Vakrangee Ltd.</td>
+<td>IT</td>
+<td>VAKRANGEE</td>
+<td>EQ</td>
+<td>INE051B01021</td>
+</tr>
+<tr>
+<td>Vardhman Textiles Ltd.</td>
+<td>TEXTILES</td>
+<td>VTL</td>
+<td>EQ</td>
+<td>INE825A01012</td>
+</tr>
+<tr>
+<td>Varroc Engineering Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>VARROC</td>
+<td>EQ</td>
+<td>INE665L01035</td>
+</tr>
+<tr>
+<td>Varun Beverages Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VBL</td>
+<td>EQ</td>
+<td>INE200M01013</td>
+</tr>
+<tr>
+<td>Vedanta Ltd.</td>
+<td>METALS</td>
+<td>VEDL</td>
+<td>EQ</td>
+<td>INE205A01025</td>
+</tr>
+<tr>
+<td>Venky&rsquo;s (India) Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VENKEYS</td>
+<td>EQ</td>
+<td>INE398A01010</td>
+</tr>
+<tr>
+<td>Vinati Organics Ltd.</td>
+<td>CHEMICALS</td>
+<td>VINATIORGA</td>
+<td>EQ</td>
+<td>INE410B01029</td>
+</tr>
+<tr>
+<td>Vodafone Idea Ltd.</td>
+<td>TELECOM</td>
+<td>IDEA</td>
+<td>EQ</td>
+<td>INE669E01016</td>
+</tr>
+<tr>
+<td>Voltas Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>VOLTAS</td>
+<td>EQ</td>
+<td>INE226A01021</td>
+</tr>
+<tr>
+<td>WABCO India Ltd.</td>
+<td>AUTOMOBILE</td>
+<td>WABCOINDIA</td>
+<td>EQ</td>
+<td>INE342J01019</td>
+</tr>
+<tr>
+<td>Welspun Corp Ltd.</td>
+<td>METALS</td>
+<td>WELCORP</td>
+<td>EQ</td>
+<td>INE191B01025</td>
+</tr>
+<tr>
+<td>Welspun India Ltd.</td>
+<td>TEXTILES</td>
+<td>WELSPUNIND</td>
+<td>EQ</td>
+<td>INE192B01031</td>
+</tr>
+<tr>
+<td>Whirlpool of India Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>WHIRLPOOL</td>
+<td>EQ</td>
+<td>INE716A01013</td>
+</tr>
+<tr>
+<td>Wipro Ltd.</td>
+<td>IT</td>
+<td>WIPRO</td>
+<td>EQ</td>
+<td>INE075A01022</td>
+</tr>
+<tr>
+<td>Wockhardt Ltd.</td>
+<td>PHARMA</td>
+<td>WOCKPHARMA</td>
+<td>EQ</td>
+<td>INE049B01025</td>
+</tr>
+<tr>
+<td>Yes Bank Ltd.</td>
+<td>FINANCIAL SERVICES</td>
+<td>YESBANK</td>
+<td>EQ</td>
+<td>INE528G01027</td>
+</tr>
+<tr>
+<td>Zee Entertainment Enterprises Ltd.</td>
+<td>MEDIA &amp; ENTERTAINMENT</td>
+<td>ZEEL</td>
+<td>EQ</td>
+<td>INE256A01028</td>
+</tr>
+<tr>
+<td>Zensar Technolgies Ltd.</td>
+<td>IT</td>
+<td>ZENSARTECH</td>
+<td>EQ</td>
+<td>INE520A01027</td>
+</tr>
+<tr>
+<td>Zydus Wellness Ltd.</td>
+<td>CONSUMER GOODS</td>
+<td>ZYDUSWELL</td>
+<td>EQ</td>
+<td>INE768C01010</td>
+</tr>
+<tr>
+<td>eClerx Services Ltd.</td>
+<td>IT</td>
+<td>ECLERX</td>
+<td>EQ</td>
+<td>INE738I01010</td>
+</tr>
+</tbody>
+</table>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>An Example Markdown Post - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="An Example Markdown Post" />
+<meta property="og:description" content="A minimal example of using markdown with fastpages." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2020/01/an-example-markdown-post/" />
+<meta property="article:published_time" content="2020-01-14T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="An Example Markdown Post"/>
+<meta name="twitter:description" content="A minimal example of using markdown with fastpages."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">An Example Markdown Post</h1>
+			<div class="meta">Posted at &mdash; Jan 14, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="example-markdown-post">Example Markdown Post</h1>
+<h2 id="basic-setup">Basic setup</h2>
+<p>Jekyll requires blog post files to be named according to the following format:</p>
+<p><code>YEAR-MONTH-DAY-filename.md</code></p>
+<p>Where <code>YEAR</code> is a four-digit number, <code>MONTH</code> and <code>DAY</code> are both two-digit numbers, and <code>filename</code> is whatever file name you choose, to remind yourself what this post is about. <code>.md</code> is the file extension for markdown files.</p>
+<p>The first line of the file should start with a single hash character, then a space, then your title. This is how you create a &ldquo;<em>level 1 heading</em>&rdquo; in markdown. Then you can create level 2, 3, etc headings as you wish but repeating the hash character, such as you see in the line <code>## File names</code> above.</p>
+<h2 id="basic-formatting">Basic formatting</h2>
+<p>You can use <em>italics</em>, <strong>bold</strong>, <code>code font text</code>, and create <a href="https://www.markdownguide.org/cheat-sheet/">links</a>. Here&rsquo;s a footnote <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>. Here&rsquo;s a horizontal rule:</p>
+<hr>
+<h2 id="lists">Lists</h2>
+<p>Here&rsquo;s a list:</p>
+<ul>
+<li>item 1</li>
+<li>item 2</li>
+</ul>
+<p>And a numbered list:</p>
+<ol>
+<li>item 1</li>
+<li>item 2</li>
+</ol>
+<h2 id="boxes-and-stuff">Boxes and stuff</h2>
+<blockquote>
+<p>This is a quotation</p>
+</blockquote>
+<p>{% include alert.html text=&quot;You can include alert boxes&rdquo; %}</p>
+<p>&hellip;and&hellip;</p>
+<p>{% include info.html text=&quot;You can include info boxes&rdquo; %}</p>
+<h2 id="images">Images</h2>
+<p>![]({{ site.baseurl }}/images/logo.png &ldquo;fast.ai&rsquo;s logo&rdquo;)</p>
+<h2 id="code">Code</h2>
+<p>You can format text and code per usual</p>
+<p>General preformatted text:</p>
+<pre><code># Do a thing
+do_thing()
+</code></pre>
+<p>Python code and output:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#586e75"># Prints &#39;2&#39;</span>
+<span style="color:#719e07">print</span>(<span style="color:#2aa198">1</span><span style="color:#719e07">+</span><span style="color:#2aa198">1</span>)
+</code></pre></div><pre><code>2
+</code></pre>
+<p>Formatting text as shell commands:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#b58900">echo</span> <span style="color:#2aa198">&#34;hello world&#34;</span>
+./some_script.sh --option <span style="color:#2aa198">&#34;value&#34;</span>
+wget https://example.com/cat_photo1.png
+</code></pre></div><p>Formatting text as YAML:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#719e07">key</span>: value
+- <span style="color:#719e07">another_key</span>: <span style="color:#2aa198">&#34;another value&#34;</span>
+</code></pre></div><h2 id="tables">Tables</h2>
+<table>
+<thead>
+<tr>
+<th>Column 1</th>
+<th>Column 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A thing</td>
+<td>Another thing</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tweetcards">Tweetcards</h2>
+<p>{% twitter <a href="https://twitter.com/jakevdp/status/1204765621767901185?s=20">https://twitter.com/jakevdp/status/1204765621767901185?s=20</a> %}</p>
+<h2 id="footnotes">Footnotes</h2>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>This is the footnote. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Automated Street Lighting using Arduino - An IoT implementation - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Automated Street Lighting using Arduino - An IoT implementation" />
+<meta property="og:description" content="Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2019/05/automated-street-lighting-using-arduino-an-iot-implementation/" />
+<meta property="article:published_time" content="2019-05-25T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Automated Street Lighting using Arduino - An IoT implementation"/>
+<meta name="twitter:description" content="Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights."/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Automated Street Lighting using Arduino - An IoT implementation</h1>
+			<div class="meta">Posted at &mdash; May 25, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="automated-street-lighting-using-arduino---an-iot-implementation">Automated Street Lighting using Arduino - An IoT implementation</h1>
+<p>Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights. Built using</p>
+<ul>
+<li>an Arduino Uno and</li>
+<li>a Raspberry Pi 3B+.</li>
+</ul>
+<p>The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.</p>
+<p>This repository contains the Arudino sketch for the automated street lighting project.</p>
+<p>The sketch is written in C++.</p>
+<p>Replace your ssid and pass where asked.</p>
+<p>Enter your ThingSpeak channel&rsquo;s API WRITE KEY in the updateTS function in place of &ldquo;xxx&rdquo;</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#719e07">#include</span><span style="color:#719e07">&lt;SoftwareSerial.h&gt; //include the software serial library</span><span style="color:#719e07">
+</span><span style="color:#719e07"></span><span style="color:#dc322f">int</span> sensor; <span style="color:#586e75">//varialbe to store sensor values
+</span><span style="color:#586e75"></span><span style="color:#dc322f">int</span> data; <span style="color:#586e75">//variable to store mapped sensro values
+</span><span style="color:#586e75"></span><span style="color:#dc322f">int</span> Light_status<span style="color:#719e07">=</span><span style="color:#2aa198">10</span>; <span style="color:#586e75">//var to store light status values
+</span><span style="color:#586e75"></span><span style="color:#dc322f">int</span> threshold<span style="color:#719e07">=</span><span style="color:#2aa198">38</span>;
+
+SoftwareSerial <span style="color:#268bd2">esp8266</span>(<span style="color:#2aa198">3</span>,<span style="color:#2aa198">4</span>); <span style="color:#586e75">//set the software serial pins RX=3, TX=4
+</span><span style="color:#586e75">//definition of variables
+</span><span style="color:#586e75"></span><span style="color:#719e07">#define SSID &#34;xxx&#34; </span><span style="color:#586e75">//replace with ssid of wifi
+</span><span style="color:#586e75"></span><span style="color:#719e07">#define PASS &#34;xxx&#34; </span><span style="color:#586e75">//replace with password of wifi
+</span><span style="color:#586e75"></span>
+String <span style="color:#268bd2">sendAT</span>(String command, <span style="color:#719e07">const</span> <span style="color:#dc322f">int</span> timeout)
+{
+  String response<span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&#34;</span>;
+  esp8266.print(command);
+  <span style="color:#dc322f">long</span> <span style="color:#dc322f">int</span> time <span style="color:#719e07">=</span> millis();
+  <span style="color:#719e07">while</span>((time <span style="color:#719e07">+</span> timeout) <span style="color:#719e07">&gt;</span> millis()){
+    <span style="color:#719e07">while</span>(esp8266.available()){
+      <span style="color:#dc322f">char</span> c <span style="color:#719e07">=</span> esp8266.read();
+      response <span style="color:#719e07">+=</span> c;
+    }
+  }
+  Serial.print(response);
+  <span style="color:#719e07">return</span> response;
+}
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">connectwifi</span>(){
+  sendAT(<span style="color:#2aa198">&#34;AT</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); <span style="color:#586e75">//
+</span><span style="color:#586e75"></span>  sendAT(<span style="color:#2aa198">&#34;AT+CWMODE=1</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); 
+  <span style="color:#586e75">//call sendAT function to set esp8266 to station mode
+</span><span style="color:#586e75"></span>  sendAT(<span style="color:#2aa198">&#34;AT+CWJAP=</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">&#34;</span>SSID<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">&#34;</span>PASS<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\&#34;\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  <span style="color:#586e75">//AT command to connect with the wifi network
+</span><span style="color:#586e75"></span>  <span style="color:#719e07">while</span>(<span style="color:#719e07">!</span>esp8266.find(<span style="color:#2aa198">&#34;OK&#34;</span>)){
+    <span style="color:#586e75">//wait for connection
+</span><span style="color:#586e75"></span>    
+  }
+  sendAT(<span style="color:#2aa198">&#34;AT+CIFSR</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); <span style="color:#586e75">//AT command to print IP address on serial monitor
+</span><span style="color:#586e75"></span>  sendAT(<span style="color:#2aa198">&#34;AT+CIPMUX=0</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); <span style="color:#586e75">//AT command to set esp8266 to multiple connections
+</span><span style="color:#586e75"></span>}
+
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">setup</span>() {
+  <span style="color:#586e75">// put your setup code here, to run once:
+</span><span style="color:#586e75"></span>  Serial.begin(<span style="color:#2aa198">9600</span>); <span style="color:#586e75">//begin the serial communication with baud rate 9600
+</span><span style="color:#586e75"></span>  esp8266.begin(<span style="color:#2aa198">9600</span>);
+  sendAT(<span style="color:#2aa198">&#34;AT+RST</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>); <span style="color:#586e75">//call sendAT function to send reset AT command
+</span><span style="color:#586e75"></span>  connectwifi(); <span style="color:#586e75">//call connectwifi function to connect to wifi
+</span><span style="color:#586e75"></span>  pinMode(<span style="color:#2aa198">8</span>,OUTPUT);
+}
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">loop</span>() {
+  <span style="color:#586e75">// put your main code here, to run repeatedly:
+</span><span style="color:#586e75"></span>  sensor<span style="color:#719e07">=</span>analogRead(A0); <span style="color:#586e75">//read raw sensor data and store it
+</span><span style="color:#586e75"></span>  data<span style="color:#719e07">=</span>map(sensor,<span style="color:#2aa198">0</span>,<span style="color:#2aa198">1023</span>,<span style="color:#2aa198">0</span>,<span style="color:#2aa198">100</span>); <span style="color:#586e75">//map the raw sensor values and store the result in data
+</span><span style="color:#586e75"></span>  <span style="color:#719e07">if</span>(data<span style="color:#719e07">&lt;</span>threshold){ <span style="color:#586e75">//check of sensor value is less than threshold
+</span><span style="color:#586e75"></span>    digitalWrite(<span style="color:#2aa198">8</span>,HIGH); <span style="color:#586e75">//switch on the light
+</span><span style="color:#586e75"></span>    Light_status <span style="color:#719e07">=</span> <span style="color:#2aa198">100</span>; <span style="color:#586e75">//update Light status variable to 100
+</span><span style="color:#586e75"></span>  }
+  <span style="color:#719e07">else</span>{
+    digitalWrite(<span style="color:#2aa198">8</span>,LOW); <span style="color:#586e75">//switch off the light
+</span><span style="color:#586e75"></span>    Light_status<span style="color:#719e07">=</span><span style="color:#2aa198">10</span>; <span style="color:#586e75">//update the light_status variable to 10
+</span><span style="color:#586e75"></span>  }
+  String sensor_value <span style="color:#719e07">=</span> String(data); <span style="color:#586e75">//convert int to str
+</span><span style="color:#586e75"></span>  Serial.print(<span style="color:#2aa198">&#34;Light Intensity:&#34;</span>);
+  Serial.println(data); <span style="color:#586e75">//print lighht status on serial monitor
+</span><span style="color:#586e75"></span>
+  String threshold1<span style="color:#719e07">=</span> String(threshold); <span style="color:#586e75">//convert int to str
+</span><span style="color:#586e75"></span>  Serial.print(<span style="color:#2aa198">&#34;Threshold:&#34;</span>);
+  Serial.println(threshold); <span style="color:#586e75">// print threshold on serial monitor
+</span><span style="color:#586e75"></span>
+  updateTS(sensor_value,Light_status,threshold); <span style="color:#586e75">//call function toupdate Thingspeak
+</span><span style="color:#586e75"></span>  delay(<span style="color:#2aa198">3000</span>);
+}
+
+  <span style="color:#dc322f">void</span> <span style="color:#268bd2">updateTS</span>(String S,String L, String T){
+  Serial.println(<span style="color:#2aa198">&#34;&#34;</span>);
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPSTART=</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">TCP</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">api.thingspeak.com</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,80</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+  delay(<span style="color:#2aa198">2000</span>);
+  String cmdlen;
+  String cmd <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;GET /update?key=xxx&amp;field1=&#34;</span><span style="color:#719e07">+</span>L<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;&amp;field2=&#34;</span><span style="color:#719e07">+</span>S<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;field3=&#34;</span><span style="color:#719e07">+</span>T<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>; <span style="color:#586e75">//update data to thingspeak
+</span><span style="color:#586e75"></span>  cmdlen <span style="color:#719e07">=</span> cmd.length();
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPSEND=&#34;</span><span style="color:#719e07">+</span>cmdlen<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  esp8266.print(cmd);
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPCLOSE</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  Serial.println(<span style="color:#2aa198">&#34;&#34;</span>);
+  delay(<span style="color:#2aa198">1000</span>);
+}
+</code></pre></div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

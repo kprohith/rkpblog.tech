@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Smart Water Meter using an Arduino - An IoT Implementation - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Smart Water Meter using an Arduino - An IoT Implementation" />
+<meta property="og:description" content="Smart Water Meter using IoT" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2019/05/smart-water-meter-using-an-arduino-an-iot-implementation/" />
+<meta property="article:published_time" content="2019-05-23T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Smart Water Meter using an Arduino - An IoT Implementation"/>
+<meta name="twitter:description" content="Smart Water Meter using IoT"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Smart Water Meter using an Arduino - An IoT Implementation</h1>
+			<div class="meta">Posted at &mdash; May 23, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="smart-water-meter-using-an-arduino---an-iot-implementation">Smart Water Meter using an Arduino - An IoT Implementation</h1>
+<p>Smart Water Meter using IoT</p>
+<p>The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.</p>
+<p>This repository contains the Arudino sketch for the automated smart water meter project.</p>
+<p>The sketch is written in C++.</p>
+<p>Replace your ssid and pass where asked.</p>
+<p>Enter your ThingSpeak channel&rsquo;s API WRITE KEY in the updateTS function in place of &ldquo;xxx&rdquo;</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#719e07">#include</span><span style="color:#719e07">&lt;SoftwareSerial.h&gt; //include the software serial library</span><span style="color:#719e07">
+</span><span style="color:#719e07"></span>byte statusLed<span style="color:#719e07">=</span><span style="color:#2aa198">13</span>;
+byte sensorInterrupt<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>; <span style="color:#586e75">//0=digitalpin 2
+</span><span style="color:#586e75"></span>byte sensorPin<span style="color:#719e07">=</span><span style="color:#2aa198">2</span>;
+
+<span style="color:#586e75">//the hall-effect flow sensor outputs approximately 4.5 pulses per sencond per litre/minute of flow
+</span><span style="color:#586e75"></span><span style="color:#dc322f">float</span> calibrationFactor<span style="color:#719e07">=</span><span style="color:#2aa198">4.5</span>;
+<span style="color:#719e07">volatile</span> byte pulseCount;
+<span style="color:#dc322f">float</span> flowRate;
+<span style="color:#dc322f">unsigned</span> <span style="color:#dc322f">int</span> flowMilliLitres;
+<span style="color:#dc322f">unsigned</span> <span style="color:#dc322f">long</span> totalMilliLitres;
+<span style="color:#dc322f">unsigned</span> <span style="color:#dc322f">long</span> oldTime;
+<span style="color:#dc322f">unsigned</span> <span style="color:#dc322f">int</span> frac;
+SoftwareSerial <span style="color:#268bd2">esp8266</span>(<span style="color:#2aa198">3</span>,<span style="color:#2aa198">4</span>); <span style="color:#586e75">//set the software serial pins RX pin =3, TX pin =4
+</span><span style="color:#586e75"></span>
+<span style="color:#586e75">//defination of variables
+</span><span style="color:#586e75"></span><span style="color:#719e07">#define SSID &#34;xxx&#34; </span><span style="color:#586e75">//replace with ssid of wifi
+</span><span style="color:#586e75"></span><span style="color:#719e07">#define PASS &#34;xxx&#34; </span><span style="color:#586e75">//replace with password of wifi
+</span><span style="color:#586e75"></span>
+String <span style="color:#268bd2">sendAT</span>(String command, <span style="color:#719e07">const</span> <span style="color:#dc322f">int</span> timeout)
+{
+  String response<span style="color:#719e07">=</span><span style="color:#2aa198">&#34;&#34;</span>;
+  esp8266.print(command);
+  <span style="color:#dc322f">long</span> <span style="color:#dc322f">int</span> time <span style="color:#719e07">=</span> millis();
+  <span style="color:#719e07">while</span>((time <span style="color:#719e07">+</span> timeout) <span style="color:#719e07">&gt;</span> millis()){
+    <span style="color:#719e07">while</span>(esp8266.available()){
+      <span style="color:#dc322f">char</span> c <span style="color:#719e07">=</span> esp8266.read();
+      response <span style="color:#719e07">+=</span> c;
+    }
+  }
+  Serial.print(response);
+  <span style="color:#719e07">return</span> response;
+}
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">connectwifi</span>(){
+  sendAT(<span style="color:#2aa198">&#34;AT</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); <span style="color:#586e75">//
+</span><span style="color:#586e75"></span>  sendAT(<span style="color:#2aa198">&#34;AT+CWMODE=1</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); 
+  <span style="color:#586e75">//call sendAT function to set esp8266 to station mode
+</span><span style="color:#586e75"></span>  sendAT(<span style="color:#2aa198">&#34;AT+CWJAP=</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">&#34;</span>SSID<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">&#34;</span>PASS<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\&#34;\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  <span style="color:#586e75">//AT command to connect with the wifi network
+</span><span style="color:#586e75"></span>  <span style="color:#719e07">while</span>(<span style="color:#719e07">!</span>esp8266.find(<span style="color:#2aa198">&#34;OK&#34;</span>)){
+    <span style="color:#586e75">//wait for connection
+</span><span style="color:#586e75"></span>    
+  }
+  sendAT(<span style="color:#2aa198">&#34;AT+CIFSR</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); <span style="color:#586e75">//AT command to print IP address on serial monitor
+</span><span style="color:#586e75"></span>  sendAT(<span style="color:#2aa198">&#34;AT+CIPMUX=0</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>); <span style="color:#586e75">//AT command to set esp8266 to multiple connections
+</span><span style="color:#586e75"></span>}
+
+
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">setup</span>() {
+  <span style="color:#586e75">// put your setup code here, to run once:
+</span><span style="color:#586e75"></span>  <span style="color:#586e75">// initialize a serial connection for reporting values to the host
+</span><span style="color:#586e75"></span>  Serial.begin(<span style="color:#2aa198">9600</span>);
+  esp8266.begin(<span style="color:#2aa198">9600</span>);
+  sendAT(<span style="color:#2aa198">&#34;AT+RST</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>); <span style="color:#586e75">//call sendAT function to send reset AT command
+</span><span style="color:#586e75"></span>  connectwifi(); <span style="color:#586e75">//call connectwifi function to connect to wifi
+</span><span style="color:#586e75"></span>  <span style="color:#586e75">//set up the status LED line as an output
+</span><span style="color:#586e75"></span>  pinMode(statusLed,OUTPUT);
+  digitalWrite(statusLed,HIGH); <span style="color:#586e75">//WE HAVE AN ACTIVE-LOW LED attached
+</span><span style="color:#586e75"></span>  pinMode(sensorPin,INPUT);
+  digitalWrite(sensorPin,HIGH);
+  pulseCount<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>;
+  flowRate<span style="color:#719e07">=</span><span style="color:#2aa198">0.0</span>;
+  flowMilliLitres<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>;
+  totalMilliLitres<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>;
+  oldTime<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>;
+
+  <span style="color:#586e75">// The Hall Effect sensor is connected to pin 2 which uses interrupt 0.
+</span><span style="color:#586e75"></span>  <span style="color:#586e75">// configured to trigger on a FALLING change(transition from HIGH to LOW state)
+</span><span style="color:#586e75"></span>  attachInterrupt(sensorInterrupt,pulseCounter,FALLING);
+
+  
+}
+
+<span style="color:#586e75">/* main progrma loop */</span>
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">loop</span>() {
+  <span style="color:#586e75">// put your main code here, to run repeatedly:
+</span><span style="color:#586e75"></span>  <span style="color:#719e07">if</span>(millis()<span style="color:#719e07">-</span>oldTime<span style="color:#719e07">&gt;</span><span style="color:#2aa198">1000</span>){ <span style="color:#586e75">//only process counters once per second
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//Disable the interrupt while calculating flow rate and sending the values to host
+</span><span style="color:#586e75"></span>    detachInterrupt(sensorInterrupt);
+    <span style="color:#586e75">//Because this loop may not complete in exactly 1 second intervals we calculate the number of milliseconds that have passed since the last execution and use
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//that to scale the output based on the number of pulses per second per units of measure(litres/minute in this case) coming from the sensor
+</span><span style="color:#586e75"></span>    flowRate<span style="color:#719e07">=</span>((<span style="color:#2aa198">1000.0</span><span style="color:#719e07">/</span>(millis()<span style="color:#719e07">-</span>oldTime))<span style="color:#719e07">*</span>pulseCount)<span style="color:#719e07">/</span>calibrationFactor;
+
+    <span style="color:#586e75">//Note the time this processing pass was executed. 
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//Note that because we have disabled interrupts the
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//millis() function won&#39;t actually be incrementing
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//right at this point but it will return the value 
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//it was set to just before interrupts were disabled.
+</span><span style="color:#586e75"></span>    oldTime<span style="color:#719e07">=</span>millis();
+
+    <span style="color:#586e75">//divide the flow rate in litres/minute by 60 to determine how many litres have
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//passed through the sensor in this 1 second interval, then multiply by 1000 to
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//convert to millilitres.
+</span><span style="color:#586e75"></span>    flowMilliLitres<span style="color:#719e07">=</span>(flowRate<span style="color:#719e07">/</span><span style="color:#2aa198">60</span>)<span style="color:#719e07">*</span><span style="color:#2aa198">1000</span>;
+
+    <span style="color:#586e75">//add the millilitres passed in this second to the cumulative total
+</span><span style="color:#586e75"></span>    totalMilliLitres<span style="color:#719e07">+=</span>flowMilliLitres;
+    <span style="color:#dc322f">unsigned</span> <span style="color:#dc322f">int</span> frac;
+
+    <span style="color:#586e75">//print the flow rate for this second in litres/minute
+</span><span style="color:#586e75"></span>
+    Serial.print(<span style="color:#2aa198">&#34;Flow Rate:&#34;</span>);
+    Serial.print(<span style="color:#dc322f">int</span>(flowRate)); <span style="color:#586e75">//print the integer part of variable
+</span><span style="color:#586e75"></span>    Serial.print(<span style="color:#2aa198">&#34;.&#34;</span>); <span style="color:#586e75">//print the decimal point
+</span><span style="color:#586e75"></span>    <span style="color:#586e75">//determine the fractional part. The 10 multiplier gives us 1 decimal place.
+</span><span style="color:#586e75"></span>    frac <span style="color:#719e07">=</span>(flowRate<span style="color:#719e07">-</span><span style="color:#dc322f">int</span>(flowRate))<span style="color:#719e07">*</span><span style="color:#2aa198">10</span>;
+    Serial.print(frac,DEC); <span style="color:#586e75">//print the fractional part of the variable
+</span><span style="color:#586e75"></span>    Serial.print(<span style="color:#2aa198">&#34;L/min&#34;</span>);
+
+    <span style="color:#586e75">//print the number of litres flowed in this second
+</span><span style="color:#586e75"></span>    Serial.print(<span style="color:#2aa198">&#34;Current Liquid FLowing:&#34;</span>);
+    <span style="color:#586e75">//output separator
+</span><span style="color:#586e75"></span>    Serial.print(flowMilliLitres);
+    Serial.print(<span style="color:#2aa198">&#34;mL/sec&#34;</span>);
+
+    <span style="color:#586e75">//print the cumulative total of litres flowed since starting
+</span><span style="color:#586e75"></span>    Serial.print(<span style="color:#2aa198">&#34;output Liquid QUantity:&#34;</span>);
+    <span style="color:#586e75">//output separator
+</span><span style="color:#586e75"></span>    Serial.print(totalMilliLitres);
+    Serial.println(<span style="color:#2aa198">&#34;mL&#34;</span>);
+
+    <span style="color:#586e75">//reset the pulse counter so we can start incrementing again
+</span><span style="color:#586e75"></span>    pulseCount<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>;
+
+    <span style="color:#586e75">//enable the interrupt again now that we have finished sending output
+</span><span style="color:#586e75"></span>    attachInterrupt(sensorInterrupt,pulseCounter,FALLING);
+  }
+  String F <span style="color:#719e07">=</span> String(frac);<span style="color:#586e75">//convert float to string datatype
+</span><span style="color:#586e75"></span>  String FM <span style="color:#719e07">=</span> String(flowMilliLitres); <span style="color:#586e75">// convert int to string datatype
+</span><span style="color:#586e75"></span>  String TM <span style="color:#719e07">=</span> String(totalMilliLitres); <span style="color:#586e75">//convert long to string datatype
+</span><span style="color:#586e75"></span>  updateTS(F,FM,TM);; <span style="color:#586e75">//call the function to update ThingSpeak channel
+</span><span style="color:#586e75"></span>  delay(<span style="color:#2aa198">3000</span>);
+}
+
+<span style="color:#586e75">/*
+</span><span style="color:#586e75"> * * interrupt service routine
+</span><span style="color:#586e75">*/</span>
+  <span style="color:#dc322f">void</span> <span style="color:#268bd2">pulseCounter</span>(){
+   <span style="color:#586e75">//increment the pulse counter
+</span><span style="color:#586e75"></span>   pulseCount<span style="color:#719e07">++</span>;
+  }
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">updateTS</span>(String F,String FM, String TM)
+{
+  Serial.println(<span style="color:#2aa198">&#34;&#34;</span>);
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPSTART=</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">TCP</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">api.thingspeak.com</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,80</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+  delay(<span style="color:#2aa198">2000</span>);
+  String cmdlen;
+  String cmd <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;GET /update?key=xxx&amp;field1=&#34;</span><span style="color:#719e07">+</span>F<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;&amp;field2=&#34;</span><span style="color:#719e07">+</span>FM<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;field3=&#34;</span><span style="color:#719e07">+</span>TM<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>; <span style="color:#586e75">//update data to thingspeak
+</span><span style="color:#586e75"></span>  cmdlen <span style="color:#719e07">=</span> cmd.length();
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPSEND=&#34;</span><span style="color:#719e07">+</span>cmdlen<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  esp8266.print(cmd);
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPCLOSE</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  Serial.println(<span style="color:#2aa198">&#34;&#34;</span>);
+}
+</code></pre></div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

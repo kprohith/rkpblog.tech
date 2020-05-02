@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2020/04/configuring-pi-hole-with-dns-over-https/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/posts/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2020/04/porsche-classifier/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2020/01/an-example-markdown-post/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/06/text-classifier-ml/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/06/clothing-classifier/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/05/smart-presence-sensing-system-iot-enabled-smart-building/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/05/automated-street-lighting-using-arduino-an-iot-implementation/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/05/automated-weather-monitor-using-arduino-an-iot-implementation/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/05/smart-water-meter-using-an-arduino-an-iot-implementation/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/04/weather-station-on-nodemcu/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/04/smart-irrigation-system-using-iot/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2019/02/nse-stock-analysis-using-ml/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2018/10/python-for-finance/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2018/09/madlib-story-generator-in-javascript/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/2018/07/tictactoe-in-python-commandline/</loc>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/about/</loc>
+    <lastmod>2020-05-02T20:46:34+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/</loc>
+    <lastmod>2020-05-02T20:46:34+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.rkpblog.tech/new/tags/</loc>
+  </url>
+  
+</urlset>

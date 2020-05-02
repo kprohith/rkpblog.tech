@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Automated Weather Monitor using Arduino - an IoT Implementation - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Automated Weather Monitor using Arduino - an IoT Implementation" />
+<meta property="og:description" content="Automated Smart Weather Monitor using IoT" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2019/05/automated-weather-monitor-using-arduino-an-iot-implementation/" />
+<meta property="article:published_time" content="2019-05-25T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Automated Weather Monitor using Arduino - an IoT Implementation"/>
+<meta name="twitter:description" content="Automated Smart Weather Monitor using IoT"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Automated Weather Monitor using Arduino - an IoT Implementation</h1>
+			<div class="meta">Posted at &mdash; May 25, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="automated-weather-monitor-using-arduino---an-iot-implementation">Automated Weather Monitor using Arduino - an IoT Implementation</h1>
+<p>Automated Smart Weather Monitor using IoT</p>
+<p>This repository contains the Arudino sketch for the automated smart weather monitor project.</p>
+<p>The sketch is written in C++.</p>
+<p>Replace your ssid and pass where asked.</p>
+<p>Enter your ThingSpeak channel&rsquo;s API WRITE KEY in the updateTS function in place of &ldquo;xxx&rdquo;</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#719e07">#include</span> <span style="color:#719e07">&lt;dht.h&gt;</span><span style="color:#719e07">
+</span><span style="color:#719e07">#include</span> <span style="color:#719e07">&lt;SoftwareSerial.h&gt;</span><span style="color:#719e07">
+</span><span style="color:#719e07"></span>dht DHT;
+String temp;
+String humid;
+SoftwareSerial <span style="color:#268bd2">esp8266</span>(<span style="color:#2aa198">3</span>,<span style="color:#2aa198">4</span>);
+<span style="color:#719e07">#define SSID &#34;xxx&#34;
+</span><span style="color:#719e07">#define PASS &#34;xxx&#34;
+</span><span style="color:#719e07"></span>
+String <span style="color:#268bd2">sendAT</span>(String command, <span style="color:#719e07">const</span> <span style="color:#dc322f">int</span> timeout)
+{
+  String response <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;&#34;</span>;
+  esp8266.print(command);
+  <span style="color:#dc322f">long</span> <span style="color:#dc322f">int</span> time <span style="color:#719e07">=</span> millis();
+  <span style="color:#719e07">while</span>((time <span style="color:#719e07">+</span> timeout) <span style="color:#719e07">&gt;</span> millis())
+  {
+    <span style="color:#719e07">while</span>(esp8266.available())
+    {
+      <span style="color:#dc322f">char</span> c <span style="color:#719e07">=</span> esp8266.read();
+      response <span style="color:#719e07">+=</span> c;
+    }
+  }
+  Serial.print(response);
+  <span style="color:#719e07">return</span> response;
+}
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">setup</span>() {
+  <span style="color:#586e75">// put your setup code here, to run once:
+</span><span style="color:#586e75"></span>Serial.begin(<span style="color:#2aa198">9600</span>);
+esp8266.begin(<span style="color:#2aa198">9600</span>);
+Serial.println(<span style="color:#2aa198">&#34;Weather Monitor&#34;</span>);
+sendAT(<span style="color:#2aa198">&#34;AT+RST</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+sendAT(<span style="color:#2aa198">&#34;AT</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+sendAT(<span style="color:#2aa198">&#34;AT+CWMODE=1</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+sendAT(<span style="color:#2aa198">&#34;AT+CWJAP=</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">&#34;</span>SSID<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">&#34;</span>PASS<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\&#34;\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+<span style="color:#719e07">while</span>(<span style="color:#719e07">!</span>esp8266.find(<span style="color:#2aa198">&#34;OK&#34;</span>))
+{
+  
+}
+sendAT(<span style="color:#2aa198">&#34;AT+CIFSR</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+sendAT(<span style="color:#2aa198">&#34;AT+CIPMUX=0</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+}
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">loop</span>() {
+  <span style="color:#586e75">// put your main code here, to run repeatedly:
+</span><span style="color:#586e75"></span><span style="color:#dc322f">int</span> tempdata <span style="color:#719e07">=</span> DHT.read11(<span style="color:#2aa198">5</span>);
+Serial.print(<span style="color:#2aa198">&#34;Temperature = &#34;</span>);
+Serial.print(DHT.temperature);
+Serial.print(<span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\t</span><span style="color:#2aa198">&#34;</span>);
+Serial.print(<span style="color:#2aa198">&#34;Humidity = &#34;</span>);
+Serial.println(DHT.humidity);
+temp <span style="color:#719e07">=</span> DHT.temperature;
+humid <span style="color:#719e07">=</span> DHT.humidity;
+updateTS(temp,humid);
+delay(<span style="color:#2aa198">3000</span>);
+}
+
+
+
+
+
+
+<span style="color:#dc322f">void</span> <span style="color:#268bd2">updateTS</span>(String T, String H)
+{
+  Serial.println(<span style="color:#2aa198">&#34;&#34;</span>);
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPSTART=</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">TCP</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">api.thingspeak.com</span><span style="color:#cb4b16">\&#34;</span><span style="color:#2aa198">,80</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">1000</span>);
+  delay(<span style="color:#2aa198">2000</span>);
+  String cmdlen;
+  String cmd <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;GET /update?key=xxx&amp;field1=&#34;</span><span style="color:#719e07">+</span>T<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;&amp;field2=&#34;</span><span style="color:#719e07">+</span>H<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>;
+  cmdlen <span style="color:#719e07">=</span> cmd.length();
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPSEND=&#34;</span><span style="color:#719e07">+</span>cmdlen<span style="color:#719e07">+</span><span style="color:#2aa198">&#34;</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  esp8266.print(cmd);
+  Serial.println(<span style="color:#2aa198">&#34;&#34;</span>);
+  sendAT(<span style="color:#2aa198">&#34;AT+CIPCLOSE</span><span style="color:#cb4b16">\r\n</span><span style="color:#2aa198">&#34;</span>,<span style="color:#2aa198">2000</span>);
+  delay(<span style="color:#2aa198">15000</span>);
+}
+</code></pre></div>
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

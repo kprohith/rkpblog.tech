@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Configuring Pi-Hole with DNS over HTTPS - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Configuring Pi-Hole with DNS over HTTPS" />
+<meta property="og:description" content="Pi-Hole DNS sink over HTTPS" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2020/04/configuring-pi-hole-with-dns-over-https/" />
+<meta property="article:published_time" content="2020-04-30T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Configuring Pi-Hole with DNS over HTTPS"/>
+<meta name="twitter:description" content="Pi-Hole DNS sink over HTTPS"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Configuring Pi-Hole with DNS over HTTPS</h1>
+			<div class="meta">Posted at &mdash; Apr 30, 2020</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="pi-hole-dns-over-https">Pi-Hole DNS over HTTPS</h1>
+<p>I just set up <a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS">DNS over HTTPS</a> using <a href="https://docs.pi-hole.net/guides/dns-over-https/">this guide</a> on my <a href="https://pi-hole.net">pi-hole</a> DNS sink.</p>
+<p>Basically,</p>
+<ol>
+<li>
+<p>Get the <a href="https://developers.cloudflare.com/1.1.1.1/dns-over-https/cloudflared-proxy/">cloudflared</a> daemon compiled for ARM (Raspberry Pi)</p>
+</li>
+<li>
+<p>Configure it as a service that runs on startup under a user named cloudflared</p>
+</li>
+<li>
+<p>Use systemd to start the service (or reboot, I guess?)</p>
+</li>
+</ol>
+<p>Ultimately this still goes to Cloudflare’s 1.1.1.1 DNS, except routed over HTTPS:</p>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#586e75"># Commandline args for cloudflared</span>
+<span style="color:#268bd2">CLOUDFLARED_OPTS</span><span style="color:#719e07">=</span>--port <span style="color:#2aa198">5053</span> --upstream https://1.1.1.1/dns-query --upstream https://1.0.0.1/dns-query
+</code></pre></div><p>Why? Basically, with traditional HTTPS people don’t know what you are browsing (because it’s encrypted) but they can <em>definitely tell what website (domain name) you are looking at</em>.</p>
+<p>Even if you are visiting a site using HTTPS, your DNS query is sent over an unencrypted connection. That means that even if you are browsing <a href="https://cloudflare.com">https://cloudflare.com</a>, anyone listening to packets on the network knows you are attempting to visit cloudflare.com.</p>
+<p>The second problem with unencrypted DNS is that it is easy for a Man-In-The-Middle to change DNS answers to route unsuspecting visitors to their phishing, malware or surveillance site. DNSSEC solves this problem as well by providing a mechanism to check the validity of a DNS answer, but only a single-digit percentage of domains use DNSSEC.</p>
+<p>With DNS over HTTPS, a man in the middle can’t see the content, nor can they tell what website you are on. Also prevents tampering with DNS as as side benefit. 😅</p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

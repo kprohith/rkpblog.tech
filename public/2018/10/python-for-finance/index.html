@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Python for finance - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Python for finance" />
+<meta property="og:description" content="Python workflow for applying deep learning on stock market tickers" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2018/10/python-for-finance/" />
+<meta property="article:published_time" content="2018-10-02T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python for finance"/>
+<meta name="twitter:description" content="Python workflow for applying deep learning on stock market tickers"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Python for finance</h1>
+			<div class="meta">Posted at &mdash; Oct 2, 2018</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="python-for-finance">Python for finance</h1>
+<h3 id="uses-pandas-matplotlib-mpl_finance-scikit-learn-and-the-alphavantage-stock-market-api">Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API</h3>
+<h4 id="written-entirely-in-python">Written entirely in python.</h4>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#719e07">import</span> bs4 <span style="color:#719e07">as</span> bs
+<span style="color:#719e07">import</span> pickle
+<span style="color:#719e07">import</span> requests
+<span style="color:#719e07">import</span> os
+<span style="color:#719e07">import</span> pandas_datareader.data <span style="color:#719e07">as</span> web
+<span style="color:#719e07">import</span> datetime <span style="color:#719e07">as</span> dt
+<span style="color:#719e07">import</span> matplotlib.pyplot <span style="color:#719e07">as</span> plt
+<span style="color:#719e07">import</span> datetime <span style="color:#719e07">as</span> dt
+<span style="color:#719e07">import</span> numpy <span style="color:#719e07">as</span> np
+<span style="color:#719e07">import</span> csv
+<span style="color:#719e07">import</span> urllib.request<span style="color:#719e07">,</span> json
+<span style="color:#719e07">import</span> pandas <span style="color:#719e07">as</span> pd
+
+<span style="color:#2aa198">&#39;&#39;&#39;def save_sensex_tickers():
+</span><span style="color:#2aa198">    resp = requests.get(&#39;https://en.wikipedia.org/wiki/BSE_SENSEX&#39;)
+</span><span style="color:#2aa198">    soup = bs.BeautifulSoup(resp.text, &#39;lxml&#39;)
+</span><span style="color:#2aa198">    table = soup.find(&#39;table&#39;, {&#39;class&#39;: &#39;wikitable sortable&#39;})
+</span><span style="color:#2aa198">    tickers = []
+</span><span style="color:#2aa198">    for row in table.findAll(&#39;tr&#39;)[1:]:
+</span><span style="color:#2aa198">        ticker = row.findAll(&#39;td&#39;)[1].text.replace(&#39;.&#39;,&#39;-&#39;)
+</span><span style="color:#2aa198">        tickers.append(ticker)
+</span><span style="color:#2aa198">    with open(&#34;sensextickers.pickle&#34;,&#34;wb&#34;) as f:
+</span><span style="color:#2aa198">        pickle.dump(tickers,f)
+</span><span style="color:#2aa198">    print(tickers)
+</span><span style="color:#2aa198">    return tickers
+</span><span style="color:#2aa198">save_sensex_tickers()   
+</span><span style="color:#2aa198">&#39;&#39;&#39;</span>
+<span style="color:#586e75"># save sensex_tickers()</span>
+<span style="color:#719e07">def</span> <span style="color:#268bd2">convert_to_list</span>():
+    <span style="color:#719e07">with</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#39;ListOfScripsFull.csv&#39;</span>, <span style="color:#2aa198">&#39;r&#39;</span>) <span style="color:#719e07">as</span> f:
+        reader <span style="color:#719e07">=</span> csv<span style="color:#719e07">.</span>reader(f)
+        scrips <span style="color:#719e07">=</span> <span style="color:#b58900">list</span>(reader)
+    tickers <span style="color:#719e07">=</span> []
+    <span style="color:#719e07">for</span> i <span style="color:#719e07">in</span> <span style="color:#b58900">range</span>(<span style="color:#b58900">len</span>(scrips)):
+
+        tickers<span style="color:#719e07">.</span>append(scrips[i][<span style="color:#2aa198">1</span>])
+
+    <span style="color:#719e07">del</span> tickers[<span style="color:#2aa198">0</span>]
+    <span style="color:#719e07">for</span> ticker <span style="color:#719e07">in</span> tickers:
+        ticker <span style="color:#719e07">=</span> ticker<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;.&#39;</span>,<span style="color:#2aa198">&#39;-&#39;</span>)<span style="color:#719e07">.</span>strip()
+    tickers <span style="color:#719e07">=</span> [<span style="color:#2aa198">&#39;BSE:&#39;</span><span style="color:#719e07">+</span> x <span style="color:#719e07">for</span> x <span style="color:#719e07">in</span> tickers]
+
+    outfile <span style="color:#719e07">=</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#34;bsetickers.pickle&#34;</span>,<span style="color:#2aa198">&#34;wb&#34;</span>)
+    pickle<span style="color:#719e07">.</span>dump(tickers,outfile)
+    outfile<span style="color:#719e07">.</span>close()
+    <span style="color:#719e07">return</span> tickers
+
+<span style="color:#586e75">#convert_to_list()</span>
+<span style="color:#719e07">def</span> <span style="color:#268bd2">get_data_from_av</span>(reload_sensex<span style="color:#719e07">=</span><span style="color:#268bd2">False</span>):
+    <span style="color:#719e07">if</span> reload_sensex:
+        tickers <span style="color:#719e07">=</span> convert_to_list()
+    <span style="color:#719e07">else</span>:
+        <span style="color:#719e07">with</span> <span style="color:#b58900">open</span>(<span style="color:#2aa198">&#34;bsetickers.pickle&#34;</span>, <span style="color:#2aa198">&#34;rb&#34;</span>) <span style="color:#719e07">as</span> f:
+            tickers <span style="color:#719e07">=</span> pickle<span style="color:#719e07">.</span>load(f)
+
+    <span style="color:#719e07">if</span> <span style="color:#719e07">not</span> os<span style="color:#719e07">.</span>path<span style="color:#719e07">.</span>exists(<span style="color:#2aa198">&#39;stocks_dfs&#39;</span>):
+        os<span style="color:#719e07">.</span>makedirs(<span style="color:#2aa198">&#39;stocks_dfs&#39;</span>)
+
+    start <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime(<span style="color:#2aa198">2019</span>, <span style="color:#2aa198">6</span>, <span style="color:#2aa198">12</span>)
+    end <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime<span style="color:#719e07">.</span>now()
+    api_key <span style="color:#719e07">=</span> <span style="color:#2aa198">&#39;ZV3NL5EA4BW0OKYT&#39;</span>
+    tick_names <span style="color:#719e07">=</span> [s<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;:&#39;</span>, <span style="color:#2aa198">&#39;-&#39;</span>) <span style="color:#719e07">for</span> s <span style="color:#719e07">in</span> tickers]
+    
+
+    <span style="color:#719e07">for</span> ticker <span style="color:#719e07">in</span> tickers:
+        url_string <span style="color:#719e07">=</span> <span style="color:#2aa198">&#34;https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&amp;symbol=</span><span style="color:#2aa198">%s</span><span style="color:#2aa198">&amp;outputsize=full&amp;apikey=</span><span style="color:#2aa198">%s</span><span style="color:#2aa198">&#34;</span><span style="color:#719e07">%</span>(ticker,api_key)
+        file_to_save <span style="color:#719e07">=</span> <span style="color:#2aa198">&#39;stock_dfs/</span><span style="color:#2aa198">%s</span><span style="color:#2aa198">.csv&#39;</span><span style="color:#719e07">%</span>ticker<span style="color:#719e07">.</span>replace(<span style="color:#2aa198">&#39;:&#39;</span>,<span style="color:#2aa198">&#39;-&#39;</span>)
+        <span style="color:#719e07">print</span>(ticker)
+
+        <span style="color:#719e07">if</span> <span style="color:#719e07">not</span> os<span style="color:#719e07">.</span>path<span style="color:#719e07">.</span>exists(file_to_save):
+            <span style="color:#719e07">with</span> urllib<span style="color:#719e07">.</span>request<span style="color:#719e07">.</span>urlopen(url_string) <span style="color:#719e07">as</span> url:
+                data <span style="color:#719e07">=</span> json<span style="color:#719e07">.</span>loads(url<span style="color:#719e07">.</span>read()<span style="color:#719e07">.</span>decode())
+            <span style="color:#586e75"># extract stock market data</span>
+            data <span style="color:#719e07">=</span> data[<span style="color:#2aa198">&#39;Time Series (Daily)&#39;</span>]
+            df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>DataFrame(columns<span style="color:#719e07">=</span>[<span style="color:#2aa198">&#39;Date&#39;</span>,<span style="color:#2aa198">&#39;Low&#39;</span>,<span style="color:#2aa198">&#39;High&#39;</span>,<span style="color:#2aa198">&#39;Close&#39;</span>,<span style="color:#2aa198">&#39;Open&#39;</span>])
+            <span style="color:#719e07">for</span> k,v <span style="color:#719e07">in</span> data<span style="color:#719e07">.</span>items():
+                date <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime<span style="color:#719e07">.</span>strptime(k, <span style="color:#2aa198">&#39;%Y-%m-</span><span style="color:#2aa198">%d</span><span style="color:#2aa198">&#39;</span>)
+                data_row <span style="color:#719e07">=</span> [date<span style="color:#719e07">.</span>date(),<span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;3. low&#39;</span>]),<span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;2. high&#39;</span>]),
+                            <span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;4. close&#39;</span>]),<span style="color:#b58900">float</span>(v[<span style="color:#2aa198">&#39;1. open&#39;</span>])]
+                df<span style="color:#719e07">.</span>loc[<span style="color:#719e07">-</span><span style="color:#2aa198">1</span>,:] <span style="color:#719e07">=</span> data_row
+                df<span style="color:#719e07">.</span>index <span style="color:#719e07">=</span> df<span style="color:#719e07">.</span>index <span style="color:#719e07">+</span> <span style="color:#2aa198">1</span>
+            <span style="color:#719e07">print</span>(<span style="color:#2aa198">&#39;Data saved to : </span><span style="color:#2aa198">%s</span><span style="color:#2aa198">&#39;</span><span style="color:#719e07">%</span>file_to_save)        
+            df<span style="color:#719e07">.</span>to_csv(file_to_save)
+
+        
+
+get_data_from_av(<span style="color:#268bd2">True</span>)
+</code></pre></div><div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#719e07">import</span> datetime <span style="color:#719e07">as</span> dt
+<span style="color:#719e07">import</span> matplotlib.pyplot <span style="color:#719e07">as</span> plt
+<span style="color:#719e07">from</span> matplotlib <span style="color:#719e07">import</span> style
+<span style="color:#719e07">import</span> pandas <span style="color:#719e07">as</span> pd
+<span style="color:#719e07">import</span> pandas_datareader.data <span style="color:#719e07">as</span> web
+<span style="color:#719e07">import</span> matplotlib.dates <span style="color:#719e07">as</span> mdates
+<span style="color:#719e07">from</span> mpl_finance <span style="color:#719e07">import</span> candlestick_ohlc
+style<span style="color:#719e07">.</span>use(<span style="color:#2aa198">&#39;ggplot&#39;</span>)
+
+start <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime(<span style="color:#2aa198">2019</span>, <span style="color:#2aa198">1</span> ,<span style="color:#2aa198">1</span>)
+end <span style="color:#719e07">=</span> dt<span style="color:#719e07">.</span>datetime<span style="color:#719e07">.</span>now()
+
+df <span style="color:#719e07">=</span> web<span style="color:#719e07">.</span>DataReader(<span style="color:#2aa198">&#34;AAPL&#34;</span>, <span style="color:#2aa198">&#39;av-daily&#39;</span>, start, end, access_key<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;xxxxx&#39;</span>)
+
+df <span style="color:#719e07">=</span> pd<span style="color:#719e07">.</span>read_csv(<span style="color:#2aa198">&#39;tsla.csv&#39;</span>, parse_dates<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>, index_col<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>)
+df[<span style="color:#2aa198">&#39;100ma&#39;</span>] <span style="color:#719e07">=</span> df[<span style="color:#2aa198">&#39;close&#39;</span>]<span style="color:#719e07">.</span>rolling(window<span style="color:#719e07">=</span><span style="color:#2aa198">10</span>, min_periods<span style="color:#719e07">=</span><span style="color:#2aa198">0</span>)<span style="color:#719e07">.</span>mean()
+<span style="color:#719e07">print</span>(df<span style="color:#719e07">.</span>head())
+<span style="color:#2aa198">&#34;&#34;&#34;ax1 = plt.subplot2grid((6,1), (0,0), rowspan=5, colspan=1)
+</span><span style="color:#2aa198">ax2 = plt.subplot2grid((6,1), (5,0), rowspan=1, colspan=1, sharex=ax1)
+</span><span style="color:#2aa198">ax1.plot(df.index, df[&#39;close&#39;])
+</span><span style="color:#2aa198">ax1.plot(df.index, df[&#39;100ma&#39;])
+</span><span style="color:#2aa198">ax2.bar(df.index, df[&#39;volume&#39;])
+</span><span style="color:#2aa198">&#34;&#34;&#34;</span>
+df_ohlc <span style="color:#719e07">=</span> df[<span style="color:#2aa198">&#39;close&#39;</span>]<span style="color:#719e07">.</span>resample(<span style="color:#2aa198">&#39;10D&#39;</span>)<span style="color:#719e07">.</span>ohlc()
+df_volume <span style="color:#719e07">=</span> df[<span style="color:#2aa198">&#39;volume&#39;</span>]<span style="color:#719e07">.</span>resample(<span style="color:#2aa198">&#39;10D&#39;</span>)<span style="color:#719e07">.</span>sum()
+
+df_ohlc<span style="color:#719e07">.</span>reset_index(inplace<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>)
+
+df_ohlc[<span style="color:#2aa198">&#39;date&#39;</span>] <span style="color:#719e07">=</span> df_ohlc[<span style="color:#2aa198">&#39;date&#39;</span>]<span style="color:#719e07">.</span>map(mdates<span style="color:#719e07">.</span>date2num)
+
+
+ax1 <span style="color:#719e07">=</span> plt<span style="color:#719e07">.</span>subplot2grid((<span style="color:#2aa198">6</span>,<span style="color:#2aa198">1</span>), (<span style="color:#2aa198">0</span>,<span style="color:#2aa198">0</span>), rowspan<span style="color:#719e07">=</span><span style="color:#2aa198">5</span>, colspan<span style="color:#719e07">=</span><span style="color:#2aa198">1</span>)
+ax2 <span style="color:#719e07">=</span> plt<span style="color:#719e07">.</span>subplot2grid((<span style="color:#2aa198">6</span>,<span style="color:#2aa198">1</span>), (<span style="color:#2aa198">5</span>,<span style="color:#2aa198">0</span>), rowspan<span style="color:#719e07">=</span><span style="color:#2aa198">1</span>, colspan<span style="color:#719e07">=</span><span style="color:#2aa198">1</span>, sharex<span style="color:#719e07">=</span>ax1)
+ax1<span style="color:#719e07">.</span>xaxis_date()
+
+candlestick_ohlc(ax1, df_ohlc<span style="color:#719e07">.</span>values, width<span style="color:#719e07">=</span><span style="color:#2aa198">5</span>, colorup<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;g&#39;</span>)
+ax2<span style="color:#719e07">.</span>fill_between(df_volume<span style="color:#719e07">.</span>index<span style="color:#719e07">.</span>map(mdates<span style="color:#719e07">.</span>date2num),df_volume<span style="color:#719e07">.</span>values,<span style="color:#2aa198">0</span>)
+plt<span style="color:#719e07">.</span>show()
+</code></pre></div><p>Example: AAPL Stock Price</p>
+<table>
+<thead>
+<tr>
+<th>date</th>
+<th>open</th>
+<th>high</th>
+<th>low</th>
+<th>close</th>
+<th>volume</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>02-01-2019</td>
+<td>154.89</td>
+<td>158.85</td>
+<td>154.23</td>
+<td>157.92</td>
+<td>37039737</td>
+</tr>
+<tr>
+<td>03-01-2019</td>
+<td>143.98</td>
+<td>145.72</td>
+<td>142</td>
+<td>142.19</td>
+<td>91312195</td>
+</tr>
+<tr>
+<td>04-01-2019</td>
+<td>144.53</td>
+<td>148.5499</td>
+<td>143.8</td>
+<td>148.26</td>
+<td>58607070</td>
+</tr>
+<tr>
+<td>07-01-2019</td>
+<td>148.7</td>
+<td>148.83</td>
+<td>145.9</td>
+<td>147.93</td>
+<td>54777764</td>
+</tr>
+<tr>
+<td>08-01-2019</td>
+<td>149.56</td>
+<td>151.82</td>
+<td>148.52</td>
+<td>150.75</td>
+<td>41025314</td>
+</tr>
+<tr>
+<td>09-01-2019</td>
+<td>151.29</td>
+<td>154.53</td>
+<td>149.63</td>
+<td>153.31</td>
+<td>45099081</td>
+</tr>
+<tr>
+<td>10-01-2019</td>
+<td>152.5</td>
+<td>153.97</td>
+<td>150.86</td>
+<td>153.8</td>
+<td>35780670</td>
+</tr>
+<tr>
+<td>11-01-2019</td>
+<td>152.88</td>
+<td>153.7</td>
+<td>151.51</td>
+<td>152.29</td>
+<td>27023241</td>
+</tr>
+<tr>
+<td>14-01-2019</td>
+<td>150.85</td>
+<td>151.27</td>
+<td>149.22</td>
+<td>150</td>
+<td>32439186</td>
+</tr>
+<tr>
+<td>15-01-2019</td>
+<td>150.27</td>
+<td>153.39</td>
+<td>150.05</td>
+<td>153.07</td>
+<td>28710324</td>
+</tr>
+<tr>
+<td>16-01-2019</td>
+<td>153.08</td>
+<td>155.88</td>
+<td>153</td>
+<td>154.94</td>
+<td>30569706</td>
+</tr>
+<tr>
+<td>17-01-2019</td>
+<td>154.2</td>
+<td>157.66</td>
+<td>153.26</td>
+<td>155.86</td>
+<td>29821160</td>
+</tr>
+<tr>
+<td>18-01-2019</td>
+<td>157.5</td>
+<td>157.88</td>
+<td>155.9806</td>
+<td>156.82</td>
+<td>33751023</td>
+</tr>
+<tr>
+<td>22-01-2019</td>
+<td>156.41</td>
+<td>156.73</td>
+<td>152.62</td>
+<td>153.3</td>
+<td>30393970</td>
+</tr>
+<tr>
+<td>23-01-2019</td>
+<td>154.15</td>
+<td>155.14</td>
+<td>151.7</td>
+<td>153.92</td>
+<td>23130570</td>
+</tr>
+<tr>
+<td>24-01-2019</td>
+<td>154.11</td>
+<td>154.48</td>
+<td>151.74</td>
+<td>152.7</td>
+<td>25441549</td>
+</tr>
+<tr>
+<td>25-01-2019</td>
+<td>155.48</td>
+<td>158.13</td>
+<td>154.32</td>
+<td>157.76</td>
+<td>33547893</td>
+</tr>
+<tr>
+<td>28-01-2019</td>
+<td>155.79</td>
+<td>156.33</td>
+<td>153.66</td>
+<td>156.3</td>
+<td>26192058</td>
+</tr>
+<tr>
+<td>29-01-2019</td>
+<td>156.25</td>
+<td>158.13</td>
+<td>154.11</td>
+<td>154.68</td>
+<td>41587239</td>
+</tr>
+<tr>
+<td>30-01-2019</td>
+<td>163.25</td>
+<td>166.15</td>
+<td>160.23</td>
+<td>165.25</td>
+<td>61109780</td>
+</tr>
+<tr>
+<td>31-01-2019</td>
+<td>166.11</td>
+<td>169</td>
+<td>164.56</td>
+<td>166.44</td>
+<td>40739649</td>
+</tr>
+<tr>
+<td>01-02-2019</td>
+<td>166.96</td>
+<td>168.98</td>
+<td>165.93</td>
+<td>166.52</td>
+<td>32668138</td>
+</tr>
+<tr>
+<td>04-02-2019</td>
+<td>167.41</td>
+<td>171.655</td>
+<td>167.28</td>
+<td>171.25</td>
+<td>31495582</td>
+</tr>
+<tr>
+<td>05-02-2019</td>
+<td>172.86</td>
+<td>175.08</td>
+<td>172.3501</td>
+<td>174.18</td>
+<td>36101628</td>
+</tr>
+<tr>
+<td>06-02-2019</td>
+<td>174.65</td>
+<td>175.57</td>
+<td>172.8531</td>
+<td>174.24</td>
+<td>28239591</td>
+</tr>
+<tr>
+<td>07-02-2019</td>
+<td>172.4</td>
+<td>173.94</td>
+<td>170.34</td>
+<td>170.94</td>
+<td>31741690</td>
+</tr>
+<tr>
+<td>08-02-2019</td>
+<td>168.99</td>
+<td>170.66</td>
+<td>168.42</td>
+<td>170.41</td>
+<td>23819966</td>
+</tr>
+<tr>
+<td>11-02-2019</td>
+<td>171.05</td>
+<td>171.21</td>
+<td>169.25</td>
+<td>169.43</td>
+<td>20993425</td>
+</tr>
+<tr>
+<td>12-02-2019</td>
+<td>170.1</td>
+<td>171</td>
+<td>169.7</td>
+<td>170.89</td>
+<td>22283523</td>
+</tr>
+<tr>
+<td>13-02-2019</td>
+<td>171.39</td>
+<td>172.48</td>
+<td>169.92</td>
+<td>170.18</td>
+<td>22490233</td>
+</tr>
+<tr>
+<td>14-02-2019</td>
+<td>169.71</td>
+<td>171.2615</td>
+<td>169.38</td>
+<td>170.8</td>
+<td>21835747</td>
+</tr>
+<tr>
+<td>15-02-2019</td>
+<td>171.25</td>
+<td>171.7</td>
+<td>169.75</td>
+<td>170.42</td>
+<td>24626814</td>
+</tr>
+<tr>
+<td>19-02-2019</td>
+<td>169.71</td>
+<td>171.44</td>
+<td>169.49</td>
+<td>170.93</td>
+<td>18972826</td>
+</tr>
+<tr>
+<td>20-02-2019</td>
+<td>171.19</td>
+<td>173.32</td>
+<td>170.99</td>
+<td>172.03</td>
+<td>26114362</td>
+</tr>
+<tr>
+<td>21-02-2019</td>
+<td>171.8</td>
+<td>172.37</td>
+<td>170.3</td>
+<td>171.06</td>
+<td>17249670</td>
+</tr>
+<tr>
+<td>22-02-2019</td>
+<td>171.58</td>
+<td>173</td>
+<td>171.38</td>
+<td>172.97</td>
+<td>18913154</td>
+</tr>
+<tr>
+<td>25-02-2019</td>
+<td>174.16</td>
+<td>175.87</td>
+<td>173.95</td>
+<td>174.23</td>
+<td>21873358</td>
+</tr>
+<tr>
+<td>26-02-2019</td>
+<td>173.71</td>
+<td>175.3</td>
+<td>173.1732</td>
+<td>174.33</td>
+<td>17070211</td>
+</tr>
+<tr>
+<td>27-02-2019</td>
+<td>173.21</td>
+<td>175</td>
+<td>172.73</td>
+<td>174.87</td>
+<td>27835389</td>
+</tr>
+<tr>
+<td>28-02-2019</td>
+<td>174.32</td>
+<td>174.91</td>
+<td>172.92</td>
+<td>173.15</td>
+<td>28215416</td>
+</tr>
+<tr>
+<td>01-03-2019</td>
+<td>174.28</td>
+<td>175.15</td>
+<td>172.89</td>
+<td>174.97</td>
+<td>25886167</td>
+</tr>
+<tr>
+<td>04-03-2019</td>
+<td>175.69</td>
+<td>177.75</td>
+<td>173.97</td>
+<td>175.85</td>
+<td>27436203</td>
+</tr>
+<tr>
+<td>05-03-2019</td>
+<td>175.94</td>
+<td>176</td>
+<td>174.54</td>
+<td>175.53</td>
+<td>19737419</td>
+</tr>
+<tr>
+<td>06-03-2019</td>
+<td>174.67</td>
+<td>175.49</td>
+<td>173.94</td>
+<td>174.52</td>
+<td>20810384</td>
+</tr>
+<tr>
+<td>07-03-2019</td>
+<td>173.87</td>
+<td>174.44</td>
+<td>172.02</td>
+<td>172.5</td>
+<td>24796374</td>
+</tr>
+<tr>
+<td>08-03-2019</td>
+<td>170.32</td>
+<td>173.07</td>
+<td>169.5</td>
+<td>172.91</td>
+<td>23999358</td>
+</tr>
+<tr>
+<td>11-03-2019</td>
+<td>175.49</td>
+<td>179.12</td>
+<td>175.35</td>
+<td>178.9</td>
+<td>32011034</td>
+</tr>
+<tr>
+<td>12-03-2019</td>
+<td>180</td>
+<td>182.67</td>
+<td>179.37</td>
+<td>180.91</td>
+<td>32467584</td>
+</tr>
+<tr>
+<td>13-03-2019</td>
+<td>182.25</td>
+<td>183.3</td>
+<td>180.92</td>
+<td>181.71</td>
+<td>31032524</td>
+</tr>
+<tr>
+<td>14-03-2019</td>
+<td>183.9</td>
+<td>184.1</td>
+<td>182.56</td>
+<td>183.73</td>
+<td>23579508</td>
+</tr>
+<tr>
+<td>15-03-2019</td>
+<td>184.85</td>
+<td>187.33</td>
+<td>183.74</td>
+<td>186.12</td>
+<td>39042912</td>
+</tr>
+<tr>
+<td>18-03-2019</td>
+<td>185.8</td>
+<td>188.39</td>
+<td>185.79</td>
+<td>188.02</td>
+<td>26219832</td>
+</tr>
+<tr>
+<td>19-03-2019</td>
+<td>188.35</td>
+<td>188.99</td>
+<td>185.92</td>
+<td>186.53</td>
+<td>31646369</td>
+</tr>
+<tr>
+<td>20-03-2019</td>
+<td>186.23</td>
+<td>189.49</td>
+<td>184.73</td>
+<td>188.16</td>
+<td>31035231</td>
+</tr>
+<tr>
+<td>21-03-2019</td>
+<td>190.02</td>
+<td>196.33</td>
+<td>189.81</td>
+<td>195.09</td>
+<td>51034237</td>
+</tr>
+<tr>
+<td>22-03-2019</td>
+<td>195.34</td>
+<td>197.69</td>
+<td>190.78</td>
+<td>191.05</td>
+<td>42407666</td>
+</tr>
+<tr>
+<td>25-03-2019</td>
+<td>191.51</td>
+<td>191.98</td>
+<td>186.6</td>
+<td>188.74</td>
+<td>43845293</td>
+</tr>
+<tr>
+<td>26-03-2019</td>
+<td>191.664</td>
+<td>192.88</td>
+<td>184.58</td>
+<td>186.79</td>
+<td>49800538</td>
+</tr>
+<tr>
+<td>27-03-2019</td>
+<td>188.75</td>
+<td>189.76</td>
+<td>186.55</td>
+<td>188.47</td>
+<td>29848427</td>
+</tr>
+<tr>
+<td>28-03-2019</td>
+<td>188.95</td>
+<td>189.559</td>
+<td>187.53</td>
+<td>188.72</td>
+<td>20780363</td>
+</tr>
+<tr>
+<td>29-03-2019</td>
+<td>189.83</td>
+<td>190.08</td>
+<td>188.54</td>
+<td>189.95</td>
+<td>23563961</td>
+</tr>
+<tr>
+<td>01-04-2019</td>
+<td>191.64</td>
+<td>191.68</td>
+<td>188.38</td>
+<td>191.24</td>
+<td>27861964</td>
+</tr>
+<tr>
+<td>02-04-2019</td>
+<td>191.09</td>
+<td>194.46</td>
+<td>191.05</td>
+<td>194.02</td>
+<td>22765732</td>
+</tr>
+<tr>
+<td>03-04-2019</td>
+<td>193.25</td>
+<td>196.5</td>
+<td>193.15</td>
+<td>195.35</td>
+<td>23271830</td>
+</tr>
+<tr>
+<td>04-04-2019</td>
+<td>194.79</td>
+<td>196.37</td>
+<td>193.14</td>
+<td>195.69</td>
+<td>19114275</td>
+</tr>
+<tr>
+<td>05-04-2019</td>
+<td>196.45</td>
+<td>197.1</td>
+<td>195.93</td>
+<td>197</td>
+<td>18526644</td>
+</tr>
+<tr>
+<td>08-04-2019</td>
+<td>196.42</td>
+<td>200.23</td>
+<td>196.34</td>
+<td>200.1</td>
+<td>25881697</td>
+</tr>
+<tr>
+<td>09-04-2019</td>
+<td>200.32</td>
+<td>202.85</td>
+<td>199.23</td>
+<td>199.5</td>
+<td>35768237</td>
+</tr>
+<tr>
+<td>10-04-2019</td>
+<td>198.68</td>
+<td>200.74</td>
+<td>198.18</td>
+<td>200.62</td>
+<td>21695288</td>
+</tr>
+<tr>
+<td>11-04-2019</td>
+<td>200.85</td>
+<td>201</td>
+<td>198.4431</td>
+<td>198.95</td>
+<td>20900808</td>
+</tr>
+<tr>
+<td>12-04-2019</td>
+<td>199.2</td>
+<td>200.14</td>
+<td>196.21</td>
+<td>198.87</td>
+<td>27760668</td>
+</tr>
+<tr>
+<td>15-04-2019</td>
+<td>198.58</td>
+<td>199.85</td>
+<td>198.01</td>
+<td>199.23</td>
+<td>17536646</td>
+</tr>
+<tr>
+<td>16-04-2019</td>
+<td>199.46</td>
+<td>201.37</td>
+<td>198.56</td>
+<td>199.25</td>
+<td>25696385</td>
+</tr>
+<tr>
+<td>17-04-2019</td>
+<td>199.54</td>
+<td>203.38</td>
+<td>198.61</td>
+<td>203.13</td>
+<td>28906780</td>
+</tr>
+<tr>
+<td>18-04-2019</td>
+<td>203.12</td>
+<td>204.15</td>
+<td>202.52</td>
+<td>203.86</td>
+<td>24195766</td>
+</tr>
+<tr>
+<td>22-04-2019</td>
+<td>202.83</td>
+<td>204.94</td>
+<td>202.34</td>
+<td>204.53</td>
+<td>19439545</td>
+</tr>
+<tr>
+<td>23-04-2019</td>
+<td>204.43</td>
+<td>207.75</td>
+<td>203.9</td>
+<td>207.48</td>
+<td>23322991</td>
+</tr>
+<tr>
+<td>24-04-2019</td>
+<td>207.36</td>
+<td>208.48</td>
+<td>207.05</td>
+<td>207.16</td>
+<td>17540609</td>
+</tr>
+<tr>
+<td>25-04-2019</td>
+<td>206.83</td>
+<td>207.76</td>
+<td>205.12</td>
+<td>205.28</td>
+<td>18543206</td>
+</tr>
+<tr>
+<td>26-04-2019</td>
+<td>204.9</td>
+<td>205</td>
+<td>202.12</td>
+<td>204.3</td>
+<td>18649102</td>
+</tr>
+<tr>
+<td>29-04-2019</td>
+<td>204.4</td>
+<td>205.97</td>
+<td>203.86</td>
+<td>204.61</td>
+<td>22204716</td>
+</tr>
+<tr>
+<td>30-04-2019</td>
+<td>203.06</td>
+<td>203.4</td>
+<td>199.11</td>
+<td>200.67</td>
+<td>46534923</td>
+</tr>
+<tr>
+<td>01-05-2019</td>
+<td>209.88</td>
+<td>215.31</td>
+<td>209.23</td>
+<td>210.52</td>
+<td>64827328</td>
+</tr>
+<tr>
+<td>02-05-2019</td>
+<td>209.84</td>
+<td>212.65</td>
+<td>208.13</td>
+<td>209.15</td>
+<td>31996324</td>
+</tr>
+<tr>
+<td>03-05-2019</td>
+<td>210.89</td>
+<td>211.84</td>
+<td>210.23</td>
+<td>211.75</td>
+<td>20892378</td>
+</tr>
+<tr>
+<td>06-05-2019</td>
+<td>204.29</td>
+<td>208.84</td>
+<td>203.5</td>
+<td>208.48</td>
+<td>32443113</td>
+</tr>
+<tr>
+<td>07-05-2019</td>
+<td>205.88</td>
+<td>207.4175</td>
+<td>200.825</td>
+<td>202.86</td>
+<td>38763698</td>
+</tr>
+<tr>
+<td>08-05-2019</td>
+<td>201.9</td>
+<td>205.34</td>
+<td>201.75</td>
+<td>202.9</td>
+<td>26339504</td>
+</tr>
+<tr>
+<td>09-05-2019</td>
+<td>200.4</td>
+<td>201.68</td>
+<td>196.66</td>
+<td>200.72</td>
+<td>34908607</td>
+</tr>
+<tr>
+<td>10-05-2019</td>
+<td>197.419</td>
+<td>198.85</td>
+<td>192.77</td>
+<td>197.18</td>
+<td>41208712</td>
+</tr>
+<tr>
+<td>13-05-2019</td>
+<td>187.71</td>
+<td>189.48</td>
+<td>182.85</td>
+<td>185.72</td>
+<td>57430623</td>
+</tr>
+<tr>
+<td>14-05-2019</td>
+<td>186.41</td>
+<td>189.7</td>
+<td>185.41</td>
+<td>188.66</td>
+<td>36529677</td>
+</tr>
+<tr>
+<td>15-05-2019</td>
+<td>186.27</td>
+<td>191.75</td>
+<td>186.02</td>
+<td>190.92</td>
+<td>26544718</td>
+</tr>
+<tr>
+<td>16-05-2019</td>
+<td>189.91</td>
+<td>192.4689</td>
+<td>188.84</td>
+<td>190.08</td>
+<td>33031364</td>
+</tr>
+<tr>
+<td>17-05-2019</td>
+<td>186.93</td>
+<td>190.9</td>
+<td>186.76</td>
+<td>189</td>
+<td>32879090</td>
+</tr>
+<tr>
+<td>20-05-2019</td>
+<td>183.52</td>
+<td>184.349</td>
+<td>180.2839</td>
+<td>183.09</td>
+<td>38612290</td>
+</tr>
+<tr>
+<td>21-05-2019</td>
+<td>185.22</td>
+<td>188</td>
+<td>184.7</td>
+<td>186.6</td>
+<td>28364848</td>
+</tr>
+<tr>
+<td>22-05-2019</td>
+<td>184.66</td>
+<td>185.71</td>
+<td>182.55</td>
+<td>182.78</td>
+<td>29748556</td>
+</tr>
+<tr>
+<td>23-05-2019</td>
+<td>179.8</td>
+<td>180.54</td>
+<td>177.81</td>
+<td>179.66</td>
+<td>36529736</td>
+</tr>
+<tr>
+<td>24-05-2019</td>
+<td>180.2</td>
+<td>182.14</td>
+<td>178.62</td>
+<td>178.97</td>
+<td>23714686</td>
+</tr>
+<tr>
+<td>28-05-2019</td>
+<td>178.92</td>
+<td>180.59</td>
+<td>177.91</td>
+<td>178.23</td>
+<td>27948160</td>
+</tr>
+<tr>
+<td>29-05-2019</td>
+<td>176.42</td>
+<td>179.35</td>
+<td>176</td>
+<td>177.38</td>
+<td>28481165</td>
+</tr>
+<tr>
+<td>30-05-2019</td>
+<td>177.95</td>
+<td>179.23</td>
+<td>176.67</td>
+<td>178.3</td>
+<td>21218412</td>
+</tr>
+<tr>
+<td>31-05-2019</td>
+<td>176.23</td>
+<td>177.99</td>
+<td>174.99</td>
+<td>175.07</td>
+<td>27043584</td>
+</tr>
+<tr>
+<td>03-06-2019</td>
+<td>175.6</td>
+<td>177.92</td>
+<td>170.27</td>
+<td>173.3</td>
+<td>40396069</td>
+</tr>
+<tr>
+<td>04-06-2019</td>
+<td>175.44</td>
+<td>179.83</td>
+<td>174.52</td>
+<td>179.64</td>
+<td>30967961</td>
+</tr>
+<tr>
+<td>05-06-2019</td>
+<td>184.28</td>
+<td>184.99</td>
+<td>181.14</td>
+<td>182.54</td>
+<td>29773427</td>
+</tr>
+<tr>
+<td>06-06-2019</td>
+<td>183.08</td>
+<td>185.47</td>
+<td>182.1489</td>
+<td>185.22</td>
+<td>22526311</td>
+</tr>
+<tr>
+<td>07-06-2019</td>
+<td>186.51</td>
+<td>191.92</td>
+<td>185.77</td>
+<td>190.15</td>
+<td>30684393</td>
+</tr>
+<tr>
+<td>10-06-2019</td>
+<td>191.81</td>
+<td>195.37</td>
+<td>191.62</td>
+<td>192.58</td>
+<td>26220851</td>
+</tr>
+<tr>
+<td>11-06-2019</td>
+<td>194.86</td>
+<td>196</td>
+<td>193.6</td>
+<td>194.81</td>
+<td>25020913</td>
+</tr>
+</tbody>
+</table>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>

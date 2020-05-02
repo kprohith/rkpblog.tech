@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Text-Classifier-ML - Rohith&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta property="og:title" content="Text-Classifier-ML" />
+<meta property="og:description" content="Basic text classifier that uses tensor-flow and keras api inorder to classify text" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.rkpblog.tech/new/2019/06/text-classifier-ml/" />
+<meta property="article:published_time" content="2019-06-16T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Text-Classifier-ML"/>
+<meta name="twitter:description" content="Basic text classifier that uses tensor-flow and keras api inorder to classify text"/>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic,400italic|Raleway:200,300" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/normalize.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://www.rkpblog.tech/newcss/main.css" /><link rel="stylesheet" type="text/css" href="https://www.rkpblog.tech/newcss/dark.css"  />
+
+	<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+	<script src="https://www.rkpblog.tech/newjs/main.js"></script>
+</head>
+
+<body>
+	<div class="container wrapper post">
+		<div class="header">
+	<h1 class="site-title"><a href="https://www.rkpblog.tech/new">Rohith&#39;s Blog</a></h1>
+	<div class="site-description"><h2>I write about tech.</h2><nav class="nav social">
+			<ul class="flat"><a href="https://github.com/kprohith" title="Github"><i data-feather="github"></i></a><a href="https://linkedin.com/in/rohith-kp" title=""><i data-feather="linkedin"></i></a><a href="https://twitter.com/fortytwochars" title=""><i data-feather="twitter"></i></a><a href="/index.xml" title="RSS"><i data-feather="rss"></i></a></ul>
+		</nav>
+	</div>
+
+	<nav class="nav">
+		<ul class="flat">
+			
+			<li>
+				<a href="/new/">Home</a>
+			</li>
+			
+			<li>
+				<a href="/new/posts">All posts</a>
+			</li>
+			
+			<li>
+				<a href="/new/about">About</a>
+			</li>
+			
+			<li>
+				<a href="/new/tags">Tags</a>
+			</li>
+			
+		</ul>
+	</nav>
+</div>
+
+
+		<div class="post-header">
+			<h1 class="title">Text-Classifier-ML</h1>
+			<div class="meta">Posted at &mdash; Jun 16, 2019</div>
+		</div>
+
+		<div class="markdown">
+			<h1 id="text-classifier-ml">Text-Classifier-ML</h1>
+<h2 id="basic-text-classifier-that-uses-tensor-flowhttpstensorfloworg-and-keras-apihttpskerasio-inorder-to-classify-text-as">Basic text classifier that uses <a href="https:/tensorflow.org">tensor-flow</a> and <a href="https://keras.io">keras api</a> inorder to classify text as:</h2>
+<h3 id="1-positive">1.) Positive</h3>
+<h3 id="2-negative">2.) Negative</h3>
+<h3 id="trained-on-the-imdb-movie-review-datasethttpsaistanfordeduamaasdatasentimentaclimdb_v1targz">Trained on the <a href="https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz">IMDB Movie Review dataset</a></h3>
+<div class="highlight"><pre style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#719e07">from</span> __future__ <span style="color:#719e07">import</span> absolute_import, division, print_function
+
+<span style="color:#719e07">import</span> tensorflow <span style="color:#719e07">as</span> tf
+<span style="color:#719e07">from</span> tensorflow <span style="color:#719e07">import</span> keras
+
+<span style="color:#719e07">import</span> numpy <span style="color:#719e07">as</span> np
+<span style="color:#719e07">import</span> os
+<span style="color:#719e07">import</span> random
+
+
+<span style="color:#719e07">print</span>(tf<span style="color:#719e07">.</span>__version__)
+
+imdb <span style="color:#719e07">=</span> keras<span style="color:#719e07">.</span>datasets<span style="color:#719e07">.</span>imdb
+
+<span style="color:#586e75"># save np.load</span>
+np_load_old <span style="color:#719e07">=</span> np<span style="color:#719e07">.</span>load
+
+<span style="color:#586e75"># modify the default parameters of np.load</span>
+np<span style="color:#719e07">.</span>load <span style="color:#719e07">=</span> <span style="color:#719e07">lambda</span> <span style="color:#719e07">*</span>a,<span style="color:#719e07">**</span>k: np_load_old(<span style="color:#719e07">*</span>a, allow_pickle<span style="color:#719e07">=</span><span style="color:#268bd2">True</span>, <span style="color:#719e07">**</span>k)
+
+<span style="color:#586e75"># call load_data with allow_pickle implicitly set to true</span>
+(train_data, train_labels), (test_data, test_labels) <span style="color:#719e07">=</span> imdb<span style="color:#719e07">.</span>load_data(num_words<span style="color:#719e07">=</span><span style="color:#2aa198">10000</span>)
+
+<span style="color:#586e75"># restore np.load for future normal usage</span>
+np<span style="color:#719e07">.</span>load <span style="color:#719e07">=</span> np_load_old
+
+<span style="color:#719e07">print</span>(<span style="color:#2aa198">&#34;Training entries: {}, labels: {}&#34;</span><span style="color:#719e07">.</span>format(<span style="color:#b58900">len</span>(train_data), <span style="color:#b58900">len</span>(train_labels)))
+
+<span style="color:#719e07">print</span>(train_data[<span style="color:#2aa198">0</span>])
+
+<span style="color:#b58900">len</span>(train_data[<span style="color:#2aa198">0</span>]), <span style="color:#b58900">len</span>(train_data[<span style="color:#2aa198">1</span>])
+
+<span style="color:#586e75"># A dictionary mapping words to an integer index</span>
+word_index <span style="color:#719e07">=</span> imdb<span style="color:#719e07">.</span>get_word_index()
+
+<span style="color:#586e75"># The first indices are reserved</span>
+word_index <span style="color:#719e07">=</span> {k:(v<span style="color:#719e07">+</span><span style="color:#2aa198">3</span>) <span style="color:#719e07">for</span> k,v <span style="color:#719e07">in</span> word_index<span style="color:#719e07">.</span>items()} 
+word_index[<span style="color:#2aa198">&#34;&lt;PAD&gt;&#34;</span>] <span style="color:#719e07">=</span> <span style="color:#2aa198">0</span>
+word_index[<span style="color:#2aa198">&#34;&lt;START&gt;&#34;</span>] <span style="color:#719e07">=</span> <span style="color:#2aa198">1</span>
+word_index[<span style="color:#2aa198">&#34;&lt;UNK&gt;&#34;</span>] <span style="color:#719e07">=</span> <span style="color:#2aa198">2</span>  <span style="color:#586e75"># unknown</span>
+word_index[<span style="color:#2aa198">&#34;&lt;UNUSED&gt;&#34;</span>] <span style="color:#719e07">=</span> <span style="color:#2aa198">3</span>
+
+reverse_word_index <span style="color:#719e07">=</span> <span style="color:#b58900">dict</span>([(value, key) <span style="color:#719e07">for</span> (key, value) <span style="color:#719e07">in</span> word_index<span style="color:#719e07">.</span>items()])
+
+<span style="color:#719e07">def</span> <span style="color:#268bd2">decode_review</span>(text):
+    <span style="color:#719e07">return</span> <span style="color:#2aa198">&#39; &#39;</span><span style="color:#719e07">.</span>join([reverse_word_index<span style="color:#719e07">.</span>get(i, <span style="color:#2aa198">&#39;?&#39;</span>) <span style="color:#719e07">for</span> i <span style="color:#719e07">in</span> text])
+
+
+decode_review(train_data[<span style="color:#2aa198">0</span>])
+
+train_data <span style="color:#719e07">=</span> keras<span style="color:#719e07">.</span>preprocessing<span style="color:#719e07">.</span>sequence<span style="color:#719e07">.</span>pad_sequences(train_data,
+                                                        value<span style="color:#719e07">=</span>word_index[<span style="color:#2aa198">&#34;&lt;PAD&gt;&#34;</span>],
+                                                        padding<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;post&#39;</span>,
+                                                        maxlen<span style="color:#719e07">=</span><span style="color:#2aa198">256</span>)
+
+test_data <span style="color:#719e07">=</span> keras<span style="color:#719e07">.</span>preprocessing<span style="color:#719e07">.</span>sequence<span style="color:#719e07">.</span>pad_sequences(test_data,
+                                                       value<span style="color:#719e07">=</span>word_index[<span style="color:#2aa198">&#34;&lt;PAD&gt;&#34;</span>],
+                                                       padding<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;post&#39;</span>,
+                                                       maxlen<span style="color:#719e07">=</span><span style="color:#2aa198">256</span>)
+
+
+<span style="color:#b58900">len</span>(train_data[<span style="color:#2aa198">0</span>]), <span style="color:#b58900">len</span>(train_data[<span style="color:#2aa198">1</span>])
+<span style="color:#719e07">print</span>(train_data[<span style="color:#2aa198">0</span>])
+
+<span style="color:#586e75"># input shape is the vocabulary count used for the movie reviews (10,000 words)</span>
+vocab_size <span style="color:#719e07">=</span> <span style="color:#2aa198">10000</span>
+
+model <span style="color:#719e07">=</span> keras<span style="color:#719e07">.</span>Sequential()
+model<span style="color:#719e07">.</span>add(keras<span style="color:#719e07">.</span>layers<span style="color:#719e07">.</span>Embedding(vocab_size, <span style="color:#2aa198">16</span>))
+model<span style="color:#719e07">.</span>add(keras<span style="color:#719e07">.</span>layers<span style="color:#719e07">.</span>GlobalAveragePooling1D())
+model<span style="color:#719e07">.</span>add(keras<span style="color:#719e07">.</span>layers<span style="color:#719e07">.</span>Dense(<span style="color:#2aa198">16</span>, activation<span style="color:#719e07">=</span>tf<span style="color:#719e07">.</span>nn<span style="color:#719e07">.</span>relu))
+model<span style="color:#719e07">.</span>add(keras<span style="color:#719e07">.</span>layers<span style="color:#719e07">.</span>Dense(<span style="color:#2aa198">1</span>, activation<span style="color:#719e07">=</span>tf<span style="color:#719e07">.</span>nn<span style="color:#719e07">.</span>sigmoid))
+
+model<span style="color:#719e07">.</span>summary()
+
+model<span style="color:#719e07">.</span>compile(optimizer<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;adam&#39;</span>,
+              loss<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;binary_crossentropy&#39;</span>,
+              metrics<span style="color:#719e07">=</span>[<span style="color:#2aa198">&#39;acc&#39;</span>])
+
+x_val <span style="color:#719e07">=</span> train_data[:<span style="color:#2aa198">10000</span>]
+partial_x_train <span style="color:#719e07">=</span> train_data[<span style="color:#2aa198">10000</span>:]
+
+y_val <span style="color:#719e07">=</span> train_labels[:<span style="color:#2aa198">10000</span>]
+partial_y_train <span style="color:#719e07">=</span> train_labels[<span style="color:#2aa198">10000</span>:]
+
+history <span style="color:#719e07">=</span> model<span style="color:#719e07">.</span>fit(partial_x_train,
+                    partial_y_train,
+                    epochs<span style="color:#719e07">=</span><span style="color:#2aa198">40</span>,
+                    batch_size<span style="color:#719e07">=</span><span style="color:#2aa198">512</span>,
+                    validation_data<span style="color:#719e07">=</span>(x_val, y_val),
+                    verbose<span style="color:#719e07">=</span><span style="color:#2aa198">1</span>)
+
+results <span style="color:#719e07">=</span> model<span style="color:#719e07">.</span>evaluate(test_data, test_labels)
+
+<span style="color:#719e07">print</span>(results)
+
+history_dict <span style="color:#719e07">=</span> history<span style="color:#719e07">.</span>history
+history_dict<span style="color:#719e07">.</span>keys()
+
+<span style="color:#719e07">import</span> matplotlib.pyplot <span style="color:#719e07">as</span> plt
+
+acc <span style="color:#719e07">=</span> history_dict[<span style="color:#2aa198">&#39;acc&#39;</span>]
+val_acc <span style="color:#719e07">=</span> history_dict[<span style="color:#2aa198">&#39;val_acc&#39;</span>]
+loss <span style="color:#719e07">=</span> history_dict[<span style="color:#2aa198">&#39;loss&#39;</span>]
+val_loss <span style="color:#719e07">=</span> history_dict[<span style="color:#2aa198">&#39;val_loss&#39;</span>]
+
+epochs <span style="color:#719e07">=</span> <span style="color:#b58900">range</span>(<span style="color:#2aa198">1</span>, <span style="color:#b58900">len</span>(acc) <span style="color:#719e07">+</span> <span style="color:#2aa198">1</span>)
+
+<span style="color:#586e75"># &#34;bo&#34; is for &#34;blue dot&#34;</span>
+plt<span style="color:#719e07">.</span>plot(epochs, loss, <span style="color:#2aa198">&#39;bo&#39;</span>, label<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;Training loss&#39;</span>)
+<span style="color:#586e75"># b is for &#34;solid blue line&#34;</span>
+plt<span style="color:#719e07">.</span>plot(epochs, val_loss, <span style="color:#2aa198">&#39;b&#39;</span>, label<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;Validation loss&#39;</span>)
+plt<span style="color:#719e07">.</span>title(<span style="color:#2aa198">&#39;Training and validation loss&#39;</span>)
+plt<span style="color:#719e07">.</span>xlabel(<span style="color:#2aa198">&#39;Epochs&#39;</span>)
+plt<span style="color:#719e07">.</span>ylabel(<span style="color:#2aa198">&#39;Loss&#39;</span>)
+plt<span style="color:#719e07">.</span>legend()
+
+plt<span style="color:#719e07">.</span>show()
+
+plt<span style="color:#719e07">.</span>clf()   <span style="color:#586e75"># clear figure</span>
+
+plt<span style="color:#719e07">.</span>plot(epochs, acc, <span style="color:#2aa198">&#39;bo&#39;</span>, label<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;Training acc&#39;</span>)
+plt<span style="color:#719e07">.</span>plot(epochs, val_acc, <span style="color:#2aa198">&#39;b&#39;</span>, label<span style="color:#719e07">=</span><span style="color:#2aa198">&#39;Validation acc&#39;</span>)
+plt<span style="color:#719e07">.</span>title(<span style="color:#2aa198">&#39;Training and validation accuracy&#39;</span>)
+plt<span style="color:#719e07">.</span>xlabel(<span style="color:#2aa198">&#39;Epochs&#39;</span>)
+plt<span style="color:#719e07">.</span>ylabel(<span style="color:#2aa198">&#39;Accuracy&#39;</span>)
+plt<span style="color:#719e07">.</span>legend()
+
+plt<span style="color:#719e07">.</span>show()
+</code></pre></div><p>Training and Validation Loss
+<img src="/images/2019-06-16-Text_Classifier_ML/Figure_1.png" alt="Training and Validation Loss"></p>
+<p>Training and Validation Accuracy
+<img src="/images/2019-06-16-Text_Classifier_ML/Figure_2.png" alt="Training and Validation Accuracy"></p>
+
+		</div>
+
+		<div class="post-tags">
+			
+				
+			
+		</div>
+		<div id="disqus_thread"></div>
+<script type="text/javascript">
+	(function () {
+		
+		
+		if (window.location.hostname == "localhost")
+			return;
+
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		var disqus_shortname = 'rohithpalakirti';
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+		Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+	<div class="footer wrapper">
+	<nav class="nav">
+		<div> <a href="https://github.com/vividvilla/ezhil">Ezhil theme</a> | Built with <a href="https://gohugo.io">Hugo</a></div>
+	</nav>
+</div>
+
+
+
+<script>feather.replace()</script>
+</body>
+</html>
