@@ -1,7 +1,7 @@
 baseURL = "/"
 languageCode = "en-us"
 title = "Rohith's Blog"
-theme = "ezhil"
+theme = "hugo-ink"
 enableEmoji = true
 footnoteReturnLinkContents = "↩"
 enableGitInfo = true
