@@ -4,9 +4,9 @@ layout: post
 description: A random silly story generator
 categories: [markdown]
 title: MADLIB - Story generator in JavaScript
+tags: [javascript]
 ---
 
-# MADLIB - Story generator in JavaScript
 
 main.js 
 

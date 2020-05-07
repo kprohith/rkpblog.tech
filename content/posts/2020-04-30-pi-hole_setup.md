@@ -4,6 +4,7 @@ layout: post
 description: Pi-Hole DNS sink over HTTPS
 categories: [markdown]
 title: Configuring Pi-Hole with DNS over HTTPS
+tags: [pi-hole, dns, security]
 ---
 
 # Pi-Hole DNS over HTTPS

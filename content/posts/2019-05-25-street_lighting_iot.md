@@ -4,11 +4,11 @@ layout: post
 description: Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights.
 categories: [markdown]
 title: Automated Street Lighting using Arduino - An IoT implementation
+tags: [iot, smart-home, arduino, C++]
 ---
 
-# Automated Street Lighting using Arduino - An IoT implementation
+Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights. Built using:
 
-Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights. Built using 
 * an Arduino Uno and
 * a Raspberry Pi 3B+.
 

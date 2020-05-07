@@ -4,10 +4,9 @@ layout: post
 description: Automated Smart Building using IoT
 categories: [markdown]
 title: Smart Presence Sensing System - IoT enabled Smart Building
-
+tags: [iot, smart-home, arduino, C++]
 ---
 
-# Smart Presence Sensing System - IoT enabled Smart Building
 
 Automated Smart Building using IoT
 

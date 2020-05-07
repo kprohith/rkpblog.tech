@@ -3,19 +3,19 @@ toc: true
 layout: post
 description: Basic text classifier that uses tensor-flow and keras api inorder to classify text
 categories: [markdown]
-title: Text-Classifier-ML
+title: Text Classification using machine learning
+tags: [python, machine-learning, tensorflow, keras, NLP]
 
 ---
 
-# Text-Classifier-ML
+ Text-Classifier-ML
 
-## Basic text classifier that uses [tensor-flow](https:/tensorflow.org) and [keras api](https://keras.io) inorder to classify text as:
+ Basic text classifier that uses [tensor-flow](https:/tensorflow.org) and [keras api](https://keras.io) inorder to classify text as:
 
-###                                                                                        1.) Positive
+  1.) Positive
+  2.) Negative
 
-###                                                                                        2.) Negative
-
-### Trained on the [IMDB Movie Review dataset](https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz)
+ Trained on the [IMDB Movie Review dataset](https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz)
 
 ```python
 from __future__ import absolute_import, division, print_function
@@ -148,6 +148,7 @@ plt.legend()
 
 plt.show()
 ```
+
 Training and Validation Loss
 ![Training and Validation Loss](/static/images/Figure_1.png)
 

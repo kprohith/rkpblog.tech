@@ -4,10 +4,10 @@ layout: post
 description: Automated Smart Weather Monitor using IoT
 categories: [markdown]
 title: Automated Weather Monitor using Arduino - an IoT Implementation
-
+tags: [iot, smart-home, arduino, C++]
 ---
 
-# Automated Weather Monitor using Arduino - an IoT Implementation
+
 
 Automated Smart Weather Monitor using IoT
 

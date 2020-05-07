@@ -4,8 +4,9 @@ layout: post
 description: Python workflow for applying deep learning on stock market tickers
 categories: [markdown]
 title: Python for finance
+tags: [python, machine-learning, finance]
 ---
-# Python for finance
+
 
 ### Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API
 #### Written entirely in python.

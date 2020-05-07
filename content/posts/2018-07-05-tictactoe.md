@@ -3,7 +3,8 @@ toc: true
 layout: post
 description: TicTacToe in Python
 categories: [markdown]
-title: TicTacToe in python - Commandline
+title: TicTacToe in Python
+tags: [python, script]
 ---
 
 

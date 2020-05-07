@@ -4,10 +4,8 @@ layout: post
 description: Smart Water Meter using IoT
 categories: [markdown]
 title: Smart Water Meter using an Arduino - An IoT Implementation
-
+tags: [iot, smart-home, arduino, C++]
 ---
-# Smart Water Meter using an Arduino - An IoT Implementation
-
 Smart Water Meter using IoT
 
 The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.

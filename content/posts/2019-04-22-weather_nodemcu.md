@@ -4,11 +4,8 @@ layout: post
 description: Smart Weather Monitor Using nodemcu
 categories: [markdown]
 title: Weather Station on NodeMCU
-
+tags: [iot, smart-home, arduino, C++]
 ---
-
-# Weather Station on NodeMCU
-
 Smart Weather Monitor Using nodemcu
 
 This repository contains the sketch for the weather monitor using nodemcu project

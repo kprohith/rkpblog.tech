@@ -4,8 +4,9 @@ layout: post
 description: A minimal example of using markdown with fastpages.
 categories: [markdown]
 title: An Example Markdown Post
+tags: [markdown, blogging]
 ---
-# Example Markdown Post
+
 
 ## Basic setup
 
@@ -51,7 +52,7 @@ And a numbered list:
 
 ## Code
 
-You can format text and code per usual 
+You can format text and code per usual
 
 General preformatted text:
 
@@ -60,28 +61,27 @@ General preformatted text:
 
 Python code and output:
 
-```python
-# Prints '2'
-print(1+1)
-```
+    ```python
+    # Prints '2'
+    print(1+1)
+    ```
 
     2
 
 Formatting text as shell commands:
 
-```shell
-echo "hello world"
-./some_script.sh --option "value"
-wget https://example.com/cat_photo1.png
-```
+    ```shell
+    echo "hello world"
+    ./some_script.sh --option "value"
+    wget https://example.com/cat_photo1.png
+    ```
 
 Formatting text as YAML:
 
-```yaml
-key: value
-- another_key: "another value"
-```
-
+    ```yaml
+    key: value
+    - another_key: "another value"
+    ```
 
 ## Tables
 
@@ -89,15 +89,9 @@ key: value
 |-|-|
 | A thing | Another thing |
 
-
 ## Tweetcards
 
 {% twitter https://twitter.com/jakevdp/status/1204765621767901185?s=20 %}
 
-
 ## Footnotes
-
-
-
 [^1]: This is the footnote.
-

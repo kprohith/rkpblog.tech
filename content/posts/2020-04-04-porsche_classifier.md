@@ -4,33 +4,30 @@ layout: post
 description: Identify Porsche models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95 % accuracy.
 categories: [markdown]
 title: Porsche Classifier
+tages: [python, fastai, deep-learning, porsche, computer-vision, classification]
 ---
 
-# Porsche Classifier
+
 
 [Porsche Classifier](https://porsche-classifier-8d1k.onrender.com/)
 ---
 ## Identify [Porsche](https://porsche.com) models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95% accuracy.
 
-### Trained using [fastai-v3](https://fast.ai), [pytorch](https://pytorch.org/) and [Gradient](https://gradient.paperspace.com/).
-### Uses [resnet50](https://www.mathworks.com/help/deeplearning/ref/resnet50.html) and trained on a [Nvidia Quadro P5000](https://images.nvidia.com/content/pdf/quadro/data-sheets/192195-DS-NV-Quadro-P5000-US-12Sept-NV-FNL-WEB.pdf).
-### Built on [docker](https://www.docker.com/) and is hosted on [render](https://render.com/).
-### Trained on a dataset of publicly sourced images containing 30000 Porsche car models of varying degree of quality.
+ Trained using [fastai-v3](https://fast.ai), [pytorch](https://pytorch.org/) and [Gradient](https://gradient.paperspace.com/).
+ Uses [resnet50](https://www.mathworks.com/help/deeplearning/ref/resnet50.html) and trained on a [Nvidia Quadro P5000](https://images.nvidia.com/content/pdf/quadro/data-sheets/192195-DS-NV-Quadro-P5000-US-12Sept-NV-FNL-WEB.pdf).
+ Built on [docker](https://www.docker.com/) and is hosted on [render](https://render.com/).
+ Trained on a dataset of publicly sourced images containing 30000 Porsche car models of varying degree of quality.
 Porsche cars, specially the latest generations of the Panamera/Taycan,Macan/Cayenne & 911/718 can be  pretty tricky to tell apart for a layman who isn't paying very close attention, which is why I wanted to test out what kind of features this deep learning model would pick up.
 
-## Creating your own dataset from Google Images
+### Creating your own dataset from Google Images
 In this tutorial we will see how to easily create an image dataset through Google Images. Note: You will have to repeat these steps for any new category you want to Google (e.g once for dogs and once for cats).
 
-1. TOC
-{:toc}
-
-
 In [0]:
-```
-from fastai.vision import *
-```
-## Get a list of URLs
-### Search and scroll
+    ```python
+    from fastai.vision import *
+    ```
+#### Get a list of URLs
+##### Search and scroll
 Go to Google Images and search for the images you are interested in. The more specific you are in your Google Search, the better the results and the less manual pruning you will have to do.
 
 Scroll down until you've seen all the images you want to download, or until you see a button that says 'Show more results'. All the images you scrolled past are now available to download. To get more, click on the button, and continue scrolling. The maximum number of images Google Images shows is 700.
@@ -48,54 +45,55 @@ In Google Chrome press CtrlShiftj on Windows/Linux and CmdOptj on macOS, and a s
 
 You will need to get the urls of each of the images. Before running the following commands, you may want to disable ad blocking extensions (uBlock, AdBlockPlus etc.) in Chrome. Otherwise the window.open() command doesn't work. Then you can run the following commands:
 
-```
+```python
 urls=Array.from(document.querySelectorAll('.rg_i')).map(el=> el.hasAttribute('data-src')?el.getAttribute('data-src'):el.getAttribute('data-iurl'));
 window.open('data:text/csv;charset=utf-8,' + escape(urls.join('\n')));
 ```
 ### Create directory and upload urls file into your server
 Choose an appropriate name for your labeled images. You can run these steps multiple times to create different labels.
-```
-In [0]:
-folder = '718'
-file = '718.csv'
-In [0]:
-folder = '911'
-file = '911.csv'
-In [0]:
-folder = 'cayenne'
-file = 'cayenne.csv'
-In [0]:
-folder = 'macan'
-file = 'macan.csv'
-In [0]:
-folder = 'taycan'
-file = 'taycan.csv'
-In [0]:
-folder = 'panamera'
-file = 'panamera.csv'
-```
+
+    ```python
+    In [0]:
+    folder = '718'
+    file = '718.csv'
+    In [0]:
+    folder = '911'
+    file = '911.csv'
+    In [0]:
+    folder = 'cayenne'
+    file = 'cayenne.csv'
+    In [0]:
+    folder = 'macan'
+    file = 'macan.csv'
+    In [0]:
+    folder = 'taycan'
+    file = 'taycan.csv'
+    In [0]:
+    folder = 'panamera'
+    file = 'panamera.csv'
+    ```
 You will need to run this cell once per each category.
-```
-In [0]:
-path = Path('data/porsche')
-dest = path/folder
-dest.mkdir(parents=True, exist_ok=True)
-In [0]:
-path.ls()
-Out[0]:
-[PosixPath('data/porsche/cayenne'),
- PosixPath('data/porsche/panamera.csv'),
- PosixPath('data/porsche/cayenne.csv'),
- PosixPath('data/porsche/panamera'),
- PosixPath('data/porsche/taycan'),
- PosixPath('data/porsche/911.csv'),
- PosixPath('data/porsche/taycan.csv'),
- PosixPath('data/porsche/911'),
- PosixPath('data/porsche/macan.csv'),
- PosixPath('data/porsche/718'),
- PosixPath('data/porsche/718.csv'),
- PosixPath('data/porsche/macan')]
-```
+    ```python
+    In [0]:
+    path = Path('data/porsche')
+    dest = path/folder
+    dest.mkdir(parents=True, exist_ok=True)
+    In [0]:
+    path.ls()
+    Out[0]:
+    [PosixPath('data/porsche/cayenne'),
+     PosixPath('data/porsche/panamera.csv'),
+     PosixPath('data/porsche/cayenne.csv'),
+     PosixPath('data/porsche/panamera'),
+     PosixPath('data/porsche/taycan'),
+     PosixPath('data/porsche/911.csv'),
+     PosixPath('data/porsche/taycan.csv'),
+     PosixPath('data/porsche/911'),
+     PosixPath('data/porsche/macan.csv'),
+     PosixPath('data/porsche/718'),
+     PosixPath('data/porsche/718.csv'),
+     PosixPath('data/porsche/macan')]
+    ```
 Finally, upload your urls file. You just need to press 'Upload' in your working directory and select your file, then click 'Upload' for each of the displayed files.
 
 `uploaded file`
@@ -108,63 +106,62 @@ fast.ai has a function that allows you to do just that. You just have to specify
 Let's download our images! Notice you can choose a maximum number of images to be downloaded. In this case we will not download all the urls.
 
 You will need to run this line once for every category.
-```
-In [0]:
-classes = ['taycan','panamera','macan','cayenne','718','911']
-In [0]:
-download_images(path/file, dest, max_pics=500)
+    ```python
+    In [0]:
+    classes = ['taycan','panamera','macan','cayenne','718','911']
+    In [0]:
+    download_images(path/file, dest, max_pics=500)
 
-In [0]:
-# If you have problems download, try with `max_workers=0` to see exceptions:
-download_images(path/file, dest, max_pics=20, max_workers=0)
-```
+    In [0]:
+    # If you have problems download, try with `max_workers=0` to see exceptions:
+    download_images(path/file, dest, max_pics=20, max_workers=0)
+    ```
 Then we can remove any images that can't be opened:
-```
-In [0]:
-for c in classes:
-    print(c)
-    verify_images(path/c, delete=True, max_size=500)
-taycan
-panamera
-macan
-cayenne
-718
-911
-```
+    ```python
+    In [0]:
+    for c in classes:
+        print(c)
+        verify_images(path/c, delete=True, max_size=500)
+    taycan
+    panamera
+    macan
+    cayenne
+    718
+    911
+    ```
 ### View data
-```
-In [0]:
-np.random.seed(42)
-data = ImageDataBunch.from_folder(path, train=".", valid_pct=0.2,
-        ds_tfms=get_transforms(), size=224, num_workers=4).normalize(imagenet_stats)
+    ```python
+    In [0]:
+    np.random.seed(42)
+    data = ImageDataBunch.from_folder(path, train=".", valid_pct=0.2,
+            ds_tfms=get_transforms(), size=224, num_workers=4).normalize(imagenet_stats)
 
-In [0]:
-#If you already cleaned your data, run this cell instead of the one before
- np.random.seed(42)
- data = ImageDataBunch.from_csv(path, folder=".", valid_pct=0.2, csv_labels='cleaned.csv',
-         ds_tfms=get_transforms(), size=224, num_workers=4).normalize(imagenet_stats)
-```
+    In [0]:
+    #If you already cleaned your data, run this cell instead of the one before
+     np.random.seed(42)
+     data = ImageDataBunch.from_csv(path, folder=".", valid_pct=0.2, csv_labels='cleaned.csv',
+             ds_tfms=get_transforms(), size=224, num_workers=4).normalize(imagenet_stats)
+    ```
 Good! Let's take a look at some of our pictures then.
-```
-In [0]:
-data.classes
-Out[0]:
-['718', '911', 'cayenne', 'macan', 'panamera', 'taycan']
-In [0]:
-data.show_batch(rows=6, figsize=(7,8))
-
-In [0]:
-data.classes, data.c, len(data.train_ds), len(data.valid_ds)
-Out[0]:
-(['718', '911', 'cayenne', 'macan', 'panamera', 'taycan'], 6, 1920, 480)
-```
+    ```python
+    In [0]:
+    data.classes
+    Out[0]:
+    ['718', '911', 'cayenne', 'macan', 'panamera', 'taycan']
+    In [0]:
+    data.show_batch(rows=6, figsize=(7,8))
+    In [0]:
+    data.classes, data.c, len(data.train_ds), len(data.valid_ds)
+    Out[0]:
+    (['718', '911', 'cayenne', 'macan', 'panamera', 'taycan'], 6, 1920, 480)
+    ```
 ### Train model
-```
-In [0]:
-learn = cnn_learner(data, models.resnet50, metrics=error_rate)
-In [0]:
-learn.fit_one_cycle(40)
-```
+    ```python
+    In [0]:
+    learn = cnn_learner(data, models.resnet50, metrics=error_rate)
+    In [0]:
+    learn.fit_one_cycle(40)
+    ```
 epoch | train_loss | valid_loss | error_rate | time
 ----- | ---------- | ---------- | ---------- | ---- 
 0 | 2.608914 | 1.610778 | 0.606250 | 00:09

@@ -4,17 +4,17 @@ layout: post
 description: Python workflow for analysing stocks using mahcine learning
 categories: [markdown]
 title: NSE Stock Analysis using ML
+tags: [python, machine-learning, finance]
 ---
 
-# NSE Stock Analysis using ML
 
 
-## NSE-Stock OHLC, Adjusted Close & Trading Volume Scraping and Algorithmic Analysis
 
-### Configured for the Nifty 500 stocks.
+NSE-Stock OHLC, Adjusted Close & Trading Volume Scraping and Algorithmic Analysis
 
-### Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API
-#### Written entirely in python.
+Configured for the Nifty 500 stocks
+Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API
+Written entirely in python.
 
 ```python
 import bs4 as bs
