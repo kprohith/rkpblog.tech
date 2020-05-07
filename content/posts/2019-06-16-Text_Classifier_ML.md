@@ -149,7 +149,7 @@ plt.legend()
 plt.show()
 ```
 Training and Validation Loss
-![Training and Validation Loss](/images/2019-06-16-Text_Classifier_ML/Figure_1.png)
+![Training and Validation Loss](static/images/2019-06-16-Text_Classifier_ML/Figure_1.png)
 
 Training and Validation Accuracy
-![Training and Validation Accuracy](/images/2019-06-16-Text_Classifier_ML/Figure_2.png)
+![Training and Validation Accuracy](static/images/2019-06-16-Text_Classifier_ML/Figure_2.png)
