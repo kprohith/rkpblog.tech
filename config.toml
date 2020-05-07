@@ -9,13 +9,11 @@ enableGitInfo = true
 pygmentsstyle = "solarized-dark"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
-disqusShortname = "rohithpalakirti"
+
 
 [params]
   AuthorName = "Rohith Palakirti"
   GitHubUser = "kprohith"
-  ListOfFoo = ["foo1", "foo2"]
-  SidebarRecentLimit = 5
   Subtitle = "I write about tech."
   mode = "dark"
   featherIconsCDN = true
