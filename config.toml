@@ -5,7 +5,7 @@ theme = "hugo-ink"
 enableEmoji = true
 footnoteReturnLinkContents = "↩"
 enableGitInfo = true
-
+googleAnalytics = "UA-163890179-2"
 pygmentsstyle = "solarized-dark"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
