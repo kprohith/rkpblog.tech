@@ -12,6 +12,9 @@ tags: [blog, javascript, notion]
 
 Generate a minimalistic blog from a Notion.so table.
 Courtesy: [dragonman225](https://github.com/dragonman225)
+
+I used [Notablog](https://github.com/dragonman225/notablog) to generate a sub-blog on this domain using posts from a Notion table. I plan on using this in as a Content Management System with the hope that it would simplify my workflow.
+> You can check out the generated blog [here](https://notion.rkpblog.tech)
 ## Table of Contents
 
 * [Getting Started](#Getting-Started)
