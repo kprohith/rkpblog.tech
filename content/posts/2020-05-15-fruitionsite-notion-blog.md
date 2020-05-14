@@ -10,7 +10,7 @@ tags: [javascript, notion, configuraton]
 > Courtesy: [fruitonsite](https://fruitionsite.com)
 
 
-I've set up a sub-blog at https://notionso.rkpblog.tech, that's direclt published from a public Notion Page in my Notion account.
+I've set up a sub-blog at https://notionso.rkpblog.tech, that's directly published from a public Notion Page in my Notion account.
 
 
 There is no need to self-manage the site, or even git commit/pull everything I make an update, as was the case wit hteh previouss implementation of a similar sub-blog at <https://notion.rkpblog.tech>
