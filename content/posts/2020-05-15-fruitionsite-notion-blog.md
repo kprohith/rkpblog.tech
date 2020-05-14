@@ -103,7 +103,7 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
 <details>
     <summary>Step 2: Customize and generate the script (2 mins)</summary>
 
-    [https://csb-vydqj.stephenou.now.sh](https://csb-vydqj.stephenou.now.sh)
+    ![https://csb-vydqj.stephenou.now.sh](https://csb-vydqj.stephenou.now.sh)
 
 <details>
     <summary>Step 3: Paste the script in Cloudflare (1 min)</summary>
