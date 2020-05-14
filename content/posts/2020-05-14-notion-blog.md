@@ -4,7 +4,7 @@ layout: post
 description: A minimalistic blog generator for Notion.so
 categories: [markdown]
 title: Setting up a blog from a Notion Table 
-tags: [blog, javascript, notion]
+tags: [blog, javascript, notion, configuration]
 ---
 
 
