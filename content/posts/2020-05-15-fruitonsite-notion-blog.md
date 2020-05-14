@@ -1,7 +1,7 @@
 ---
 toc: true
 layout: post
-description: Using Fruition to set up a public facing Notion Page
+description: Using Cloudfalre Workers to run edge JavaScriipt to set up a public facing Notion Page
 categories: [markdown]
 title: Blogging using Notion Pages
 tags: [javascript, notion, configuraton]

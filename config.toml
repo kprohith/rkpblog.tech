@@ -9,7 +9,8 @@ googleAnalytics = "UA-163890179-2"
 pygmentsstyle = "solarized-dark"
 pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
-
+RelativeURLs=true
+CanonifyURLs=true
 
 [params]
   AuthorName = "Rohith Palakirti"
