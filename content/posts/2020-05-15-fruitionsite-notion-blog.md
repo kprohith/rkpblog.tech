@@ -20,14 +20,16 @@ There is no need to self-manage the site, or even git commit/pull everything I m
 ---
 
 On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.com/introducing-cloudflare-workers/) to rewrite traffic. The solution is inspired by [this script](https://gist.github.com/mayneyao/b9fefc9625b76f70488e5d8c2a99315d) (thank you Mayne!), and I added my own features like pretty links.
-<details>
-    <summary>Step 0: Prerequisite</summary>
+
+    Step 0: Prerequisite
+
         1. Enable Public Access on your desired pages through Notion's Share menu, and Allow Search Engines.
         2. Purchase your desired domain with a registrar like Namecheap, or use your existing domain or subdomain.
-</details>
 
-<details>
-    <summary>Step 1: Set up your Cloudflare account (5 mins)</summary>
+
+
+    Step 1: Set up your Cloudflare account (5 mins)
+    
     1. Sign up for an account: [https://dash.cloudflare.com/sign-up](https://dash.cloudflare.com/sign-up)
 
         ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5c7779fb-47cf-4cb7-813a-83b9d8bf9b35/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5c7779fb-47cf-4cb7-813a-83b9d8bf9b35/Untitled.png)
@@ -98,15 +100,15 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
 
         ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dcdcea91-9270-4a4f-9de5-c7bc1cbb615a/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dcdcea91-9270-4a4f-9de5-c7bc1cbb615a/Untitled.png)
 
-</details>
 
-<details>
-    <summary>Step 2: Customize and generate the script (2 mins)</summary>
+
+
+    Step 2: Customize and generate the script (2 mins)
 
     ![https://csb-vydqj.stephenou.now.sh](https://csb-vydqj.stephenou.now.sh)
 
-<details>
-    <summary>Step 3: Paste the script in Cloudflare (1 min)</summary>
+
+    Step 3: Paste the script in Cloudflare (1 min)
     1. Delete the existing code, and paste the code you copied
 
         ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b2aedf89-4fbd-4e60-8858-5598d7329370/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b2aedf89-4fbd-4e60-8858-5598d7329370/Untitled.png)
@@ -130,4 +132,4 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
     6. Hit save, and you're done! You can now visit your site. 🎉
 
         ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c921e63e-a491-42c4-9279-c0c7bbb9f2fd/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c921e63e-a491-42c4-9279-c0c7bbb9f2fd/Untitled.png)
-</details>
+
