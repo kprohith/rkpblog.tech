@@ -150,7 +150,7 @@ plt.show()
 ```
 
 Training and Validation Loss
-![Training and Validation Loss](/static/images/Figure_1.png)
+![](/static/images/Figure_1.png)
 
 Training and Validation Accuracy
-![Training and Validation Accuracy](/static/images/Figure_2.png)
+![](/static/images/Figure_2.png)
