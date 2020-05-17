@@ -98,7 +98,7 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
 
 - Step 2: Customize and generate the script (2 mins)
 
-<iframe class="airtable-embed" src="https://csb-vydqj.stephenou.now.sh/static/js/main.3ce64104.chunk.js" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
+<iframe class="airtable-embed" src="https://csb-vydqj.stephenou.now.sh/" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 - Step 3: Paste the script in Cloudflare (1 min)
     1. Delete the existing code, and paste the code you copied
