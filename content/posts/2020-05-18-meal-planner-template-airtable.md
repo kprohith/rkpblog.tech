@@ -27,7 +27,7 @@ If the above link doesn't work, try this:
 1. Use this [link]((https://airtable.com/shrHIUJeQz37TY0ww)
 ) to copy the template to your AirTable account.
 
-2. When someone opens this share link, they’ll see something like this:
+2. When you open this share link, you’ll see something like this:
 ![](https://support.airtable.com/hc/article_attachments/360000712568/Screen_Shot_2018-02-19_at_3.11.00_PM.png)
 
 3. Select **Copy base** in the right-top corner to copy the base into your account.
