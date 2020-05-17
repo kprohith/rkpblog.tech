@@ -19,10 +19,11 @@ An all-in-one meal planner, recipe board, and shopping list manager powered by [
 ## How to get it? 🖐️
 ---
 Use this link to copy the template to your AirTable account.
-- [AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/universe/exppHKsrkZZ191JNn/meal-planner-template)
+[AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/universe/exppHKsrkZZ191JNn/meal-planner-template)
 ---
 
-f the above link odesnt work, try this:
+If the above link odesnt work, try this:
+
 1. Use this link to copy the template to your AirTable account.
 - [AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/shrHIUJeQz37TY0ww)
 
