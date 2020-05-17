@@ -155,7 +155,7 @@ A theme contains layout templates, CSS files, fonts, and other assets that shape
 
 * Template `index.html` gets the following structure of data :
 
-  ```
+  ```html
   {
 		siteMeta {
 			icon // Emoji or URL
@@ -191,7 +191,7 @@ A theme contains layout templates, CSS files, fonts, and other assets that shape
 
 * Template `post.html` or others gets the following structure of data :
 
-  ```
+  ```html
   {
 		siteMeta // The same as "siteMeta" in index.html
 		post {
