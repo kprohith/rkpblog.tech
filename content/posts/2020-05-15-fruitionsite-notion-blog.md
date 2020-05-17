@@ -98,7 +98,7 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
 
 - Step 2: Customize and generate the script (2 mins)
 
-<iframe src="https://csb-vydqj.stephenou.now.sh" frameborder="0" sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin" allowfullscreen="" loading="lazy" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; border-radius: 1px; pointer-events: auto; background-color: rgb(247, 246, 245);"></iframe>
+<iframe class="airtable-embed" src="https://csb-vydqj.stephenou.now.sh/static/js/main.3ce64104.chunk.js" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 - Step 3: Paste the script in Cloudflare (1 min)
     1. Delete the existing code, and paste the code you copied
