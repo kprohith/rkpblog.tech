@@ -7,9 +7,6 @@ title: Blogging using Notion Pages
 tags: [javascript, notion, configuraton]
 ---
 
-> Courtesy: [fruitonsite](https://fruitionsite.com)
-
-
 I've set up a sub-blog at https://notionso.rkpblog.tech, that's directly published from a public Notion Page in my Notion account.
 
 
@@ -124,3 +121,5 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
     6. Hit save, and you're done! You can now visit your site. 🎉
 
         ![](https://fruitionsite.com/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fc921e63e-a491-42c4-9279-c0c7bbb9f2fd%2FUntitled.png?table=block&id=9a34cebd-68b3-4a95-a623-9a26606107cc&width=5570&cache=v2)
+
+> Courtesy: [fruitonsite](https://fruitionsite.com)
