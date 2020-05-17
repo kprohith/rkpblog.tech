@@ -150,7 +150,7 @@ plt.show()
 ```
 
 Training and Validation Loss
-![](/static/images/Figure_1.png)
+![](https://github.com/kprohith/rkpblog.tech/blob/master/static/images/Figure_1.png?raw=true)
 
 Training and Validation Accuracy
-![](/static/images/Figure_2.png)
+![](https://github.com/kprohith/rkpblog.tech/blob/master/static/images/Figure_2.png?raw=true)
