@@ -24,7 +24,7 @@ Use this link to copy the template to your AirTable account.
 
 If the above link doesn't work, try this:
 
-1. Use this [link]((https://airtable.com/shrHIUJeQz37TY0ww)
+1. Use [this link]((https://airtable.com/shrHIUJeQz37TY0ww)
 ) to copy the template to your AirTable account.
 
 2. When you open this share link, you’ll see something like this:
