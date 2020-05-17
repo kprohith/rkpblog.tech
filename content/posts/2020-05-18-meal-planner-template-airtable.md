@@ -47,25 +47,30 @@ The linked database views below show four common meal planner needs:
 
 ### Meal Planner Board View
 Linked database of "Meals Table" arranged by day and meal time.
-<iframe class="airtable-embed" src="https://airtable.com/embed/shrqWQmXzOlaITR6B?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>)
+
+<iframe class="airtable-embed" src="https://airtable.com/embed/shrqWQmXzOlaITR6B?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Recipe Kanban View
 ---
 Linked database of "Recipes Table" in Board format arranged by meal type.
+
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrLAsMPZnBZ97qNv?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Inventory List View
 ---
 Linked database list "Grocery Table" with "Total Needed" > 0, ordered by home storage location.
+
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrLfhwBVHtPnWYOf?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Shopping List View
 ---
 Linked database list "Grocery Table" with "Total Needed" > 0, not in stock, ordered by grocery aisle.
+
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrfPsx37Ebh63PPh?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Ingredient List View
 Linked database list "Ingredients Table" with name, quantity, recipe, size, and Total Needed > 0.
+
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrWpfyjvkAqb82fS?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ## The Meal Planner Backend Explained
@@ -138,4 +143,4 @@ Linked database list "Ingredients Table" with name, quantity, recipe, size, and 
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shruzCVcdMp7y7rKC?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
-Customize this as you like.
+Customize this backend as you like.
