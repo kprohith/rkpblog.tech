@@ -10,9 +10,10 @@ tags: [database, airtable, worksheets]
 ## What is this? 🤔
 ---
 An all-in-one meal planner, recipe board, and shopping list manager powered by [AirTable](https://airtable.com/). All three components work together using the same backend data to simplify meal planning needs.
-	- Meal Planner: Manage weekly meal plans.
-	- Recipe Board: Manage and curate your favorite recipes.
-	- Shopping List: Automatically generate shopping list based on recipes in the meal planner.
+
+- Meal Planner: Manage weekly meal plans.
+- Recipe Board: Manage and curate your favorite recipes.
+- Shopping List: Automatically generate shopping list based on recipes in the meal planner.
 
 ## How to get it? 🖐️
 ---
