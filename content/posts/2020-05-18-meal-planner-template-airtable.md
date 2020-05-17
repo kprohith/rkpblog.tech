@@ -24,8 +24,8 @@ Use this link to copy the template to your AirTable account.
 
 If the above link doesn't work, try this:
 
-1. Use this link to copy the template to your AirTable account.
-- [AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/shrHIUJeQz37TY0ww)
+1. Use this [link]((https://airtable.com/shrHIUJeQz37TY0ww)
+) to copy the template to your AirTable account.
 
 2. When someone opens this share link, they’ll see something like this:
 ![](https://support.airtable.com/hc/article_attachments/360000712568/Screen_Shot_2018-02-19_at_3.11.00_PM.png)
