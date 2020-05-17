@@ -1,11 +1,12 @@
 ---
 toc: true
 layout: post
-description: An all-in-one meal planner, recipe board, and shopping list manager powered by AirTable. All three components work together using the same backend data to simplify meal planning needs.
+description: A very powerful and customizable template for meal planning powered by Airtable, with a back-end that is integrated across Recipes, Inventory, and Shopping Lists, with Meal board and Recipe Boards and much more!
 categories: [markdown]
 title: Meal Planner Database Using AirTable
 tags: [database, airtable, worksheets]
 ---
+
 
 ## What is this? 🤔
 ---
@@ -18,16 +19,21 @@ An all-in-one meal planner, recipe board, and shopping list manager powered by [
 ## How to get it? 🖐️
 ---
 Use this link to copy the template to your AirTable account.
-[AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/shrHIUJeQz37TY0ww)
+- [AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/universe/exppHKsrkZZ191JNn/meal-planner-template)
+---
 
-When someone opens this share link, they’ll see something like this:
+f the above link odesnt work, try this:
+1. Use this link to copy the template to your AirTable account.
+- [AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/shrHIUJeQz37TY0ww)
+
+2. When someone opens this share link, they’ll see something like this:
 ![](https://support.airtable.com/hc/article_attachments/360000712568/Screen_Shot_2018-02-19_at_3.11.00_PM.png)
 
-Select **Copy base** in the right-top corner to copy the base into your account.
+3. Select **Copy base** in the right-top corner to copy the base into your account.
 ![](https://support.airtable.com/hc/article_attachments/360000723607/Screen_Shot_2018-02-19_at_3_11_00_PM.png)
 
 
-## How it works? ⚙
+## How does this work? ⚙
 ---
 There are four back-end tables that power the meal planner. These are:
 
@@ -36,7 +42,7 @@ There are four back-end tables that power the meal planner. These are:
 - **Ingredients:** Links recipes to grocery items with quantities needed.
 - **Meal Plan:** Links days and meal times to recipes.
 
-## How to use 👩‍🍳
+## How to use? 👩‍🍳
 ---
 
 The linked database views below show four common meal planner needs:
