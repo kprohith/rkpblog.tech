@@ -1,0 +1,82 @@
+---
+toc: true
+layout: post
+description: Just a bunch of bouning blobs in JavaScript
+categories: [html]
+title: JavaScript Blobs
+tags: [javascript]
+---
+<html>
+    <body>
+        
+        <canvas id='can' width=1366px height=768px style='border:1px solid #400040;'>
+        </canvas>
+        <script>
+            const canvas = document.getElementById('can');
+            const context = canvas.getContext('2d');
+            const lWidth = (window.screen.width - 12);
+            const lHeight = (window.screen.height - 119);
+            canvas.width = lWidth;
+            canvas.height = lHeight;
+            const blobCount = 15;
+            const colors = new Array('blue','red', 'black', 'pink', 'green');
+
+            let blobs = new Array();
+            class Blob {
+                constructor(color, size) {
+                    this.x = Math.random() * canvas.width
+                    this.y = Math.random() * canvas.height
+                    this.color = color
+                    this.size = size
+                    this.xChange = Math.random();
+                    this.yChange = Math.random();
+                }
+
+                move() {
+                    if (this.x >= canvas.width || this.x <= 0){
+                        this.xChange *= -1;
+                    } 
+
+                    if (this.y >= canvas.height || this.y <= 0){
+                        this.yChange *= -1;
+                    }
+                    this.x += this.xChange;
+                    this.y += this.yChange;
+                }
+
+                draw(){
+                    context.beginPath();
+                    context.arc(this.x, this.y,this.size,0,2*Math.PI);
+                    context.fillStyle = this.color;
+                    context.fill();
+                    context.stroke();
+                }
+            }
+            function canvasDraw(){
+                context.clearRect(0,0, canvas.width, canvas.height);
+
+                blobs.forEach(function(obj){
+                    obj.draw();
+                    obj.move();
+                })
+            }
+
+           function randomChoice(arr){
+               return arr[Math.floor(Math.random()*arr.length)];
+           }
+
+            for(let i = 0; i<blobCount;i++){
+                let randomColor = randomChoice(colors);
+                let newBlob = new Blob(randomColor,25);
+                blobs.push(newBlob);
+            }
+
+            
+
+            setInterval(function(){
+                canvasDraw();
+            },10);
+         </script>
+    </body>
+</html>
+
