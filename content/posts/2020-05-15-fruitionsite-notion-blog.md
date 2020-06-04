@@ -1,7 +1,7 @@
 ---
 toc: true
 layout: post
-description: Using Cloudfalre Workers to run JavaScipt on the edge to set up a public facing Notion Page
+description: Using Cloudfalre Workers to run JavaScript on the edge to set up a public facing Notion Page
 categories: [markdown]
 title: Blogging using Notion Pages
 tags: [javascript, notion, configuraton]
