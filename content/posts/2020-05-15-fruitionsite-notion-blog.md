@@ -1,7 +1,7 @@
 ---
 toc: true
 layout: post
-description: Using Cloudfalre Workers to run edge JavaScriipt to set up a public facing Notion Page
+description: Using Cloudfalre Workers to run JavaScipt on the edge to set up a public facing Notion Page
 categories: [markdown]
 title: Blogging using Notion Pages
 tags: [javascript, notion, configuraton]
@@ -122,4 +122,4 @@ On a high level, we are utilizing [Cloudflare Workers](https://blog.cloudflare.c
 
         ![](https://fruitionsite.com/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fc921e63e-a491-42c4-9279-c0c7bbb9f2fd%2FUntitled.png?table=block&id=9a34cebd-68b3-4a95-a623-9a26606107cc&width=5570&cache=v2)
 
-> Courtesy: [fruitonsite](https://fruitionsite.com)
+> Courtesy: fruitionsite
