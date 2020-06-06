@@ -4,32 +4,44 @@ layout: post
 description: Identify Porsche models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95 % accuracy.
 categories: [markdown]
 title: Porsche Classifier
-tags: [python, fastai, deep-learning, porsche, computer-vision, classification, azure, cloud, webapp]
+tags:
+  [
+    python,
+    fastai,
+    deep-learning,
+    porsche,
+    computer-vision,
+    classification,
+    azure,
+    cloud,
+    webapp,
+  ]
 ---
 
+## [Porsche Classifier](https://porsche-classifier.azurewebsites.net/)
 
-
-[Porsche Classifier](https://porsche-classifier.azurewebsites.net/)
----
 ## Identify [Porsche](https://porsche.com) models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95% accuracy.
 
 ![](https://raw.githubusercontent.com/kprohith/rkpblog.tech/master/static/images/718.jpg)
 
- Trained using [fastai-v3](https://fast.ai), [pytorch](https://pytorch.org/) and [Gradient](https://gradient.paperspace.com/).
- Uses [resnet50](https://www.mathworks.com/help/deeplearning/ref/resnet50.html) and trained on a [Nvidia Quadro P5000](https://images.nvidia.com/content/pdf/quadro/data-sheets/192195-DS-NV-Quadro-P5000-US-12Sept-NV-FNL-WEB.pdf).
- Built on [docker](https://www.docker.com/) and is hosted on [Microsoft Azure Web Services](https://azure.microsoft.com/en-in/services/app-service/web/).
- Trained on a dataset of publicly sourced images containing 30000 Porsche car models of varying degree of quality.
-Porsche cars, specially the latest generations of the Panamera/Taycan, Macan/Cayenne & 911 / 718 can be  pretty tricky to tell apart for a layman who isn't paying very close attention, which is why I wanted to test out what kind of features this deep learning model would pick up.
+Trained using [fastai-v3](https://fast.ai), [pytorch](https://pytorch.org/) and [Gradient](https://gradient.paperspace.com/).
+Uses [resnet50](https://www.mathworks.com/help/deeplearning/ref/resnet50.html) and trained on a [Nvidia Quadro P5000](https://images.nvidia.com/content/pdf/quadro/data-sheets/192195-DS-NV-Quadro-P5000-US-12Sept-NV-FNL-WEB.pdf).
+Built on [docker](https://www.docker.com/) and is hosted on [Microsoft Azure Web Services](https://azure.microsoft.com/en-in/services/app-service/web/).
+Trained on a dataset of publicly sourced images containing 30000 Porsche car models of varying degree of quality.
+Porsche cars, specially the latest generations of the Panamera/Taycan, Macan/Cayenne & 911 / 718 can be pretty tricky to tell apart for a layman who isn't paying very close attention, which is why I wanted to test out what kind of features this deep learning model would pick up.
 
 ### Creating your own dataset from Google Images
+
 In this tutorial we will see how to easily create an image dataset through Google Images. Note: You will have to repeat these steps for any new category you want to Google (e.g once for dogs and once for cats).
 
-In [0]:
     ```python
     from fastai.vision import *
     ```
+
 #### Get a list of URLs
+
 ##### Search and scroll
+
 Go to Google Images and search for the images you are interested in. The more specific you are in your Google Search, the better the results and the less manual pruning you will have to do.
 
 Scroll down until you've seen all the images you want to download, or until you see a button that says 'Show more results'. All the images you scrolled past are now available to download. To get more, click on the button, and continue scrolling. The maximum number of images Google Images shows is 700.
@@ -41,6 +53,7 @@ It is a good idea to put things you want to exclude into the search query, for i
 You can also limit your results to show only photos by clicking on Tools and selecting Photos from the Type dropdown.
 
 ### Download into file
+
 Now you must run some Javascript code in your browser which will save the URLs of all the images you want for you dataset.
 
 In Google Chrome press CtrlShiftj on Windows/Linux and CmdOptj on macOS, and a small window the javascript 'Console' will appear. In Firefox press CtrlShiftk on Windows/Linux or CmdOptk on macOS. That is where you will paste the JavaScript commands.
@@ -51,10 +64,12 @@ You will need to get the urls of each of the images. Before running the followin
 urls=Array.from(document.querySelectorAll('.rg_i')).map(el=> el.hasAttribute('data-src')?el.getAttribute('data-src'):el.getAttribute('data-iurl'));
 window.open('data:text/csv;charset=utf-8,' + escape(urls.join('\n')));
 ```
+
 ### Create directory and upload urls file into your server
+
 Choose an appropriate name for your labeled images. You can run these steps multiple times to create different labels.
 
-    ```python
+```python
     In [0]:
     folder = '718'
     file = '718.csv'
@@ -73,9 +88,12 @@ Choose an appropriate name for your labeled images. You can run these steps mult
     In [0]:
     folder = 'panamera'
     file = 'panamera.csv'
-    ```
+```
+
 You will need to run this cell once per each category.
-    ```python
+
+```python
+
     In [0]:
     path = Path('data/porsche')
     dest = path/folder
@@ -95,12 +113,14 @@ You will need to run this cell once per each category.
      PosixPath('data/porsche/718'),
      PosixPath('data/porsche/718.csv'),
      PosixPath('data/porsche/macan')]
-    ```
+```
+
 Finally, upload your urls file. You just need to press 'Upload' in your working directory and select your file, then click 'Upload' for each of the displayed files.
 
 `uploaded file`
 
 ### Download images
+
 Now you will need to download your images from their respective urls.
 
 fast.ai has a function that allows you to do just that. You just have to specify the urls filename as well as the destination folder and this function will download and save all images that can be opened. If they have some problem in being opened, they will not be saved.
@@ -108,30 +128,22 @@ fast.ai has a function that allows you to do just that. You just have to specify
 Let's download our images! Notice you can choose a maximum number of images to be downloaded. In this case we will not download all the urls.
 
 You will need to run this line once for every category.
-    ```python
-    In [0]:
-    classes = ['taycan','panamera','macan','cayenne','718','911']
-    In [0]:
-    download_images(path/file, dest, max_pics=500)
+```python
+In [0]:
+classes = ['taycan','panamera','macan','cayenne','718','911']
+In [0]:
+download_images(path/file, dest, max_pics=500)
 
     In [0]:
     # If you have problems download, try with `max_workers=0` to see exceptions:
     download_images(path/file, dest, max_pics=20, max_workers=0)
     ```
+
 Then we can remove any images that can't be opened:
-    ```python
-    In [0]:
-    for c in classes:
-        print(c)
-        verify_images(path/c, delete=True, max_size=500)
-    taycan
-    panamera
-    macan
-    cayenne
-    718
-    911
-    ```
+`python In [0]: for c in classes: print(c) verify_images(path/c, delete=True, max_size=500) taycan panamera macan cayenne 718 911`
+
 ### View data
+
     ```python
     In [0]:
     np.random.seed(42)
@@ -144,20 +156,24 @@ Then we can remove any images that can't be opened:
      data = ImageDataBunch.from_csv(path, folder=".", valid_pct=0.2, csv_labels='cleaned.csv',
              ds_tfms=get_transforms(), size=224, num_workers=4).normalize(imagenet_stats)
     ```
+
 Good! Let's take a look at some of our pictures then.
-    ```python
-    In [0]:
-    data.classes
-    Out[0]:
-    ['718', '911', 'cayenne', 'macan', 'panamera', 'taycan']
-    In [0]:
-    data.show_batch(rows=6, figsize=(7,8))
-    In [0]:
-    data.classes, data.c, len(data.train_ds), len(data.valid_ds)
-    Out[0]:
-    (['718', '911', 'cayenne', 'macan', 'panamera', 'taycan'], 6, 1920, 480)
-    ```
+```python
+In [0]:
+data.classes
+Out[0]:
+['718', '911', 'cayenne', 'macan', 'panamera', 'taycan']
+In [0]:
+data.show_batch(rows=6, figsize=(7,8))
+In [0]:
+data.classes, data.c, len(data.train_ds), len(data.valid_ds)
+Out[0]:
+(['718', '911', 'cayenne', 'macan', 'panamera', 'taycan'], 6, 1920, 480)
+
+````
+
 ### Train model
+
     ```python
     In [0]:
     learn = cnn_learner(data, models.resnet50, metrics=error_rate)
@@ -165,7 +181,7 @@ Good! Let's take a look at some of our pictures then.
     learn.fit_one_cycle(40)
     ```
 epoch | train_loss | valid_loss | error_rate | time
------ | ---------- | ---------- | ---------- | ---- 
+----- | ---------- | ---------- | ---------- | ----
 0 | 2.608914 | 1.610778 | 0.606250 | 00:09
 1 | 2.229989 | 1.467350 | 0.531250 | 00:09
 2 | 1.992984 | 1.457949 | 0.495833 | 00:10
@@ -206,7 +222,8 @@ epoch | train_loss | valid_loss | error_rate | time
 37 | 0.230405 | 1.240643 | 0.327083 | 00:10
 38 | 0.217511 | 1.230480 | 0.318750 | 00:10
 39 | 0.209594 | 1.243002 | 0.318750 | 00:10
-```
+````
+
 In [0]:
 learn.save('stage-1')
 In [0]:
@@ -214,26 +231,32 @@ learn.unfreeze()
 In [0]:
 learn.lr_find()
 25.00% [1/4 00:12<00:37]
+
 ```
-epoch |	train_loss | valid_loss | error_rate | time
+epoch | train_loss | valid_loss | error_rate | time
 ----- | ---------- | ---------- | ---------- | ----
 0 |	0.196860 | #na# | 00:12
 
 83.33% [25/30 00:10<00:02 0.6416]
 LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.
 ```
+
 In [0]:
+
 # If the plot is not showing try to give a start and end learning rate
+
 # learn.lr_find(start_lr=1e-5, end_lr=1e-1)
+
 learn.recorder.plot()
 
 In [0]:
 learn.fit_one_cycle(2, max_lr=slice(3e-5,3e-4))
-epoch	train_loss	valid_loss	error_rate	time
-0	0.280386	1.524914	0.372917	00:13
-1	0.276844	1.312542	0.345833	00:13
+epoch train_loss valid_loss error_rate time
+0 0.280386 1.524914 0.372917 00:13
+1 0.276844 1.312542 0.345833 00:13
 In [0]:
 learn.save('stage-2')
+
 ```
 ### Interpretation
 In [0]:
@@ -249,35 +272,44 @@ Some of our top losses aren't due to bad performance by our model. There are ima
 Using the ImageCleaner widget from fastai.widgets we can prune our top losses, removing photos that don't belong.
 
 ```
+
 In [0]:
-from fastai.widgets import *
+from fastai.widgets import \*
+
 ```
 First we need to get the file paths from our top_losses. We can do this with .from_toplosses. We then feed the top losses indexes and corresponding dataset to ImageCleaner.
 
 Notice that the widget will not delete images directly from disk but it will create a new csv file cleaned.csv from where you can create a new ImageDataBunch with the corrected labels to continue training your model.
 ```
+
 In [0]:
 db = (ImageList.from_folder(path)
-                   .split_none()
-                   .label_from_folder()
-                   .transform(get_transforms(), size=224)
-                   .databunch()
-     )
+.split_none()
+.label_from_folder()
+.transform(get_transforms(), size=224)
+.databunch()
+)
 In [0]:
+
 # If you already cleaned your data using indexes from `from_toplosses`,
+
 # run this cell instead of the one before to proceed with removing duplicates.
+
 # Otherwise all the results of the previous step would be overwritten by
+
 # the new run of `ImageCleaner`.
 
- db = (ImageList.from_csv(path, 'cleaned.csv', folder='.')
-                    .split_none()
-                   .label_from_df()
-                   .transform(get_transforms(), size=224)
-                   .databunch()
-     )
+db = (ImageList.from_csv(path, 'cleaned.csv', folder='.')
+.split_none()
+.label_from_df()
+.transform(get_transforms(), size=224)
+.databunch()
+)
+
 ```
 Then we create a new learner to use our new databunch with all the images.
 ```
+
 In [0]:
 learn_cln = cnn_learner(db, models.resnet50, metrics=error_rate)
 
@@ -285,10 +317,15 @@ learn_cln.load('stage-2');
 In [0]:
 ds, idxs = DatasetFormatter().from_toplosses(learn_cln)
 In [0]:
+
 # Don't run this in google colab or any other instances running jupyter lab.
+
 # If you do run this on Jupyter Lab, you need to restart your runtime and
+
 # runtime state including all local variables will be lost.
+
 ImageCleaner(ds, idxs, path)
+
 ```
 HBox(children=(VBox(children=(Image(value=b'\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x01\x00d\x00d\x00\x00\xff…
 Button(button_style='primary', description='Next Batch', layout=Layout(width='auto'), style=ButtonStyle())
@@ -298,6 +335,7 @@ You can also find duplicates in your dataset and delete them! To do this, you ne
 
 Make sure to recreate the databunch and learn_cln from the cleaned.csv file. Otherwise the file would be overwritten from scratch, losing all the results from cleaning the data from toplosses.
 ```
+
 In [0]:
 ds, idxs = DatasetFormatter().from_similars(learn_cln)
 Getting activations...
@@ -307,28 +345,34 @@ In [0]:
 ImageCleaner(ds, idxs, path, duplicates=True)
 HBox(children=(VBox(children=(Image(value=b'\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x01\x00d\x00d\x00\x00\xff…
 Button(button_style='primary', description='Next Batch', layout=Layout(width='auto'), style=ButtonStyle())
+
 ```
 Remember to recreate your ImageDataBunch from your cleaned.csv to include the changes you made in your data!
 
 ### Putting your model in production
 First thing first, let's export the content of our Learner object for production:
 ```
+
 In [0]:
 learn.export()
+
 ```
 This will create a file named 'export.pkl' in the directory where we were working that contains everything we need to deploy our model (the model, the weights but also some metadata like the classes or the transforms/normalization used).
 
 You probably want to use CPU for inference, except at massive scale (and you almost certainly don't need to train in real-time). If you don't have a GPU that happens automatically. You can test your model on CPU like so:
 ```
+
 In [0]:
 defaults.device = torch.device('cpu')
 In [0]:
 img = open_image(path/'download.jpg')
 img
 Out[0]:
+
 ```
 We create our Learner in production enviromnent like this, just make sure that path contains the file 'export.pkl' from before.
 ```
+
 In [0]:
 
 In [0]:
@@ -338,22 +382,25 @@ pred_class,pred_idx,outputs = learn.predict(img)
 pred_class
 Out[0]:
 Category panamera
+
 ```
 So you might create a route something like this (thanks to Simon Willison for the structure of this code):
 ```
+
 @app.route("/classify-url", methods=["GET"])
-async def classify_url(request):
-    bytes = await get_bytes(request.query_params["url"])
-    img = open_image(BytesIO(bytes))
-    _,_,losses = learner.predict(img)
-    return JSONResponse({
-        "predictions": sorted(
-            zip(cat_learner.data.classes, map(float, losses)),
-            key=lambda p: p[1],
-            reverse=True
-        )
-    })
+async def classify*url(request):
+bytes = await get_bytes(request.query_params["url"])
+img = open_image(BytesIO(bytes))
+*,\_,losses = learner.predict(img)
+return JSONResponse({
+"predictions": sorted(
+zip(cat_learner.data.classes, map(float, losses)),
+key=lambda p: p[1],
+reverse=True
+)
+})
 (This example is for the Starlette web app toolkit.)
+
 ```
 ### Things that can go wrong
 Most of the time things will train fine with the defaults
@@ -364,19 +411,23 @@ Number of epochs
 
 ### Learning rate (LR) too high
 ```
+
 In [0]:
 learn = cnn_learner(data, models.resnet34, metrics=error_rate)
 In [0]:
 learn.fit_one_cycle(1, max_lr=0.5)
+
 ```
 Total time: 00:13
-epoch  train_loss  valid_loss  error_rate       
+epoch  train_loss  valid_loss  error_rate
 1      12.220007   1144188288.000000  0.765957    (00:13)
 
 ### Learning rate (LR) too low
 ```
+
 In [0]:
 learn = cnn_learner(data, models.resnet34, metrics=error_rate)
+
 ```
 Previously we had this result:
 
@@ -388,8 +439,10 @@ epoch | train_loss | valid_loss | error_rate
 3 |   0.396103 | 0.053801 | 0.014184 | (00:13)
 4 |   0.316883 | 0.050197 | 0.021277 | (00:15)
 ```
+
 In [0]:
 learn.fit_one_cycle(5, max_lr=1e-5)
+
 ```
 Total time: 01:07
 epoch | train_loss |  valid_loss |  error_rate
@@ -400,17 +453,21 @@ epoch | train_loss |  valid_loss |  error_rate
 4 |   1.334486 | 0.978713 | 0.453901 | (00:13)
 5 |   1.320978 | 0.978108 | 0.446809 | (00:13)
 ```
+
 In [0]:
 learn.recorder.plot_losses()
+
 ```
 As well as taking a really long time, it's getting too many looks at each image, so may overfit.
 
 ### Too few epochs
 ```
+
 In [0]:
 learn = cnn_learner(data, models.resnet34, metrics=error_rate, pretrained=False)
 In [0]:
 learn.fit_one_cycle(1)
+
 ```
 Total time: 00:14
 epoch  train_loss  valid_loss  error_rate
@@ -418,17 +475,19 @@ epoch  train_loss  valid_loss  error_rate
 
 ### Too many epochs
 ```
+
 In [0]:
 np.random.seed(42)
-data = ImageDataBunch.from_folder(path, train=".", valid_pct=0.9, bs=32, 
-        ds_tfms=get_transforms(do_flip=False, max_rotate=0, max_zoom=1, max_lighting=0, max_warp=0
-                              ),size=224, num_workers=4).normalize(imagenet_stats)
+data = ImageDataBunch.from_folder(path, train=".", valid_pct=0.9, bs=32,
+ds_tfms=get_transforms(do_flip=False, max_rotate=0, max_zoom=1, max_lighting=0, max_warp=0
+),size=224, num_workers=4).normalize(imagenet_stats)
 In [0]:
 learn = cnn_learner(data, models.resnet50, metrics=error_rate, ps=0, wd=0)
 learn.unfreeze()
 In [0]:
 learn.fit_one_cycle(40, slice(1e-6,1e-4))
 Total time: 06:39
+
 ```
 
 epoch | train_loss | valid_loss | error_rate
@@ -473,3 +532,4 @@ epoch | train_loss | valid_loss | error_rate
 38 |  0.176623 | 0.207198 | 0.062271 | (00:10)
 39 |  0.166854 | 0.207256 | 0.065934 | (00:10)
 40 |  0.162692 | 0.206044 | 0.062271 | (00:09)
+```
