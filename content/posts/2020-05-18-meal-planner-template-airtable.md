@@ -7,9 +7,10 @@ title: Meal Planner Database Using AirTable
 tags: [database, airtable, worksheets]
 ---
 
-
 ## What is this? 🤔
+
 ---
+
 An all-in-one meal planner, recipe board, and shopping list manager powered by [AirTable](https://airtable.com/). All three components work together using the same backend data to simplify meal planning needs.
 
 - Meal Planner: Manage weekly meal plans.
@@ -17,25 +18,28 @@ An all-in-one meal planner, recipe board, and shopping list manager powered by [
 - Shopping List: Automatically generate shopping list based on recipes in the meal planner.
 
 ## How to get it? 🖐️
+
 ---
+
 Use this link to copy the template to your AirTable account.
 [AirTable Meal Planner Template by Rohith Palakirti](https://airtable.com/universe/exppHKsrkZZ191JNn/meal-planner-template)
+
 ---
 
 If the above link doesn't work, try this:
 
-1. Use [this link]((https://airtable.com/shrHIUJeQz37TY0ww)
-) to copy the template to your AirTable account.
+1. Use [this link](<(https://airtable.com/shrHIUJeQz37TY0ww)>) to copy the template to your AirTable account.
 
 2. When you open this share link, you’ll see something like this:
-![](https://support.airtable.com/hc/article_attachments/360000712568/Screen_Shot_2018-02-19_at_3.11.00_PM.png)
+   ![](https://support.airtable.com/hc/article_attachments/360000712568/Screen_Shot_2018-02-19_at_3.11.00_PM.png)
 
 3. Select **Copy base** in the right-top corner to copy the base into your account.
-![](https://support.airtable.com/hc/article_attachments/360000723607/Screen_Shot_2018-02-19_at_3_11_00_PM.png)
-
+   ![](https://support.airtable.com/hc/article_attachments/360000723607/Screen_Shot_2018-02-19_at_3_11_00_PM.png)
 
 ## How does this work? ⚙
+
 ---
+
 There are four back-end tables that power the meal planner. These are:
 
 - **Grocery Items:** List of grocery items.
@@ -44,6 +48,7 @@ There are four back-end tables that power the meal planner. These are:
 - **Meal Plan:** Links days and meal times to recipes.
 
 ## How to use? 👩‍🍳
+
 ---
 
 The linked database views below show four common meal planner needs:
@@ -54,36 +59,47 @@ The linked database views below show four common meal planner needs:
 - Shopping list view to identify needs at grocery store.
 
 ### Meal Planner Board View
+
 Linked database of "Meals Table" arranged by day and meal time.
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrqWQmXzOlaITR6B?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Recipe Kanban View
+
 ---
+
 Linked database of "Recipes Table" in Board format arranged by meal type.
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrLAsMPZnBZ97qNv?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Inventory List View
+
 ---
+
 Linked database list "Grocery Table" with "Total Needed" > 0, ordered by home storage location.
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrLfhwBVHtPnWYOf?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Shopping List View
+
 ---
+
 Linked database list "Grocery Table" with "Total Needed" > 0, not in stock, ordered by grocery aisle.
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrfPsx37Ebh63PPh?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Ingredient List View
+
 Linked database list "Ingredients Table" with name, quantity, recipe, size, and Total Needed > 0.
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrWpfyjvkAqb82fS?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ## The Meal Planner Backend Explained
+
 ---
+
 ### Groceries Table
+
 **Fields**
 
 - **Grocery:** Grocery title and icon.
@@ -103,7 +119,9 @@ Linked database list "Ingredients Table" with name, quantity, recipe, size, and 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shr7HGi0bFZFz92uo?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Recipes Table
+
 ---
+
 **Fields**
 
 - **Name:** Recipe name, icon and cover.
@@ -117,7 +135,9 @@ Linked database list "Ingredients Table" with name, quantity, recipe, size, and 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shr4jJZ4j4fMDUJ0H?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Ingredients Table
+
 ---
+
 **Fields**
 
 - **Ingredient:** Ingredient identifier. Currently using a reference to the grocery page.
@@ -138,6 +158,7 @@ Linked database list "Ingredients Table" with name, quantity, recipe, size, and 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrp292rlJm8Pbcus?backgroundColor=gray&viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
 ### Meals Table
+
 ---
 
 **Fields**

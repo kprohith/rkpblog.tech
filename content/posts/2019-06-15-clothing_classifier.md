@@ -5,30 +5,27 @@ description: Basic classifier that is trained to classify images of clothing int
 categories: [markdown]
 title: Clothing Classifier
 tags: [python, machine-learning, tensorflow, keras, MNIST, computer-vision]
-
-
 ---
 
-
-
- Basic classifier that is trained to classify images of clothing into [10 categories](https://github.com/zalandoresearch/fashion-mnist#labels)
+Basic classifier that is trained to classify images of clothing into [10 categories](https://github.com/zalandoresearch/fashion-mnist#labels)
 
 Trained using FashionMNIST data set consisting of 60,000 labelled images, each of 25px x 25px size
 
- Tested on 10,000 labelled images, which werent part of the training set.
+Tested on 10,000 labelled images, which werent part of the training set.
 
- This classifier has close to __~80% accuracy__ on grayscale images of 25px x 25px size.
+This classifier has close to **~80% accuracy** on grayscale images of 25px x 25px size.
 
- Uses [tensorflow](https://www.tensorflow.org/), [keras api](https://keras.io/), [numpy](https://www.numpy.org/), [matplotlib](https://matplotlib.org/) and the [Fashion MNIST datsset](https://github.com/zalandoresearch/fashion-mnist).
+Uses [tensorflow](https://www.tensorflow.org/), [keras api](https://keras.io/), [numpy](https://www.numpy.org/), [matplotlib](https://matplotlib.org/) and the [Fashion MNIST datsset](https://github.com/zalandoresearch/fashion-mnist).
 
- Deployed [tf.train.AdamOptimizer](https://www.tensorflow.org/api_docs/python/tf/train/AdamOptimizer), and the [sparse_categorical_crossentropy](https://jovianlin.io/cat-crossentropy-vs-sparse-cat-crossentropy/) loss function while compiling model.
+Deployed [tf.train.AdamOptimizer](https://www.tensorflow.org/api_docs/python/tf/train/AdamOptimizer), and the [sparse_categorical_crossentropy](https://jovianlin.io/cat-crossentropy-vs-sparse-cat-crossentropy/) loss function while compiling model.
+
 ```python
-model.compile(optimizer='adam', 
+model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 ```
-  
- Uses three neural layers:
+
+Uses three neural layers:
 
 ```python
 model = keras.Sequential([
@@ -55,7 +52,7 @@ fashion_mnist = keras.datasets.fashion_mnist
 
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
 
-class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 train_images.shape
 len(train_labels)
@@ -88,7 +85,7 @@ model = keras.Sequential([
     keras.layers.Dense(10, activation=tf.nn.softmax)
 ])
 
-model.compile(optimizer='adam', 
+model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
@@ -108,7 +105,7 @@ def plot_image(i, predictions_array, true_label, img):
   plt.grid(False)
   plt.xticks([])
   plt.yticks([])
-  
+
   plt.imshow(img, cmap=plt.cm.binary)
 
   predicted_label = np.argmax(predictions_array)
@@ -116,7 +113,7 @@ def plot_image(i, predictions_array, true_label, img):
     color = 'blue'
   else:
     color = 'red'
-  
+
   plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label],
                                 100*np.max(predictions_array),
                                 class_names[true_label]),
@@ -128,9 +125,9 @@ def plot_value_array(i, predictions_array, true_label):
   plt.xticks([])
   plt.yticks([])
   thisplot = plt.bar(range(10), predictions_array, color="#777777")
-  plt.ylim([0, 1]) 
+  plt.ylim([0, 1])
   predicted_label = np.argmax(predictions_array)
- 
+
   thisplot[predicted_label].set_color('red')
   thisplot[true_label].set_color('blue')
 

@@ -7,8 +7,6 @@ title: Automated Weather Monitor using Arduino - an IoT Implementation
 tags: [iot, smart-home, arduino, C++]
 ---
 
-
-
 Automated Smart Weather Monitor using IoT
 
 This repository contains the Arudino sketch for the automated smart weather monitor project.
@@ -57,7 +55,7 @@ sendAT("AT+CWMODE=1\r\n",1000);
 sendAT("AT+CWJAP=\""SSID"\",\""PASS"\"\r\n",2000);
 while(!esp8266.find("OK"))
 {
-  
+
 }
 sendAT("AT+CIFSR\r\n",1000);
 sendAT("AT+CIPMUX=0\r\n",1000);

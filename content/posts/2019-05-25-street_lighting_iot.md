@@ -9,8 +9,8 @@ tags: [iot, smart-home, arduino, C++]
 
 Automatic street lighting system which senses amount of ambient light and accordingly switches on/off lights. Built using:
 
-* an Arduino Uno and
-* a Raspberry Pi 3B+.
+- an Arduino Uno and
+- a Raspberry Pi 3B+.
 
 The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.
 
@@ -51,13 +51,13 @@ String sendAT(String command, const int timeout)
 
 void connectwifi(){
   sendAT("AT\r\n",1000); //
-  sendAT("AT+CWMODE=1\r\n",1000); 
+  sendAT("AT+CWMODE=1\r\n",1000);
   //call sendAT function to set esp8266 to station mode
   sendAT("AT+CWJAP=\""SSID"\",\""PASS"\"\r\n",2000);
   //AT command to connect with the wifi network
   while(!esp8266.find("OK")){
     //wait for connection
-    
+
   }
   sendAT("AT+CIFSR\r\n",1000); //AT command to print IP address on serial monitor
   sendAT("AT+CIPMUX=0\r\n",1000); //AT command to set esp8266 to multiple connections

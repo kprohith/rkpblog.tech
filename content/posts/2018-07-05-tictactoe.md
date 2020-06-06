@@ -7,17 +7,16 @@ title: TicTacToe in Python
 tags: [python, script]
 ---
 
-
 # TicTacToe in Python - Commandline
 
+### A text-based version of the [popular two player game](https://en.wikipedia.org/wiki/Tic-tac-toe).
 
-###  A text-based version of the [popular two player game](https://en.wikipedia.org/wiki/Tic-tac-toe).
+### Size of the game is _dynamically_ set depending on the user's choice.
 
-###  Size of the game is _dynamically_ set depending on the user's choice.
-
-####  This game is entirely written in [python](https://python.org). 
+#### This game is entirely written in [python](https://python.org).
 
 #### This script uses [colorama](https://pypi.org/project/colorama/) for adding color to the commandline output.
+
 #### Install colorama to see colored output.
 
 ```python
@@ -73,12 +72,12 @@ def win(current_game):
 
 
 def game_board(game_map, player=0, row=0, column=0, just_display=False):
-	
+
 	try:
 		if game_map[row][column] != 0:
 			print("This space is occupied, try another!")
 			return False
-		
+
 
 		print("   "+"  ".join([str(i) for i in range(len(game_map))]))
 		if not just_display:
@@ -101,7 +100,7 @@ def game_board(game_map, player=0, row=0, column=0, just_display=False):
 	except Exception as e:
 		print(str(e))
 		return False
-        
+
 
 
 play = True
@@ -117,7 +116,7 @@ while play:
 		current_player = next(player_cycle)
 		played = False
 		while not played:
-			
+
 			print(f"Player: {current_player}")
 			column_choice = int(input("Which column?"))
 			row_choice = int(input("Which row?"))
@@ -136,9 +135,3 @@ while play:
 				play = False
 
 ```
-
-
-
-
-
-

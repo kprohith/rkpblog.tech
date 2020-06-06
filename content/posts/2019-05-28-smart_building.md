@@ -7,7 +7,6 @@ title: Smart Presence Sensing System - IoT enabled Smart Building
 tags: [iot, smart-home, arduino, C++]
 ---
 
-
 Automated Smart Building using IoT
 
 This repository contains the Arudino sketch for the automated smart building project.
@@ -47,13 +46,13 @@ String sendAT(String command, const int timeout)
 
 void connectwifi(){
   sendAT("AT\r\n",1000); //
-  sendAT("AT+CWMODE=1\r\n",1000); 
+  sendAT("AT+CWMODE=1\r\n",1000);
   //call sendAT function to set esp8266 to station mode
   sendAT("AT+CWJAP=\""SSID"\",\""PASS"\"\r\n",2000);
   //AT command to connect with the wifi network
   while(!esp8266.find("OK")){
     //wait for connection
-    
+
   }
   sendAT("AT+CIFSR\r\n",1000); //AT command to print IP address on serial monitor
   sendAT("AT+CIPMUX=0\r\n",1000); //AT command to set esp8266 to multiple connections
@@ -117,7 +116,7 @@ void loop() {
     if(counter==0){
       digitalWrite(8,LOW);
       Light_status=10;
-      
+
     }
     passTS(counter,Light_status);
     delay(4000);

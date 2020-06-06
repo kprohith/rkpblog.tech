@@ -6,6 +6,7 @@ categories: [markdown]
 title: Smart Water Meter using an Arduino - An IoT Implementation
 tags: [iot, smart-home, arduino, C++]
 ---
+
 Smart Water Meter using IoT
 
 The status of the entire system is updated in real-time onto a cloud based IoT dashboard(ThingSpeak) which can be monitored from anywhere in the world.
@@ -55,13 +56,13 @@ String sendAT(String command, const int timeout)
 
 void connectwifi(){
   sendAT("AT\r\n",1000); //
-  sendAT("AT+CWMODE=1\r\n",1000); 
+  sendAT("AT+CWMODE=1\r\n",1000);
   //call sendAT function to set esp8266 to station mode
   sendAT("AT+CWJAP=\""SSID"\",\""PASS"\"\r\n",2000);
   //AT command to connect with the wifi network
   while(!esp8266.find("OK")){
     //wait for connection
-    
+
   }
   sendAT("AT+CIFSR\r\n",1000); //AT command to print IP address on serial monitor
   sendAT("AT+CIPMUX=0\r\n",1000); //AT command to set esp8266 to multiple connections
@@ -91,7 +92,7 @@ void setup() {
   // configured to trigger on a FALLING change(transition from HIGH to LOW state)
   attachInterrupt(sensorInterrupt,pulseCounter,FALLING);
 
-  
+
 }
 
 /* main progrma loop */
@@ -105,10 +106,10 @@ void loop() {
     //that to scale the output based on the number of pulses per second per units of measure(litres/minute in this case) coming from the sensor
     flowRate=((1000.0/(millis()-oldTime))*pulseCount)/calibrationFactor;
 
-    //Note the time this processing pass was executed. 
+    //Note the time this processing pass was executed.
     //Note that because we have disabled interrupts the
     //millis() function won't actually be incrementing
-    //right at this point but it will return the value 
+    //right at this point but it will return the value
     //it was set to just before interrupts were disabled.
     oldTime=millis();
 

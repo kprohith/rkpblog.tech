@@ -21,6 +21,6 @@ If you want to list your own blog, there are options.
 
 1. Email me@searchableguy.com
 2. Make a PR to add your blog:
-     - Fork the [repo](https://github.com/searchableguy/awesomeblog-club)
-     - Add your blog in the blogs directory in json format with file name being your domain (replace any dots).
-     - PR the changes
+   - Fork the [repo](https://github.com/searchableguy/awesomeblog-club)
+   - Add your blog in the blogs directory in json format with file name being your domain (replace any dots).
+   - PR the changes

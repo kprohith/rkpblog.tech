@@ -8,6 +8,7 @@ tags: [pi-hole, dns, security, configuration]
 ---
 
 # Pi-Hole DNS over HTTPS
+
 I just set up [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) using [this guide](https://docs.pi-hole.net/guides/dns-over-https/) on my [pi-hole](https://pi-hole.net) DNS sink.
 
 Basically,
@@ -19,11 +20,13 @@ Basically,
 3. Use systemd to start the service (or reboot, I guess?)
 
 Ultimately this still goes to Cloudflare’s 1.1.1.1 DNS, except routed over HTTPS:
+
 ```bash
 # Commandline args for cloudflared
 CLOUDFLARED_OPTS=--port 5053 --upstream https://1.1.1.1/dns-query --upstream https://1.0.0.1/dns-query
 ```
-Why? Basically, with traditional HTTPS people don’t know what you are browsing (because it’s encrypted) but they can *definitely tell what website (domain name) you are looking at*.
+
+Why? Basically, with traditional HTTPS people don’t know what you are browsing (because it’s encrypted) but they can _definitely tell what website (domain name) you are looking at_.
 
 Even if you are visiting a site using HTTPS, your DNS query is sent over an unencrypted connection. That means that even if you are browsing https://cloudflare.com, anyone listening to packets on the network knows you are attempting to visit cloudflare.com.
 

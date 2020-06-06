@@ -5,17 +5,16 @@ description: Basic text classifier that uses tensor-flow and keras api inorder t
 categories: [markdown]
 title: Text Classification using machine learning
 tags: [python, machine-learning, tensorflow, keras, NLP]
-
 ---
 
- Text-Classifier-ML
+Text-Classifier-ML
 
- Basic text classifier that uses [tensor-flow](https:/tensorflow.org) and [keras api](https://keras.io) inorder to classify text as:
+Basic text classifier that uses [tensor-flow](https:/tensorflow.org) and [keras api](https://keras.io) inorder to classify text as:
 
-  1.) Positive
-  2.) Negative
+1.) Positive
+2.) Negative
 
- Trained on the [IMDB Movie Review dataset](https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz)
+Trained on the [IMDB Movie Review dataset](https://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz)
 
 ```python
 from __future__ import absolute_import, division, print_function
@@ -54,7 +53,7 @@ len(train_data[0]), len(train_data[1])
 word_index = imdb.get_word_index()
 
 # The first indices are reserved
-word_index = {k:(v+3) for k,v in word_index.items()} 
+word_index = {k:(v+3) for k,v in word_index.items()}
 word_index["<PAD>"] = 0
 word_index["<START>"] = 1
 word_index["<UNK>"] = 2  # unknown

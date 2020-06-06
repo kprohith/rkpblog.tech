@@ -7,9 +7,6 @@ title: Smart Irrigation System using IoT
 tags: [iot, smart-home, arduino, C++]
 ---
 
-
-
-
 This repository contains the Arudino sketch for the automated smart irrigation project using iot.
 
 The sketch is written in C++.
@@ -57,7 +54,7 @@ sendAT("AT+CWMODE=1\r\n",1000);
 sendAT("AT+CWJAP=\""SSID"\",\""PASS"\"\r\n",2000);
 while(!esp8266.find("OK"))
 {
-  
+
 }
 sendAT("AT+CIFSR\r\n",1000);
 sendAT("AT+CIPMUX=0\r\n",1000);
@@ -102,6 +99,6 @@ void updateTS(String T, String P)
   sendAT("AT+CIPCLOSE\r\n",2000);
   Serial.println("");
   delay(15000);
-  
+
 }
 ```
