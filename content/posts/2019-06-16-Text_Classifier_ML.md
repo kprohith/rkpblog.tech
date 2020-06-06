@@ -149,7 +149,7 @@ plt.show()
 ```
 
 Training and Validation Loss
-![](https://github.com/kprohith/rkpblog.tech/blob/master/static/images/Figure_1.png?raw=true)
+![Training and Validation Loss](https://github.com/kprohith/rkpblog.tech/blob/master/static/images/Figure_1.png?raw=true)
 
 Training and Validation Accuracy
-![](https://github.com/kprohith/rkpblog.tech/blob/master/static/images/Figure_2.png?raw=true)
+![Training and Validation Accuracy](https://github.com/kprohith/rkpblog.tech/blob/master/static/images/Figure_2.png?raw=true)

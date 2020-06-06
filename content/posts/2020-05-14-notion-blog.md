@@ -27,7 +27,6 @@ I used [Notablog](https://github.com/dragonman225/notablog) to generate a sub-bl
 ## Getting Started
 
 > Make sure you have Node.js v12.0.0 or higher. Check with command `node -v`.
-
 > For existing users who want to upgrade from v0.3.x, please go through all below steps (do a clean install), except that you can continue to use your Notion table.
 
 1. Install Notablog.
@@ -62,7 +61,7 @@ I used [Notablog](https://github.com/dragonman225/notablog) to generate a sub-bl
   notablog preview <path_to_the_notablog-starter>
   ```
 
-### Congratulations! Your website is ready now!
+### Congratulations! Your website is ready now
 
 - You can copy files in `notablog-starter/public/` directory to a server or upload them to any static hosting service to share your content with the world.
 
@@ -108,7 +107,7 @@ With the design, a user only sees `notablog-starter` when using, therefore the f
 
 ### Simplified Folder Structure
 
-```
+```dir
 notablog-starter
 ├── config.json
 ├── public
@@ -137,7 +136,7 @@ A theme contains layout templates, CSS files, fonts, and other assets that shape
 
 #### Folder Structure
 
-```
+```dir
 <name>
 ├── layout
 └── assets

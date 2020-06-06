@@ -9,7 +9,7 @@ tags: [python, machine-learning, finance]
 
 ### Uses pandas, matplotlib, mpl_finance, scikit-learn and the AlphaVantage Stock Market API
 
-#### Written entirely in python.
+#### Written entirely in Python
 
 ```python
 import bs4 as bs

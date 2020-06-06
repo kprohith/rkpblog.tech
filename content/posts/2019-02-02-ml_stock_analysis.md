@@ -55,7 +55,7 @@ style.use('ggplot')
 
     return tickers
 
-save_sensex_tickers()   
+save_sensex_tickers()
 '''
 # save sensex_tickers()
 def convert_to_list():
@@ -92,7 +92,7 @@ def get_data_from_av(reload_sensex=False):
     end = dt.datetime.now()
     api_key = 'xxx'
     tick_names = [s.replace(':', '-') for s in tickers]
-    
+
     for ticker in tickers:
         try:
             url_string = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&outputsize=full&apikey=%s"%(ticker,api_key)
@@ -111,11 +111,11 @@ def get_data_from_av(reload_sensex=False):
                                 float(v['4. close']),float(v['1. open'])]
                     df.loc[-1,:] = data_row
                     df.index = df.index + 1
-                print('Data saved to : %s'%file_to_save)        
+                print('Data saved to : %s'%file_to_save)
                 df.to_csv(file_to_save)
 
         except:
-            pass    
+            pass
 
 #get_data_from_av(True)
 
@@ -136,7 +136,7 @@ def compile_data():
 
         #df['{}_HL_pct_diff'.format(ticker)] = (df['High'] - df['Low']) / df['Low']
         #df['{}_daily_pct_chng'.format(ticker)] = (df['Close'] - df['Open']) / df['Open']
-        
+
         df.rename(columns={'Adj Close':ticker}, inplace=True)
         df.drop(['Open','High','Low','Volume', 'Close','Unnamed: 0'],1,inplace=True)
 
@@ -175,7 +175,7 @@ def visualize_data():
 
     ax1.set_xticks(np.arange(data1.shape[1]) + 0.5, minor=False)
     ax1.set_yticks(np.arange(data1.shape[0]) + 0.5, minor=False)
-        
+
     ax1.invert_yaxis()
     ax1.xaxis.tick_top()
 
@@ -200,7 +200,7 @@ def process_data_for_labels(ticker):
 
     for i in range(1,hm_days+1):
         df['{}_{}d'.format(ticker,i)] = (df[ticker].shift(-i) - df[ticker]) / df[ticker]
-       
+
     df.fillna(0, inplace=True)
     return tickers, df
 
@@ -242,7 +242,7 @@ def extract_featuresets(ticker):
     X = df_vals.values
     y = df['{}_target'.format(ticker)].values
 
-    
+
     return X, y, df
 
 
@@ -802,4 +802,3 @@ Zee Entertainment Enterprises Ltd. | MEDIA & ENTERTAINMENT | ZEEL | EQ | INE256A
 Zensar Technolgies Ltd. | IT | ZENSARTECH | EQ | INE520A01027
 Zydus Wellness Ltd. | CONSUMER GOODS | ZYDUSWELL | EQ | INE768C01010
 eClerx Services Ltd. | IT | ECLERX | EQ | INE738I01010
-

@@ -90,7 +90,7 @@ Formatting text as YAML:
 
 ## Tweetcards
 
-{% twitter https://twitter.com/jakevdp/status/1204765621767901185?s=20 %}
+{% twitter <https://twitter.com/jakevdp/status/1204765621767901185?s=20> %}
 
 ## Footnotes
 

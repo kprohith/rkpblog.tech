@@ -20,7 +20,7 @@ tags:
 
 ## [Porsche Classifier](https://porsche-classifier.azurewebsites.net/)
 
-## Identify [Porsche](https://porsche.com) models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95% accuracy.
+## Identify [Porsche](https://porsche.com) models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95% accuracy
 
 ![porsche-718](https://raw.githubusercontent.com/kprohith/rkpblog.tech/master/static/images/718.jpg)
 
@@ -225,20 +225,20 @@ Out[0]:
 | 38    | 0.217511   | 1.230480   | 0.318750   | 00:10 |
 | 39    | 0.209594   | 1.243002   | 0.318750   | 00:10 |
 
-````
+````python
 
-In [0]:
-learn.save('stage-1')
-In [0]:
-learn.unfreeze()
-In [0]:
-learn.lr_find()
-25.00% [1/4 00:12<00:37]
+    In [0]:
+    learn.save('stage-1')
+    In [0]:
+    learn.unfreeze()
+    In [0]:
+    learn.lr_find()
+    25.00% [1/4 00:12<00:37]
 
 ```
 epoch | train_loss | valid_loss | error_rate | time
 ----- | ---------- | ---------- | ---------- | ----
-0 |	0.196860 | #na# | 00:12
+0 | 0.196860 | #na# | 00:12
 
 83.33% [25/30 00:10<00:02 0.6416]
 LR Finder is complete, type {learner_name}.recorder.plot() to see the graph.
