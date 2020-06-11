@@ -4,6 +4,6 @@ description: Testing Netlify CMS
 layout: post
 categories:
   - markdown
-tags: "[markdown, netlify-cms]"
+tags: List ["markdown", "netlify-cms"]
 ---
 TEST
