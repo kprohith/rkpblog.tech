@@ -17,6 +17,6 @@ collections:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Description', name: 'description', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
-      - {label: "Layout", name: "layout", widget: "hidden", default: "post"}
-      - { label: 'Categories', name: 'categories', widget: 'string', default: "[markdown]" }
-      - { label: 'Tags', name: 'tags', widget: 'string', default: "[]" }
+      - { label: "Layout", name: "layout", widget: "hidden", default: "post"}
+      - { label: 'Categories', name: 'categories', widget: 'string', default: [markdown] }
+      - { label: 'Tags', name: 'tags', widget: 'string'}
