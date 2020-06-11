@@ -7,7 +7,7 @@ title: AwesomeBlog Club
 tags: [blogging, github]
 ---
 
-Recently found [this](https://awesomeblog.club/) website on [Hacker News](https://news.ycombinator.com/).
+I recently found [this](https://awesomeblog.club/) website on [Hacker News](https://news.ycombinator.com/).
 It is a public repository of personal blogs, mostly tech blogs.  
 It's called [Awesomeblog.club](https://Awesomeblog.club).
 
