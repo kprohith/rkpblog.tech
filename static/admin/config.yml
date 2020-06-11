@@ -12,11 +12,11 @@ collections:
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     editor:
-      preview: false
+      preview: true
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Description', name: 'description', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
       - { label: "Layout", name: "layout", widget: "hidden", default: "post"}
       - { label: 'Categories', name: 'categories', widget: 'string', default: [markdown] }
-      - { label: 'Tags', name: 'tags', widget: 'string'}
+#      - { label: 'Tags', name: 'tags', widget: 'string'}
