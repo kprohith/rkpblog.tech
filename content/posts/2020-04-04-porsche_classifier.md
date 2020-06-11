@@ -22,7 +22,7 @@ tags:
 
 ## Identify [Porsche](https://porsche.com) models(718, 911, Taycan, Macan, Cayenne, Panamera) with 95% accuracy
 
-![porsche-718](https://raw.githubusercontent.com/kprohith/rkpblog.tech/master/static/images/718.jpg)
+![porsche-718](/images/2020-04-04-porsche_classifier/718.jpg)
 
 Trained using [fastai-v3](https://fast.ai), [pytorch](https://pytorch.org/) and [Gradient](https://gradient.paperspace.com/).
 Uses [resnet50](https://www.mathworks.com/help/deeplearning/ref/resnet50.html) and trained on a [Nvidia Quadro P5000](https://images.nvidia.com/content/pdf/quadro/data-sheets/192195-DS-NV-Quadro-P5000-US-12Sept-NV-FNL-WEB.pdf).
