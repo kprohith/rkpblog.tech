@@ -18,5 +18,5 @@ collections:
       - { label: 'Description', name: 'description', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
       - {label: "Layout", name: "layout", widget: "hidden", default: "post"}
-      - {label: "Categories", name: "categories", widget: "list", default: [markdown]}
-      - {label: "Tags", name: "tags"}
+      - {label: "Categories", name: "categories", widget: 'string', default: [markdown]}
+      - {label: "Tags", name: "tags", widget: 'string'}
