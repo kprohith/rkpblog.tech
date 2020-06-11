@@ -19,4 +19,4 @@ collections:
       - { label: 'Body', name: 'body', widget: 'markdown' }
       - {label: "Layout", name: "layout", widget: "hidden", default: "post"}
       - {label: "Categories", name: "categories", widget: "list", default: [markdown]}
-      - {label: "Tags", name: "tags", widget: "list"}
+      - {label: "Tags", name: "tags"}
