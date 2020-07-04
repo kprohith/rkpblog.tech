@@ -19,8 +19,10 @@ I have decided to document my whole learning process here, for two reasons:
 Most of the content suggested here is for programmers who already have a considerable amount of experience, and want to solidify their foundations, not for folks who are just starting out.
 
 Quoting the TYCS website:
->  This guide is NOT designed for those who are entirely new to programming. We assume that you are a competent programmer without a background in computer science, looking to fill in some knowledge gaps. The fact that we've included a section on "programming" is simply a reminder that there may be more to learn. For those who've never coded before, but who'd like to, you might prefer a guide like [this one](https://www.reddit.com/r/learnprogramming/wiki/faq#wiki_getting_started).
- Don't worry, all of this might seem over-whelming at first(yup, it was for me), but as I parsed through the first few books, I've realised that you pick up steam as you go and the most important thing is to not let go and keep pushing through even though it might not make sense all at once because once you develop an intuitive understanding of the main concepts, all of the knowledge blocks you've developed begin to start fitting in like Tetris blocks. Trust me, the effort is worth it.
+
+> This guide is NOT designed for those who are entirely new to programming. We assume that you are a competent programmer without a background in computer science, looking to fill in some knowledge gaps. The fact that we've included a section on "programming" is simply a reminder that there may be more to learn. For those who've never coded before, but who'd like to, you might prefer a guide like [this one](https://www.reddit.com/r/learnprogramming/wiki/faq#wiki_getting_started).
+
+Don't worry, all of this might seem over-whelming at first(yup, it was for me), but as I parsed through the first few books, I'verealised that you pick up steam as you go and the most important thing is to not let go and keep pushing through even though it mightnot make sense all at once because once you develop an intuitive understanding of the main concepts, all of the knowledge blocks you'vedeveloped begin to start fitting in like Tetris blocks. Trust me, the effort is worth it.
 
 <iframe src="https://giphy.com/embed/f7STAwvEml1eIf0FEq" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/tetris-denyse-mitterhofer-dmitterhofer-f7STAwvEml1eIf0FEq">via GIPHY</a></p>
 
@@ -32,7 +34,7 @@ All accounted for, it should take about 3 years to finish all of the prescribed 
 
 I have made a [Github repo](https://github.com/kprohith/teach-yourself-cs) to store all of the required reference material. Most of it is available for free on the internet!
 
-I expect to blog once a week to make a update on my progress.
+I expect to blog once a week to make an update on my progress.
 
 Let's see how this goes.
 
@@ -43,7 +45,6 @@ Here's a TL;DR of the whole curriculum:
 Study all nine subjects below, in roughly the presented order, using either the suggested textbook or video lecture series, but ideally both. Aim for 100-200 hours of study of each topic, then revisit favorites throughout your career 🚀.
 
 <!--EndFragment-->
-
 
 ## Teach Yourself Computer Science Curriculum
 
