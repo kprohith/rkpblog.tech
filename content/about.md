@@ -4,7 +4,7 @@ date: 2020-05-02T20:46:34+05:30
 disqus: false
 ---
 
-I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sophomore at Manipal Academy of Higher Education pursuing a Bachelor of Science in Computer Science. Skilled in Python, C++, Java, HTML, CSS, JavaScript. Pytorch, tensorflow, keras, Microsoft Azure, fast.ai and love tinkering with Arduinos. Interested in deep learning, neural networks and full-stack development. Always looking for opportunities to learn and improve
+I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sophomore at Manipal Academy of Higher Education pursuing a Bachelor of Science in Computer Science. Skilled in Python, C++, Java, HTML, CSS, JavaScript. Pytorch, tensorflow, keras, Microsoft Azure, fast.ai and love tinkering with Arduinos. Interested in deep learning, neural networks and full-stack development. Always looking for opportunities to learn and improve.
 
 ---
 
