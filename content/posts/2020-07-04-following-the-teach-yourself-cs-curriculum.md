@@ -3,30 +3,38 @@ title: Following the Teach Yourself CS Curriculum
 description: Documenting my musings as I work my way through the TYCS curriculum
 layout: post
 date: 2020-07-04T09:32:15.855Z
+toc: true
+layout: post
+categories: [markdown]
+tags: [computer science]
 ---
-For the last month or so I have been steadily making my way through the [Teach Yourself Computer Science(https://teachyourselfcs.com) Curriculum.
+For the last month or so I have been steadily making my way through the [Teach Yourself Computer Science](https://teachyourselfcs.com) Curriculum.
 
 I have decided to document my whole learning process here, for two reasons:
 
-\- As a method of self-accountability
+- As a method of self-accountability
 
-\- In the hope that it may help some else who is also planning on following through this entire monster of a course. 
+- In the hope that it may help some else who is also planning on following through this entire monster of a course
 
-Most of the content suggested here is for programmers who already have a considerable amout of experience, and want to solidify their foundations, not for folks who are just starting out. Don't worry, all of this might seem over-whelming at first(yup, it was for me), but as I parsed through the first few books, I've realised that you pick up steam as you go and the most important thing is to not let go and keep pushing through even though it might not make sense all at once because once you develop an intuitive understanding of the main concepts, all of the knowledge blocks you've developed begin to start fitting in like Tetris blocks. Trust me, the effort is worth it.
+Most of the content suggested here is for programmers who already have a considerable amount of experience, and want to solidify their foundations, not for folks who are just starting out.
 
-<div style="width:100%;height:0;padding-bottom:100%;position:relative;"><iframe src="https://giphy.com/embed/f7STAwvEml1eIf0FEq" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/tetris-denyse-mitterhofer-dmitterhofer-f7STAwvEml1eIf0FEq">via GIPHY</a></p>
+Quoting the TYCS website:
+>  This guide is NOT designed for those who are entirely new to programming. We assume that you are a competent programmer without a background in computer science, looking to fill in some knowledge gaps. The fact that we've included a section on "programming" is simply a reminder that there may be more to learn. For those who've never coded before, but who'd like to, you might prefer a guide like [this one](https://www.reddit.com/r/learnprogramming/wiki/faq#wiki_getting_started).
+ Don't worry, all of this might seem over-whelming at first(yup, it was for me), but as I parsed through the first few books, I've realised that you pick up steam as you go and the most important thing is to not let go and keep pushing through even though it might not make sense all at once because once you develop an intuitive understanding of the main concepts, all of the knowledge blocks you've developed begin to start fitting in like Tetris blocks. Trust me, the effort is worth it.
 
-So, I will be updating my progress, penning down my own personal revelations and mind-fork moments (looking at you \[SICP](https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html)) as I make my way through all of the suggested content and books.
+<div style="width:100%;height:0;padding-bottom:100%;position:relative;"><iframe src="https://giphy.com/embed/f7STAwvEml1eIf0FEq" width="50%" height="50%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/tetris-denyse-mitterhofer-dmitterhofer-f7STAwvEml1eIf0FEq">via GIPHY</a></p>
+
+So, I will be updating my progress, penning down my own personal revelations and mind-fork moments (looking at you [SICP](https://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html)) as I make my way through all of the suggested content and books.
 
 The curriculum is designed is such a manner that one is supposed to spend ~100 hours on each topic and then re-visit stuff that they found interesting as they go.
 
 All accounted for, it should take about 3 years to finish all of the prescribed content at my current rate of thoroughly perusing all of the content.
 
-I have made a \[Github repo](https://github.com/kprohith/teach-yourself-cs) to store all of the required reference material. Most of it is available for free on the internet!
+I have made a [Github repo](https://github.com/kprohith/teach-yourself-cs) to store all of the required reference material. Most of it is available for free on the internet!
 
 I expect to blog once a week to make a update on my progress.
 
-Let's see how this goes...
+Let's see how this goes.
 
 Here's a TL;DR of the whole curriculum:
 
@@ -36,9 +44,8 @@ Study all nine subjects below, in roughly the presented order, using either the 
 
 <!--EndFragment-->
 
-# teach-yourself-cs
 
-## Curriculum
+## Teach Yourself Computer Science Curriculum
 
 | Subject                        | Why study?                                                                                                                                       | Book                                                                                                                            | Videos                                                                                                                                                                 | Done? |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
