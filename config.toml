@@ -32,7 +32,7 @@ url = "/"
 weight = 1
 
 [[menu.main]]
-name = "All posts"
+name = "All Posts"
 url = "/posts"
 weight = 2
 
@@ -44,6 +44,11 @@ weight = 3
 [[menu.main]]
 name = "Tags"
 url = "/tags"
+weight = 4
+
+[[menu.main]]
+name = "CV"
+url = "/cv.pdf"
 weight = 4
 
 [[params.social]]
