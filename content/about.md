@@ -8,8 +8,8 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
 
 ---
 
-📧Email me at the address: *rohith [at] rkpblog [dot] tech*
-[📠Here's my CV](https://rkpblog.tech/Rohith_Palakirti_Manipal.pdf)
+- 📧Email me at the address: *rohith [at] rkpblog [dot] tech*
+- [📠Here's my CV](https://rkpblog.tech/Rohith_Palakirti_Manipal.pdf)
 
 
 <div class="LI-profile-badge"  data-version="v1" data-size="large" data-locale="en_US" data-type="horizontal" data-theme="dark" data-vanity="rohith-kp"><a class="LI-simple-link" href='https://in.linkedin.com/in/rohith-kp?trk=profile-badge'>Rohith Palakirti</a></div>
