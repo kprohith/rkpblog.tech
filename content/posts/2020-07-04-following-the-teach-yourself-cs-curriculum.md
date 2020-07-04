@@ -4,7 +4,7 @@ description: Documenting my musings as I work my way through the TYCS curriculum
 layout: post
 date: 2020-07-04T09:32:15.855Z
 ---
-For the last month or so I have been steadily making my way through the [Teach Yourself Computer Science(https://teachyourselfcs.com) Curriculum.
+For the last month or so I have been steadily making my way through the \[Teach Yourself Computer Science](https://teachyourselfcs.com) Curriculum.
 
 I have decided to document my whole learning process here, for two reasons:
 
