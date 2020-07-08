@@ -9,7 +9,7 @@ disqus: false
 
 
   									 Hosted on Github
-![](https://www.changelog.site/assets/images/brands/github.png)
+[![Hosted on Github](https://www.changelog.site/assets/images/brands/github.png)](https:github.com)
 
 
                                       Built using
