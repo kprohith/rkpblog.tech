@@ -21,12 +21,12 @@
     "url": "https://www.rkpblog.tech",
     "screenshots": [
         {
-            "src": "[Embedded]",
+            "src": "/pwa/Assets/screenshot1.png",
             "sizes": "1280x800",
             "type": "image/png"
         },
         {
-            "src": "[Embedded]",
+            "src": "/pwa/Assets/screenshot2.png",
             "sizes": "750x1334",
             "type": "image/png"
         }
