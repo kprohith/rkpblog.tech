@@ -1,0 +1,34 @@
+{
+    "dir": "ltr",
+    "lang": "English",
+    "name": "Rohith's Blog",
+    "short_name": "RKP",
+    "scope": "/",
+    "display": "standalone",
+    "start_url": "https://www.rkpblog.tech/",
+    "background_color": "transparent",
+    "theme_color": "transparent",
+    "description": "I write about tech.",
+    "orientation": "any",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "https://www.rkpblog.tech//favicon.ico",
+            "sizes": "16x16 24x24 32x32 48x48 64x64 72x72 96x96 128x128 256x256"
+        }
+    ],
+    "url": "https://www.rkpblog.tech",
+    "screenshots": [
+        {
+            "src": "[Embedded]",
+            "sizes": "1280x800",
+            "type": "image/png"
+        },
+        {
+            "src": "[Embedded]",
+            "sizes": "750x1334",
+            "type": "image/png"
+        }
+    ]
+}
