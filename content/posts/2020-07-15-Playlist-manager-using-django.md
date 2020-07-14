@@ -24,7 +24,7 @@ Built using:
 - [Django REST Framework](https://www.django-rest-framework.org/)
 - [Bootstrap](https://getbootstrap.com/)
 - [SQLite](https://www.sqlite.org/index.html)(for development)
-- [PostgreSQL](https://www.postgresql.org/)(for production)]
+- [PostgreSQL](https://www.postgresql.org/)(for production)
 
 ## Setup Instructions
 
