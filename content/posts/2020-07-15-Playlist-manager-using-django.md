@@ -37,7 +37,7 @@ Built using:
 
 ## Using the app
 
-1. Go to the Admin Page (http://127.0.0.1:8000/admin/) and login as admin with the details below to to create new users/groups/manage database of app.
+1. Go to the Admin Page (<http://127.0.0.1:8000/admin/>) and login as admin with the details below to to create new users/groups/manage database of app.
 2. The admin username is **admin** and password is **testing321**
 3. You can either use the Management Interface(after logging in as admin) or teh REST API(after creating a account and logging in) in order to view and update the songs/artists/albums/playlists information.
 4. The Management Interface at <http://127.0.0.1:8000/admin/backend/> can be used to graphically add new users or update the music database of the app. You can use it to add new songs/artists/albums/playlists.
