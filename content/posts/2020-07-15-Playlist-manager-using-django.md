@@ -71,4 +71,7 @@ Although, you **have** to create an account and be logged in in order to send PO
 
 - Set DEBUG = True in setting.py of the backend app to view detailed logs and errors messages
 
-If you find any bugs or if you think you can improve this implementation in any manner, please fork and create a pull request!
+If you find any bugs or if you think you can improve this implementation in any manner, please fork and create a pull request!  
+
+This is still a work in progress. I plan on dedicating more time for this in the future.
+
