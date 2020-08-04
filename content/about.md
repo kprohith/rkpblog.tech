@@ -49,7 +49,7 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
 
 ---
 
-<form name="contact" method="POST" data-netlify="true">
+<form name="contact" method="POST" netlify-honeypot="bot-field" data-netlify-recaptcha="true" data-netlify="true">
   <p>
     <label>Your Name: <input type="text" name="name" /></label>   
   </p>
@@ -59,6 +59,7 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
   <p>
     <label>Message: <textarea name="message"></textarea></label>
   </p>
+  <div data-netlify-recaptcha="true"></div>
   <p>
     <button type="submit">Send</button>
   </p>
