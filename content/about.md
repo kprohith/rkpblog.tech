@@ -45,7 +45,9 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
 - [🧾Here's my long form Curriculum Vitae](https://drive.google.com/file/d/1lRLYUBquMmihU7_QP115nudGhwaoyjUE/view?usp=sharing)
 
 
-### Contact me
+### [Contact me](#contact-me)
+
+---
 
 <form name="contact" method="POST" data-netlify="true">
   <p>
