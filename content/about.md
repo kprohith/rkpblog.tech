@@ -44,6 +44,25 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
 
 - [🧾Here's my long form Curriculum Vitae](https://drive.google.com/file/d/1lRLYUBquMmihU7_QP115nudGhwaoyjUE/view?usp=sharing)
 
+
+### Contact me
+
+<form name="contact" method="POST" data-netlify="true">
+  <p>
+    <label>Your Name: <input type="text" name="name" /></label>   
+  </p>
+  <p>
+    <label>Your Email: <input type="email" name="email" /></label>
+  </p>
+  <p>
+    <label>Message: <textarea name="message"></textarea></label>
+  </p>
+  <p>
+    <button type="submit">Send</button>
+  </p>
+</form>
+
+
 ---
 
 <div class="LI-profile-badge"  data-version="v1" data-size="large" data-locale="en_US" data-type="horizontal" data-theme="dark" data-vanity="rohith-kp"><a class="LI-simple-link" href='https://in.linkedin.com/in/rohith-kp?trk=profile-badge'>Rohith Palakirti</a></div>
