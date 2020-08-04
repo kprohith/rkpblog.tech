@@ -3,13 +3,13 @@ title: ""
 date: 2020-05-02T20:46:34+05:30
 disqus: false
 ---
-### [About me](#about-me)
+### About me {#about-me}
 
 ---
 
 I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sophomore at Manipal Academy of Higher Education pursuing a Bachelor of Science in Computer Science. Skilled in Python, C++, Go, Java, HTML, CSS, JavaScript Pytorch, TensorFlow, Keras, Microsoft Azure, fast.ai, the JAMStack and the MERNStack and love tinkering with Arduinos. Interested in deep learning, neural networks and full-stack development. Always looking for opportunities to learn and improve.
 
-### [Stuff I do](#stuff-i-do)
+### Stuff I do {#stuff-i-do}
 
 ---
 
@@ -20,7 +20,7 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
 - ⚡ Fun fact: My all time favorite SciFi book is [The Hitchhiker's Guide to the Galaxy](https://en.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy).
 - 🤿 I follow cricket and Formula One closely.
 
-### [How to reach me](#how-to-reach-me)
+### How to reach me {#how-to-reach-me}
 
 ---
 
@@ -36,7 +36,7 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
 - On Twitter: [fortytwochars](https://twitter.com/fortytwochars)
 - On Hacker News: [rohithkp](https://news.ycombinator.com/user?id=rohithkp)
 
-### [Curriculum Vitae](#curriculum-vitae)
+### Curriculum Vitae {#curriculum-vitae}
 
 ---
 
