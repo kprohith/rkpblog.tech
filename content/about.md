@@ -86,9 +86,10 @@ I'm [**Rohith Palakirti**](https://linkedin.com/in/rohith-kp), currently a sopho
   </div>
 </div>
   <div data-netlify-recaptcha="true"></div>
-  <p>
-    <button type="submit">Send</button>
-  </p>
+
+<div class="control">
+  <button class="button is-primary" type="submit">Submit</button>
+</div>
 </form>
 
 ---
