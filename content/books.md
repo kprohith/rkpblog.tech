@@ -1,0 +1,212 @@
+---
+title: Bookshelf
+disqus: false
+---
+
+
+I always enjoy reading others' lists and browsing their bookshelves, so this intended to be a digital version of that. I've only read about half of the books here and I intend to read all of them. (I guess I fall somewhere in the middle in the Umberto Eco theory of the library.)
+
+- Master and Margarita
+- Influence - THe Psychology of Persuasion
+- Man's Search for Meaning
+- War and Peace
+- On the Shortness of Life
+- Risk Savvy
+- Thinking in Bets
+- The Mindbody Prescription
+- Imagined Communities
+- Siddhartha by Herman Hesse
+- The Brothers Karamazov
+- Ulysses
+- Zen and the Art of Motorcycle Maintenance
+- Ishmael
+- Finnegans Wake
+- The Snowball
+- The Blank Slate
+- Harry Potter Series
+- The Lord of the Rings Series
+- Dune
+- Foundation Series
+- Culture Series
+- The Martian
+- Artemis
+- Godel, Escher, Bach
+- Thinking in Systems
+- Metaphors We Live By
+- The Black Swan
+- Sapiens
+- Deep Work
+- Ideas by Peter Watson
+- Guns, Germs and Steel
+- The Righteous Mindbody
+- The Selfish Gene
+- THe Design of Everyday Things
+- Nonviolent Communication
+- Meditatons by Marcus Aurelius
+- Hyperbole and a Half
+- Turtles All the Way Down
+- Infinite Jest
+- The Stranger by Albert Camus
+- Collected Articles of Frederick Douglas
+- Becoming Steve Jobs
+- The Emperor of All Maladies
+- Lincoln - Speeches and Writings
+- Lincoln in the Bardo
+- The Lowlands
+- The God of Small Things
+- The Three Body Problem
+- Mignight in Chernobyl
+- Upheaval by Jared Diamond
+- Game Theory and Strategy
+- Oil by Vaclav Smil
+- Transforming the Twentieth Century
+- Making the Modern World
+- Growth by Vaclav Smil
+- Educated
+- Energy and Civilization
+- The Pillars of Earth
+- Pompeii: A novel
+- The Idea Factory
+- A Short History of Nearly Everything
+- Men without Women
+- Kafka on the Shore
+- Blueprint by Nicholas Christakis
+- A Man Called Ove
+- Tools of Titans
+- The Art of War
+- THe Man Who Knew Infinity
+- Measure What Matters
+- Mein Kampf
+- The Rise and Fall of American GrowthCrossing the Chasm
+- 1984
+- Animal Farm
+- Vanity Fair by William Shakespeare
+- Feynman Lectures On Gravitation
+- Men, Machines, and Modern Times
+- Enemies: A Love Story
+- Operating Systems: Three Easy Pieces
+- The Beginning of Infinity
+- Song of Solomon
+- The Singularity is Near
+- Fahrenheit 451
+- How to Create a Mind
+- Computer Systems: A Programmer's Perspective
+- Designing Data-Intensive Applications by Martin Kleppmann
+- Crafting Interpreters
+- Computer Networking: A Top-Down Approach
+- Stealing Fire
+- Getting to Yes
+- Flow by Mihaly Csikszentmihalyi
+- How China Works
+- How Asia Works
+- The Tale of Two Cities
+- Pride and Prejudice
+- Taking the Work out of Networking
+- Emotional Intelligence by Daniel Goleman
+- Life 3.0
+- The Rosie Trilogy
+- The Autobiography of Benjamin Franklin
+- Our Final Invention
+- The Four Agreements
+- The Art of Computer Programming by Donald Knuth
+- The Great Gatsby
+- The Rational Optimist
+- Outliers
+- Poor Charlie's Almanack
+- The Checklist Manifesto
+- Complications by Atul Gawande
+- The Innovator's Dilemma
+- Zero to One
+- The War of Art
+- How to Change Your Mind by Michael Pollan
+- How the Mind Works by Steven Pinker
+- THe Alchemist
+- Berkshire Hathaway Letters to Shareholders
+- Slaughter House Five 
+- Midnight's Chldren
+- Kapital: Karl Marx
+- The Fountainhead
+- Go Set a Watchman
+- Catch-22
+- Catcher in the Rye
+- The Hunger Games Trilogy
+- The Game of Thrones Series
+- QED, by Richard Feynman
+- Homo Deus
+- Why We Sleep
+- Atomic Habits
+- Mindset by Carol Dweck
+- The Better Angels of Our Nature
+- Snow Crash
+- Freakonomics
+- Superfreakonomics
+- The Adventures of Sherlock Holmes
+- 12 Rules for Life
+- The Pragmatic Programmer
+- Getting Things Done
+- Moonwalking with Einstien
+- The Art of Doing Science and Engineering
+- Understanding Power
+- Lord of the Flies
+- Skin in the Game
+- Fooled by Randomness
+- Good Economics for Hard Times
+- Why Nations Fail
+- The Life Changing Magic of Tidying Up
+- Walden by Henry Thoreau
+- Harry Potter and the Methods of Rationality
+- Atlas Shrugged
+- The 4-Hour WOrkweek
+- The Hard THing about Hard Things
+- Digital Minimalism
+- The Power Broker
+- Feeling Good by David Burns
+- Anthem: Ayn Rand
+- Never Split the Difference
+- The Headsapce Diet
+- Meditation and Mindfulness
+- To Kill a Mockingbird
+- India After Gandhi
+- Born a Crime
+- The Everything Store
+- The Essays of Warren Buffett
+- Tao Ching 
+- The Age of Spiritual Machines
+- Work Hard, Be Nice
+- Joy At Work
+- Superintelligence by Nick Bostrom
+- Rework by Jason Fried
+- Everything and More by David Foster Wallace
+- The Origin of Species
+- Originals by Adam Grant
+- Origin Story by David Christian
+- Great Expectations
+- The Great Mental Models (Vol. I, Vol. II)
+- The Information by James Gleick
+- Learnability and Cognition by Steve Pinker
+- The Lean Start Up 
+- High Output Management
+- When Breath Becomes Art
+- Global Catastrophies and Trends
+- Finite and Infinite Games by James Carse 
+- China in Ten Words
+- A Year in Provence
+- The Red Queen
+- The Machine that Changed the World
+- Basic Economics by Thomas Sowell
+- The Wisdom of Insecurity
+- Surely You're Mr. Feynman!
+- The Mythical Man Month
+- How to Take Smart Notes
+- Structure and Interpretation of Computer Programs
+- The  Algorithm Design Manual
+- Small Fry
+- Steve Jobs
+- Programming Pearls
+- Principles by Ray Dalio
+- The Count of Monte Cristo
+- The Ultimte Hitchhiker's Guide to the Galaxy
+- Crime and Punishment
+- Hackers and Painters
+- Raw Thought by Aaron Schwartz
+- Infinite Powers

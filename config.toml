@@ -43,8 +43,8 @@ weight = 3
 
 
 [[menu.main]]
-name = "Curriculum Vitae"
-url = "/cv"
+name = "Bookshelf"
+url = "/books"
 weight = 4
 
 [[menu.main]]
