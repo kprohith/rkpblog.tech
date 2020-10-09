@@ -11,7 +11,18 @@ tags: [books, readinglists, library, bookshelf]
 I have always enjoyed reading others' reading lists and browsing their bookshelves and recomendations, so this intended to be a digital version of that. I've only read about half of the books here and I intend to read all of them over time. (I guess I fall somewhere in the middle in the Umberto Eco theory of the library.)
 
 - Master and Margarita
-- Influence - THe Psychology of Persuasion
+- Godel, Escher, Bach
+- Thinking in Systems
+- Metaphors We Live By
+- The Black Swan
+- Sapiens
+- Deep Work
+- Ideas by Peter Watson
+- Guns, Germs and Steel
+- The Righteous Mindbody
+- The Selfish Gene
+- THe Design of Everyday Things
+- Influence - The Psychology of Persuasion
 - Man's Search for Meaning
 - War and Peace
 - On the Shortness of Life
@@ -34,17 +45,6 @@ I have always enjoyed reading others' reading lists and browsing their bookshelv
 - Culture Series
 - The Martian
 - Artemis
-- Godel, Escher, Bach
-- Thinking in Systems
-- Metaphors We Live By
-- The Black Swan
-- Sapiens
-- Deep Work
-- Ideas by Peter Watson
-- Guns, Germs and Steel
-- The Righteous Mindbody
-- The Selfish Gene
-- THe Design of Everyday Things
 - Nonviolent Communication
 - Meditatons by Marcus Aurelius
 - Hyperbole and a Half
