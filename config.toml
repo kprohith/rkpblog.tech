@@ -37,20 +37,25 @@ url = "/posts"
 weight = 2
 
 [[menu.main]]
-name = "About Me"
+name = "About"
 url = "/about"
 weight = 3
 
+[[menu.main]]
+name = "Notes"
+url = "https://notes.rkpblog.tech"
+weight = 4
 
 [[menu.main]]
 name = "Bookshelf"
 url = "/books"
-weight = 4
+weight = 5
+
 
 [[menu.main]]
 name = "Tags"
 url = "/tags"
-weight = 5
+weight = 6
 
 [[params.social]]
 name = "Github"
