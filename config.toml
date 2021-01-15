@@ -28,7 +28,7 @@ disqusShortname = "rkpblog"
 
 [[menu.main]]
 name = "Home"
-url = "/"
+url = "www.rohithkp.me"
 weight = 1
 
 [[menu.main]]
@@ -56,6 +56,7 @@ weight = 5
 name = "Tags"
 url = "/tags"
 weight = 6
+
 
 [[params.social]]
 name = "Github"
