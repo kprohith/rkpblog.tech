@@ -1,25 +1,22 @@
 <!-- Remarkbox - Your readers want to communicate with you -->
-<style> 
-#remarkbox-div {
-/* background-color: #888;
- color: white;
- */
-margin: 0 auto;
-max-width: 750px;
-/* padding: 2rem;
-border-radius: 6px;
-overflow-x: hidden;
-word-break: break-word;
-overflow-wrap: break-word;
-background: var(--nc-bg-1);
-color: var(--nc-tx-2);
-font-size: 1.03rem;
-line-height: 1.5;
-*/}
+<style>
+  #remarkbox-div {
+    margin: 0 auto;
+    max-width: 750px;
+    padding: 2rem;
+    border-radius: 6px;
+    background: #999999;
+  }
 </style>
+<br>
 <div id="remarkbox-div">
   <noscript>
-    <iframe id=remarkbox-iframe src="https://my.remarkbox.com/embed?nojs=true" style="height:600px;width:100%;border:none!important" tabindex=0></iframe>
+    <iframe
+      id="remarkbox-iframe"
+      src="https://my.remarkbox.com/embed?nojs=true"
+      style="height: 600px; width: 100%; border: none !important"
+      tabindex="0"
+    ></iframe>
   </noscript>
 </div>
 <script src="https://my.remarkbox.com/static/js/iframe-resizer/iframeResizer.min.js"></script>
@@ -30,11 +27,15 @@ line-height: 1.5;
   var thread_fragment = window.location.hash;
 
   // rb owner was here.
-  var rb_src = "https://my.remarkbox.com/embed" + 
-      "?rb_owner_key=" + rb_owner_key +
-      "&thread_title=" + encodeURI(thread_title) +
-      "&thread_uri=" + encodeURIComponent(thread_uri) + 
-      thread_fragment;
+  var rb_src =
+    "https://my.remarkbox.com/embed" +
+    "?rb_owner_key=" +
+    rb_owner_key +
+    "&thread_title=" +
+    encodeURI(thread_title) +
+    "&thread_uri=" +
+    encodeURIComponent(thread_uri) +
+    thread_fragment;
 
   function create_remarkbox_iframe() {
     var ifrm = document.createElement("iframe");
@@ -52,7 +53,9 @@ line-height: 1.5;
     {
       checkOrigin: ["https://my.remarkbox.com"],
       inPageLinks: true,
-      initCallback: function(e) {e.iFrameResizer.moveToAnchor(thread_fragment)}
+      initCallback: function (e) {
+        e.iFrameResizer.moveToAnchor(thread_fragment);
+      },
     },
     document.getElementById("remarkbox-iframe")
   );
