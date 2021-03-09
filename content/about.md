@@ -41,10 +41,10 @@ I'm [**Rohith Palakirti**](https://www.rohithkp.me), currently a junior at The U
 
 - [📠Here's my Resume](https://blog.rohithkp.me/cv.pdf)
 
-- [🧾Here's my long form Curriculum Vitae](https://drive.google.com/file/d/1lRLYUBquMmihU7_QP115nudGhwaoyjUE/view?usp=sharing)
+<!-- - [🧾Here's my long form Curriculum Vitae](https://drive.google.com/file/d/1lRLYUBquMmihU7_QP115nudGhwaoyjUE/view?usp=sharing) -->
 
 
-### Contact me {#contact-me}
+<!-- ### Contact me {#contact-me}
 
 <!-- ---
 
@@ -63,7 +63,7 @@ I'm [**Rohith Palakirti**](https://www.rohithkp.me), currently a junior at The U
     <button type="submit">Send</button>
   </p>
 </form> -->
-
+<!-- 
 <form name="contact" method="POST" netlify-honeypot="bot-field" data-netlify-recaptcha="true" data-netlify="true">
   <div class="field">
   <label class="label">Your Name</label>
@@ -89,7 +89,7 @@ I'm [**Rohith Palakirti**](https://www.rohithkp.me), currently a junior at The U
 <div class="control">
   <button class="button is-primary" type="submit">Submit</button>
 </div>
-</form>
+</form> --> -->
 
 ---
 
