@@ -4,7 +4,7 @@ backend:
 media_folder: static/images/uploads
 public_folder: /images/uplaods
 publish_mode: editorial_workflow
-site_url: https://www.rkpblog.tech
+site_url: https://blog.rohithkp.me
 collections:
   - name: 'blog'
     label: 'Blog'
