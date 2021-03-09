@@ -89,8 +89,7 @@ I'm [**Rohith Palakirti**](https://www.rohithkp.me), currently a junior at The U
 <div class="control">
   <button class="button is-primary" type="submit">Submit</button>
 </div>
-</form> --> -->
-
+</form> -->
 ---
 
 <div class="LI-profile-badge"  data-version="v1" data-size="large" data-locale="en_US" data-type="horizontal" data-theme="dark" data-vanity="rohith-kp"><a class="LI-simple-link" href='https://in.linkedin.com/in/rohith-kp?trk=profile-badge'>Rohith Palakirti</a></div>
