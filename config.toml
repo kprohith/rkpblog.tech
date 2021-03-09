@@ -15,7 +15,7 @@ RelativeURLs=true
 CanonifyURLs=true
 
 copyright = "© Copyright notice"
-disqusShortname = "rkpblog"
+# disqusShortname = "rkpblog"
 
 [params]
   AuthorName = "Rohith Palakirti"
