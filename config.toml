@@ -1,7 +1,8 @@
 baseURL = "https://blog.rohithkp.me/"
 languageCode = "en-us"
 title = "Rohith's Blog"
-theme = "hugo-ink"
+// theme = "hugo-ink"
+theme = "ezhil"
 enableEmoji = true
 footnoteReturnLinkContents = "↩"
 enableGitInfo = true
