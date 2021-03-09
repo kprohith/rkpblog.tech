@@ -27,13 +27,13 @@ I'm [**Rohith Palakirti**](https://www.rohithkp.me), currently a junior at The U
 - 📧Shoot me an email at [hello[at]rohithkp.me](mailto:hello@rohithkp.me)
 - 🔑Find me on Keybase as [rohithkp](https://keybase.io/rohithkp)
 
- You can also reach me
+ You can also reach me on
 
-- On my Blog: [Rohith's Blog](https://blog.rohithkp.me/)
-- On LinkedIn: [Rohith Palakirti](https://linkedin.com/in/rohith-kp)
-- On Github: [kprohith](https://github.com/kprohith)
-- On Twitter: [fortytwochars](https://twitter.com/fortytwochars)
-- On Hacker News: [rohithkp](https://news.ycombinator.com/user?id=rohithkp)
+- My Blog: [Rohith's Blog](https://blog.rohithkp.me/)
+- LinkedIn: [Rohith Palakirti](https://linkedin.com/in/rohith-kp)
+- Github: [kprohith](https://github.com/kprohith)
+- Twitter: [fortytwochars](https://twitter.com/fortytwochars)
+- Hacker News: [rohithkp](https://news.ycombinator.com/user?id=rohithkp)
 
 ### Curriculum Vitae {#curriculum-vitae}
 
