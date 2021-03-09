@@ -28,7 +28,7 @@ disqusShortname = "rkpblog"
 
 [[menu.main]]
 name = "Home"
-url = "www.rohithkp.me"
+url = "/"
 weight = 1
 
 [[menu.main]]
