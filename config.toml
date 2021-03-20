@@ -20,7 +20,7 @@ copyright = "© Copyright notice"
 [params]
   AuthorName = "Rohith Palakirti"
   GitHubUser = "kprohith"
-  Subtitle = "I write about tech."
+  Subtitle = "I’m interested in technology. I like to write from time to time."
   mode = "dark"
   featherIconsCDN = true
   disableDisqusTypes = ["page"]
