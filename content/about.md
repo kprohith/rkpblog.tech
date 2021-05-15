@@ -34,6 +34,7 @@ I'm [**Rohith Palakirti**](https://www.rohithkp.me), currently a junior at The U
 - Github: [kprohith](https://github.com/kprohith)
 - Twitter: [fortytwochars](https://twitter.com/fortytwochars)
 - Hacker News: [rohithkp](https://news.ycombinator.com/user?id=rohithkp)
+- On Lobste.rs: [r18i](https://lobste.rs/u/r18i)
 
 ### Curriculum Vitae {#curriculum-vitae}
 
